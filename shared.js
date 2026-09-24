@@ -229,18 +229,27 @@
     Object.keys(payload).forEach(function (k) {
       if (k.charAt(0) !== '_') fields[k] = payload[k];
     });
-    return fetch('/api/send', {
+    var ctrl = null, timer = null;
+    if (window.AbortController) {
+      ctrl = new AbortController();
+      timer = setTimeout(function () { try { ctrl.abort(); } catch (e) {} }, 30000);
+    }
+    var p = fetch('/api/send', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
       body: JSON.stringify({
         subject: payload._subject || 'Website enquiry — VALTORIX',
         replyTo: payload._replyto || payload.Email || '',
         fields: fields
-      })
+      }),
+      signal: ctrl ? ctrl.signal : undefined
     }).then(function (r) {
       if (!r.ok) throw new Error('send failed');
       return r.json();
     });
+    if (!timer) return p;
+    return p.then(function (res) { clearTimeout(timer); return res; },
+      function (err) { clearTimeout(timer); throw err; });
   }
   function isSent(res) {
     return !!(res && (res.ok === true || res.success === true));

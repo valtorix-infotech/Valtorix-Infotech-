@@ -36,7 +36,13 @@ module.exports = async (req, res) => {
       .map((k) => '<tr><td><b>' + esc(k) + '</b></td><td>' + esc(fields[k]) + '</td></tr>')
       .join('');
 
-    const t = nodemailer.createTransport({ service: 'gmail', auth: { user, pass } });
+    const t = nodemailer.createTransport({
+      service: 'gmail',
+      auth: { user, pass },
+      connectionTimeout: 15000,
+      greetingTimeout: 15000,
+      socketTimeout: 25000,
+    });
     await t.sendMail({
       from: 'VALTORIX Website <' + user + '>',
       to: OWNER,
