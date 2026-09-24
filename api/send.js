@@ -94,32 +94,54 @@ function replyText(name) {
   );
 }
 
-async function deliver(user, pass, subject, replyTo, fields) {
-  const name = pickName(fields);
-  const t = nodemailer.createTransport({
+function makeTransport(user, pass) {
+  return nodemailer.createTransport({
     service: 'gmail',
     auth: { user, pass },
-    connectionTimeout: 15000,
-    greetingTimeout: 15000,
-    socketTimeout: 25000,
+    connectionTimeout: 8000,
+    greetingTimeout: 8000,
+    socketTimeout: 12000,
   });
-  await t.sendMail({
+}
+
+async function sendWithRetry(user, pass, label, mailOptions, tries) {
+  let lastErr = null;
+  for (let i = 0; i < tries; i++) {
+    const t = makeTransport(user, pass);
+    try {
+      const info = await t.sendMail(mailOptions);
+      try { t.close(); } catch (e) {}
+      console.log(label + ' sent:', info && info.messageId);
+      return true;
+    } catch (e) {
+      lastErr = e;
+      console.error(label + ' attempt ' + (i + 1) + ' failed:', e && e.message);
+      try { t.close(); } catch (ce) {}
+      await new Promise((r) => setTimeout(r, 1000 * (i + 1)));
+    }
+  }
+  console.error(label + ' FAILED after retries:', lastErr && lastErr.message);
+  return false;
+}
+
+async function deliver(user, pass, subject, replyTo, fields) {
+  const name = pickName(fields);
+  const okOwner = await sendWithRetry(user, pass, 'owner-mail', {
     from: 'VALTORIX Website <' + user + '>',
     to: OWNER,
     replyTo: replyTo || undefined,
     subject,
     html: ownerHtml(subject, fields),
-  });
+  }, 2);
+  if (!okOwner) throw new Error('owner mail failed');
   if (/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(replyTo)) {
-    try {
-      await t.sendMail({
-        from: 'VALTORIX INFOTECH <' + user + '>',
-        to: replyTo,
-        subject: 'We received your enquiry — VALTORIX INFOTECH',
-        text: replyText(name),
-        html: replyHtml(name, ''),
-      });
-    } catch (e) { /* owner mail already sent; ignore autoreply failure */ }
+    await sendWithRetry(user, pass, 'auto-reply', {
+      from: 'VALTORIX INFOTECH <' + user + '>',
+      to: replyTo,
+      subject: 'We received your enquiry — VALTORIX INFOTECH',
+      text: replyText(name),
+      html: replyHtml(name, ''),
+    }, 3);
   }
 }
 
