@@ -1,0 +1,12 @@
+/* ============================================================
+   VALTORIX INFOTECH — site effects layer (no WebGL)
+   ============================================================ */
+/* Navbar / dropdown / toast stacking */
+#navbar{z-index:999;}
+.nav-links.show{z-index:100;}
+.v-toast{z-index:2000;}
+
+/* ---------- Scroll progress bar ---------- */
+.scroll-progress{position:fixed;top:0;left:0;height:1.5px;width:0;z-index:1000;
+  background:linear-gradient(90deg,#159fe5,#1550c9);box-shadow:0 0 12px rgba(21,159,229,.7);}
+
