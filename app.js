@@ -297,11 +297,10 @@
         'Preferred Contact': gv('cmethod'),
         'Best Time': gv('ctime'),
         '_subject': 'New Contact Message — VALTORIX Website',
-        '_template': 'table',
-        '_captcha': 'false',
-        '_replyto': gv('cemail'),
-        '_autoresponse': AUTOREPLY
+        '_replyto': gv('cemail')
       };
+      var waTextC = 'New enquiry — VALTORIX website\nName: ' + gv('cname') + '\nPhone: ' + gv('cphone') + '\nEmail: ' + gv('cemail') + '\nMessage: ' + gv('cmessage');
+      try {
       sendToOwner(payload).then(function (res) {
         if (!isSent(res)) sendFailed();
         var card = document.getElementById('contactForm');
@@ -327,9 +326,12 @@
         }, 3000);
       }).catch(function () {
         if (btn) { btn.disabled = false; btn.innerHTML = orig; }
-        var waText = 'New enquiry — VALTORIX website\nName: ' + gv('cname') + '\nPhone: ' + gv('cphone') + '\nEmail: ' + gv('cemail') + '\nMessage: ' + gv('cmessage');
-        formError('#contactForm', sendFailMessage(), waLink(waText));
+        formError('#contactForm', sendFailMessage(), waLink(waTextC));
       });
+      } catch (e) {
+        if (btn) { btn.disabled = false; btn.innerHTML = orig; }
+        formError('#contactForm', sendFailMessage(), waLink(waTextC));
+      }
     });
   }
 
@@ -479,11 +481,10 @@
         'Preferred Communication': val('communication'),
         'Additional Info': val('additional'),
         '_subject': 'New Project Request [' + id + '] — VALTORIX Website',
-        '_template': 'table',
-        '_captcha': 'false',
-        '_replyto': val('email'),
-        '_autoresponse': AUTOREPLY
+        '_replyto': val('email')
       };
+      var waTextP = 'New project request — VALTORIX website\nType: ' + (state.type || '-') + '\nTitle: ' + val('projectTitle') + '\nName: ' + val('name') + '\nPhone: ' + val('phone') + '\nEmail: ' + val('email') + '\nOverview: ' + val('overview');
+      try {
       sendToOwner(payload).then(function (res) {
         if (!isSent(res)) sendFailed();
         var flow = document.getElementById('formFlow');
@@ -494,9 +495,13 @@
       }).catch(function () {
         nextBtn.disabled = false;
         nextBtn.innerHTML = origNext;
-        var waText = 'New project request — VALTORIX website\nType: ' + (state.type || '-') + '\nTitle: ' + val('projectTitle') + '\nName: ' + val('name') + '\nPhone: ' + val('phone') + '\nEmail: ' + val('email') + '\nOverview: ' + val('overview');
-        formError('#stepPanel', sendFailMessage(), waLink(waText));
+        formError('#stepPanel', sendFailMessage(), waLink(waTextP));
       });
+      } catch (e) {
+        nextBtn.disabled = false;
+        nextBtn.innerHTML = origNext;
+        formError('#stepPanel', sendFailMessage(), waLink(waTextP));
+      }
     });
     if (backBtn) backBtn.addEventListener('click', function () { show(state.step - 1); });
     var termsBox = document.getElementById('terms');
