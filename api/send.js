@@ -54,9 +54,11 @@ function ownerHtml(subject, fields) {
 
 function replyHtml(name, subject) {
   const step = (n, t) =>
-    '<tr><td style="width:34px;height:34px;background:#0e5bc0;color:#fff;text-align:center;' +
-    'font-weight:bold;border-radius:8px;font-size:15px;">' + n + '</td>' +
-    '<td style="padding:8px 0 8px 12px;color:#33445f;font-size:14px;">' + t + '</td></tr>';
+    '<table style="width:100%;border-collapse:collapse;margin:0 0 12px;"><tr>' +
+    '<td valign="top" style="width:34px;"><div style="width:34px;height:34px;line-height:34px;background:#0e5bc0;color:#fff;text-align:center;' +
+    'font-weight:bold;border-radius:8px;font-size:15px;">' + n + '</div></td>' +
+    '<td valign="top" style="padding:7px 0 7px 12px;color:#33445f;font-size:14px;line-height:1.6;">' + t + '</td>' +
+    '</tr></table>';
   return (
     '<div style="max-width:600px;margin:0 auto;font-family:Arial,Helvetica,sans-serif;background:#f4f8fd;padding:20px;">' +
     '<div style="background:#0e5bc0;color:#ffffff;padding:20px 22px;border-radius:10px 10px 0 0;">' +
@@ -66,11 +68,11 @@ function replyHtml(name, subject) {
     '<p style="font-size:14px;color:#33445f;line-height:1.7;">Thank you for reaching out' +
     (subject ? ' about <b>' + esc(subject) + '</b>' : '') +
     '. Our team will contact you shortly — usually within 24 hours on business days.</p>' +
-    '<table style="width:100%;border-collapse:collapse;margin:14px 0;">' +
+    '<div style="margin:14px 0 4px;">' +
     step('1', 'We review your requirement carefully.') +
     step('2', 'We call / WhatsApp you to discuss the best approach.') +
     step('3', 'You get a clear plan with timeline and cost.') +
-    '</table>' +
+    '</div>' +
     '<p style="font-size:14px;color:#33445f;">Need it urgent? Reply to this mail or chat now:<br>' +
     '<a href="' + WA + '" style="display:inline-block;margin-top:10px;background:#0e5bc0;color:#fff;' +
     'text-decoration:none;padding:11px 22px;border-radius:8px;font-weight:bold;">Chat on WhatsApp</a></p>' +
