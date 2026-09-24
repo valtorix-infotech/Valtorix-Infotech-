@@ -105,9 +105,8 @@
     }
   });
 
-  /* ---------- Form email helper (FormSubmit AJAX, no backend needed) ---------- */
-  var OWNER_EMAIL = 'valtorix.infotech@gmail.com';
-  var AUTOREPLY = 'Thank you for contacting VALTORIX INFOTECH!\n\nWe have received your details and our team will contact you shortly (usually within 24 hours on business days).\n\n— Team VALTORIX INFOTECH, Hyderabad | +91 79893 69571';
+  /* ---------- Form email helper (Vercel /api/send + WhatsApp fallback) ---------- */
+  var WHATSAPP = '917989369571';
   /* ---------- Inline validation + toast (no browser alert dialogs) ---------- */
   var EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
   function digitsOnly(v) { return String(v || '').replace(/\D/g, ''); }
@@ -200,40 +199,57 @@
     var host = t ? (t.closest('.review-body') || t.parentElement) : null;
     if (host) { var m = host.querySelector('.pick-error'); if (m) m.style.display = 'none'; }
   }
-  function formError(hostSel, msg) {
+  function waLink(msg) {
+    return 'https://wa.me/' + WHATSAPP + '?text=' + encodeURIComponent(msg);
+  }
+  function formError(hostSel, msg, wa) {
     var host = document.querySelector(hostSel);
     if (!host) { toast(msg); return; }
     var old = host.querySelector('.send-error');
     if (old) old.remove();
     var d = document.createElement('div');
     d.className = 'send-error';
-    d.setAttribute('style', 'background:#fdeaea;border:1px solid #f3c1c1;color:#b3261e;font-size:12px;border-radius:10px;padding:10px 14px;margin-top:14px;text-align:center');
-    d.textContent = msg;
+    d.setAttribute('style', 'background:#fdeaea;border:1px solid #f3c1c1;color:#b3261e;font-size:12px;border-radius:10px;padding:12px 14px;margin-top:14px;text-align:center');
+    var p = document.createElement('div');
+    p.textContent = msg;
+    d.appendChild(p);
+    if (wa) {
+      var a = document.createElement('a');
+      a.href = wa; a.target = '_blank'; a.rel = 'noopener';
+      a.className = 'btn btn-primary btn-sm';
+      a.style.marginTop = '10px';
+      a.textContent = 'Send via WhatsApp instead';
+      d.appendChild(a);
+    }
     host.appendChild(d);
     d.scrollIntoView({ behavior: 'smooth', block: 'center' });
   }
   function sendToOwner(payload) {
-    return fetch('https://formsubmit.co/ajax/' + OWNER_EMAIL, {
+    var fields = {};
+    Object.keys(payload).forEach(function (k) {
+      if (k.charAt(0) !== '_') fields[k] = payload[k];
+    });
+    return fetch('/api/send', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-      body: JSON.stringify(payload)
-    }).then(function (r) { return r.json(); });
+      body: JSON.stringify({
+        subject: payload._subject || 'Website enquiry — VALTORIX',
+        replyTo: payload._replyto || payload.Email || '',
+        fields: fields
+      })
+    }).then(function (r) {
+      if (!r.ok) throw new Error('send failed');
+      return r.json();
+    });
   }
-  /* true only when the mail was really accepted (catches activation-pending etc.) */
   function isSent(res) {
-    if (!res) return false;
-    if (res.success === true) return true;
-    var s = String(res.success || res.message || res.error || '').toLowerCase();
-    return s.indexOf('sent') !== -1 || (s.indexOf('success') !== -1 && s.indexOf('false') === -1);
+    return !!(res && (res.ok === true || res.success === true));
   }
   function sendFailed() {
     throw new Error('mail not accepted');
   }
   function sendFailMessage() {
-    if (window.location.protocol === 'file:') {
-      return 'You opened this page as a local file, so mail cannot be sent. Please open the site through hosting (or a local web server like VS Code Live Server) and try again — or email us directly at valtorix.infotech@gmail.com';
-    }
-    return 'Mail was not accepted yet (first use needs one-time activation). Please check valtorix.infotech@gmail.com inbox AND spam for the FormSubmit activation link, click it once, then try again — or email us directly at valtorix.infotech@gmail.com';
+    return 'Could not send right now. Please try again in a minute, or tap below to send the same details on WhatsApp — we reply Mon-Sat 9AM-9PM.';
   }
 
   /* ---------- 6. Contact form ---------- */
@@ -302,7 +318,8 @@
         }, 3000);
       }).catch(function () {
         if (btn) { btn.disabled = false; btn.innerHTML = orig; }
-        formError('#contactForm', sendFailMessage());
+        var waText = 'New enquiry — VALTORIX website\nName: ' + gv('cname') + '\nPhone: ' + gv('cphone') + '\nEmail: ' + gv('cemail') + '\nMessage: ' + gv('cmessage');
+        formError('#contactForm', sendFailMessage(), waLink(waText));
       });
     });
   }
@@ -468,7 +485,8 @@
       }).catch(function () {
         nextBtn.disabled = false;
         nextBtn.innerHTML = origNext;
-        formError('#stepPanel', sendFailMessage());
+        var waText = 'New project request — VALTORIX website\nType: ' + (state.type || '-') + '\nTitle: ' + val('projectTitle') + '\nName: ' + val('name') + '\nPhone: ' + val('phone') + '\nEmail: ' + val('email') + '\nOverview: ' + val('overview');
+        formError('#stepPanel', sendFailMessage(), waLink(waText));
       });
     });
     if (backBtn) backBtn.addEventListener('click', function () { show(state.step - 1); });
