@@ -152,6 +152,11 @@ module.exports = async (req, res) => {
   if (!fields || typeof fields !== 'object' || !Object.keys(fields).length) {
     return res.status(400).json({ ok: false });
   }
+
+  /* Honeypot anti-spam: reject if the hidden website field is filled */
+  if (fields.website && String(fields.website).trim().length > 0) {
+    return res.status(400).json({ ok: false, error: 'spam-detected' });
+  }
   const user = process.env.GMAIL_USER;
   const pass = process.env.GMAIL_APP_PASSWORD;
   if (!user || !pass) return res.status(500).json({ ok: false, error: 'mail-not-configured' });

@@ -282,6 +282,13 @@
       var firstBad = null, allOk = true;
       checks.forEach(function (c) { if (!c.ok) { allOk = false; if (!firstBad) firstBad = c.el; } });
       if (!allOk) { toast('Please fill the highlighted fields correctly.'); gotoEl(firstBad); return; }
+
+      /* Honeypot anti-spam check */
+      var website = document.getElementById('website');
+      if (website && website.value.trim().length > 0) {
+        toast('Submission rejected.');
+        return;
+      }
       var btn = contactForm.querySelector('[type="submit"]');
       var orig = btn ? btn.innerHTML : '';
       if (btn) { btn.disabled = true; btn.innerHTML = 'Sending…'; }
@@ -453,6 +460,14 @@
     if (nextBtn) nextBtn.addEventListener('click', function () {
       if (!validStep()) return;
       if (state.step < 4) { show(state.step + 1); return; }
+
+      /* Honeypot anti-spam check */
+      var website = document.getElementById('website');
+      if (website && website.value.trim().length > 0) {
+        toast('Submission rejected.');
+        return;
+      }
+
       var d = new Date();
       var id = 'VTX-' + d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + String(d.getDate()).padStart(2, '0') + '-' + Math.floor(1000 + Math.random() * 9000);
       var ref = document.getElementById('referenceId');

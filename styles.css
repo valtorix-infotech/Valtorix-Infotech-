@@ -1574,10 +1574,11 @@ img[src*="logo"]{background:transparent!important}
   margin-bottom:6px;
 }
 
+/* ---------- Honeypot anti-spam field ---------- */
+.field.honeypot input{display:none !important}
+
 /* ---------- Inline validation ---------- */
 .field.invalid input,
-.field.invalid textarea,
-.field.invalid select{border-color:#e33!important}
 .field.invalid input:focus,
 .field.invalid textarea:focus,
 .field.invalid select:focus{
