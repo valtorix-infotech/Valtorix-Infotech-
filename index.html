@@ -18,7 +18,7 @@
 <meta name="author" content="VALTORIX INFOTECH">
 <meta name="geo.region" content="IN-TG">
 <meta name="geo.placename" content="Hyderabad">
-<meta name="theme-color" content="#10294d">
+<meta name="theme-color" content="#0a0a0a">
 <link rel="icon" type="image/x-icon" href="images/favicon.ico?v=2">
 <link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32x32.png?v=2">
 <link rel="icon" type="image/png" sizes="16x16" href="images/favicon-16x16.png?v=2">
@@ -28,409 +28,13 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Sora:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+<link rel="stylesheet" href="styles.css?v=10">
 <link rel="stylesheet" href="webgl-bg.css?v=10">
-<style>
-*{margin:0;padding:0;box-sizing:border-box}
-html{scroll-behavior:smooth;scroll-padding-top:86px;overflow-x:hidden;scrollbar-width:none;-ms-overflow-style:none}
-html::-webkit-scrollbar{display:none;width:0}
-body{font-family:'Manrope',sans-serif;color:#10294d;background:#f8fbff;overflow-x:hidden;overflow-wrap:break-word}
-h1,h2,h3,h4,h5,h6{font-family:'Sora',sans-serif}
-a{text-decoration:none;color:inherit}
-img{max-width:100%;display:block;background:#eaf1f8}
-img.broken{display:none!important}
-img[src*="logo"]{background:transparent!important}
-.has-broken{position:relative}
-.has-broken::after{content:"\f03e";font-family:"Font Awesome 6 Free";font-weight:900;position:absolute;inset:0;display:grid;place-items:center;color:#9db8d2;font-size:30px;background:#eaf1f8;pointer-events:none}
-.project-img,.about-image{position:relative}
-.container{width:min(1400px,92%);margin:auto}
-.section{padding:80px 0}
-
-.section-tag{font-size:12px;font-weight:700;letter-spacing:3px;color:#168de0;text-transform:uppercase;margin-bottom:14px;display:flex;align-items:center;gap:12px}
-.section-tag::before{content:"";display:block;width:32px;height:3px;background:linear-gradient(90deg,#168de0,#1550c9);border-radius:2px;flex-shrink:0}
-.section-title{font-size:32px;line-height:1.2;font-weight:800;color:#10294d}
-.section-desc{font-size:16px;line-height:1.8;color:#63718a}
-
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;padding:14px 30px;border-radius:10px;font-size:15px;font-weight:600;transition:.3s;cursor:pointer;font-family:'Manrope',sans-serif;border:none}
-.btn-primary{background:linear-gradient(135deg,#159fe5,#1550c9);color:#fff;box-shadow:0 12px 30px rgba(21,113,218,.25)}
-.btn-primary:hover{transform:translateY(-3px);box-shadow:0 18px 35px rgba(21,113,218,.35)}
-.btn-outline{border:1px solid rgba(255,255,255,.55);color:#fff;background:rgba(255,255,255,.05);backdrop-filter:blur(10px)}
-.btn-outline:hover{background:#fff;color:#1550c9}
-
-/* NAVBAR */
-#navbar{height:72px;background:rgba(255,255,255,.97);display:flex;align-items:center;position:fixed;top:0;left:0;right:0;z-index:999;box-shadow:0 4px 25px rgba(15,40,75,.08);transition:box-shadow .3s}
-#navbar.scrolled{box-shadow:0 8px 30px rgba(15,40,75,.14)}
-.nav-wrap{width:min(1400px,92%);margin:auto;display:flex;align-items:center;gap:24px;position:relative}
-.logo{display:flex;justify-content:flex-start;flex-shrink:0}
-.logo img{width:180px;height:auto;background:transparent}
-.nav-links{flex:1;display:flex;align-items:center;justify-content:center;gap:clamp(14px,2vw,36px)}
-.nav-cta{margin-left:auto;display:inline-flex;align-items:center;justify-content:center;padding:11px 22px;font-size:13px}
-.nav-links a{font-size:14px;font-weight:600;color:#33445f;position:relative;font-family:'Manrope',sans-serif;transition:.3s;padding:4px 0}
-.nav-links a:after{content:"";position:absolute;width:0;height:2.5px;background:#168de0;left:0;bottom:-6px;border-radius:2px;transition:.3s}
-.nav-links a:hover:after,.nav-links a.active:after{width:100%}
-.nav-links a:hover,.nav-links a.active{color:#168de0}
-.nav-cta-link{display:none}
-.menu-btn{display:none;font-size:26px;color:#10294d;background:none;border:0;cursor:pointer}
-
-/* HERO */
-.hero{margin-top:72px;min-height:640px;background:#031b3a url('images/hero-bg.png') right center/cover no-repeat;position:relative;overflow:hidden}
-.hero h1{text-shadow:0 2px 20px rgba(0,0,0,.45)}
-.hero p{text-shadow:0 1px 12px rgba(0,0,0,.4)}
-.hero-content{position:relative;z-index:2;min-height:640px;display:flex;align-items:center}
-.hero-text{padding:24px 26px;max-width:720px;background:rgba(2,17,39,.38);border-radius:12px}
-.hero-tag{font-size:13px;letter-spacing:4px;font-weight:700;color:#2cbcf5;margin-bottom:16px;font-family:'Manrope',sans-serif}
-.hero h1{font-size:60px;line-height:1.15;color:#fff;font-weight:800;margin-bottom:18px}
-.hero h1 span{color:#28bdf5}
-.hero p{font-size:16px;line-height:1.8;color:#d4deec;max-width:600px;margin-bottom:30px;font-family:'Manrope',sans-serif}
-.hero-buttons{display:flex;gap:16px;flex-wrap:wrap}
-.hero-features{position:absolute;bottom:0;left:0;width:100%;z-index:3;border-top:1px solid rgba(255,255,255,.1);background:rgba(1,17,39,.5);backdrop-filter:blur(8px)}
-.feature-row{display:grid;grid-template-columns:repeat(4,1fr);gap:25px;padding:22px 0}
-.hero-feature{display:flex;align-items:center;gap:12px;color:#fff;font-size:14px;font-weight:600;font-family:'Manrope',sans-serif}
-.hero-feature i{width:38px;height:38px;border:1px solid rgba(40,189,245,.3);border-radius:10px;display:grid;place-items:center;color:#29bdf5;transition:.3s;font-size:14px}
-.hero-feature:hover i{background:#168de0;color:#fff;border-color:#168de0}
-
-/* SERVICES */
-.services-section{background:#fff}
-.services-top{display:flex;justify-content:space-between;align-items:end;gap:40px;margin-bottom:40px}
-.services-intro{max-width:480px}
-.services-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:22px}
-.service-card{background:#f8fbff;border:1px solid #e7edf5;border-radius:14px;padding:30px 24px;transition:.35s;box-shadow:0 8px 25px rgba(28,56,90,.04);display:flex;flex-direction:column}
-.service-card:hover{transform:translateY(-8px);box-shadow:0 22px 45px rgba(20,80,150,.12);border-color:#b9def6;background:#fff}
-.service-icon{width:68px;height:68px;border-radius:14px;background:linear-gradient(135deg,#eaf8ff,#dff2ff);display:grid;place-items:center;color:#168de0;font-size:30px;margin-bottom:20px;transition:.35s}
-.service-card:hover .service-icon{background:linear-gradient(135deg,#168de0,#1550c9);color:#fff;transform:scale(1.05)}
-.service-card h3{font-size:18px;margin-bottom:8px}
-.service-desc{font-size:13px;color:#68758b;line-height:1.7;font-family:'Manrope',sans-serif;margin-bottom:16px}
-.service-card ul{list-style:none;margin-bottom:auto;padding-bottom:20px}
-.service-card li{font-size:13px;color:#5f6f86;margin:9px 0;font-family:'Manrope',sans-serif;display:flex;align-items:center;gap:9px}
-.service-card li i{color:#159fe5;font-size:10px}
-.learn{font-weight:700;color:#1560c9;font-size:14px;font-family:'Manrope',sans-serif;display:inline-flex;align-items:center;gap:8px}
-.learn i{transition:.3s}
-.learn:hover i{transform:translateX(5px)}
-
-/* ABOUT */
-.about{background:#f8fbff}
-.about-grid{display:grid;grid-template-columns:1fr 1.2fr;gap:60px;align-items:center}
-.about-text p{margin:20px 0 26px}
-.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:40px}
-.stat{display:flex;align-items:center;gap:12px;background:#fff;border:1px solid #e8edf5;border-radius:14px;padding:16px;transition:.35s}
-.stat:hover{border-color:#b9def6;box-shadow:0 10px 25px rgba(21,136,224,.08)}
-.stat i{font-size:30px;color:#168de0;transition:.3s;flex-shrink:0}
-.more-btn{margin-top:18px}
-.stat strong{font-size:22px;display:block;font-family:'Sora',sans-serif}
-.stat span{font-size:11px;color:#66738a;font-family:'Manrope',sans-serif}
-.about-image{border-radius:10px;overflow:hidden;box-shadow:0 30px 60px rgba(15,45,85,.15)}
-.about-image img{width:100%;height:520px;object-fit:cover}
-
-/* TECH */
-.tech{padding:70px 0;background:#f5f9fd}
-.tech-top{display:flex;justify-content:space-between;align-items:end;margin-bottom:34px;gap:30px}
-.tech-desc{max-width:480px}
-.tech-marquee{overflow:hidden;width:100%;padding:10px 0}
-.tech-track{display:flex;width:max-content;animation:techScroll 35s linear infinite}
-.tech-marquee:hover .tech-track{animation-play-state:paused}
-.tech-item{width:104px;height:104px;background:#fff;border:1px solid #e6edf5;border-radius:14px;margin-right:14px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;box-shadow:0 6px 20px rgba(15,50,90,.04);transition:.3s}
-.tech-item:hover{transform:translateY(-6px);box-shadow:0 12px 30px rgba(21,136,224,.1);border-color:#b9def6}
-.tech-item i{font-size:36px}
-.tech-item span{font-size:11px;font-weight:700;font-family:'Manrope',sans-serif;color:#444}
-@keyframes techScroll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
-
-/* INDUSTRIES */
-.industries{background:#fff}
-.industries-top{display:flex;justify-content:space-between;align-items:end;gap:40px;margin-bottom:40px}
-.industries-desc{max-width:420px}
-.industries-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
-.industry-card{padding:26px 22px;border-radius:14px;border:1px solid #e8edf5;background:#f8fbff;transition:.35s;box-shadow:0 8px 25px rgba(20,55,95,.04)}
-.industry-card:hover{transform:translateY(-8px);box-shadow:0 18px 40px rgba(20,80,150,.1);border-color:#b9def6;background:#fff}
-.industry-icon{width:52px;height:52px;border-radius:14px;background:linear-gradient(135deg,#eaf8ff,#dff2ff);display:grid;place-items:center;color:#168de0;font-size:22px;margin-bottom:16px;transition:.35s}
-.industry-card:hover .industry-icon{background:linear-gradient(135deg,#168de0,#1550c9);color:#fff;transform:scale(1.08)}
-.industry-card h3{font-size:16px;margin-bottom:6px}
-.industry-card p{font-size:13px;color:#68758b;line-height:1.7;font-family:'Manrope',sans-serif}
-
-/* PROJECTS */
-.projects{background:#f8fbff}
-.projects-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:36px}
-.projects-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:20px}
-.project-card{border-radius:14px;background:#fff;border:1px solid #e4eaf2;overflow:hidden;box-shadow:0 12px 30px rgba(20,55,95,.06);transition:.35s}
-.project-card:hover{transform:translateY(-8px);box-shadow:0 25px 50px rgba(20,55,95,.12)}
-.project-img{height:190px;overflow:hidden;background:#eef3f8}
-.project-img img{width:100%;height:100%;object-fit:cover;transition:.5s}
-.project-card:hover .project-img img{transform:scale(1.06)}
-.project-content{padding:18px}
-.project-content h3{font-size:16px;margin-bottom:6px}
-.project-content p{font-size:12px;color:#66738a;line-height:1.7;margin-bottom:14px;font-family:'Manrope',sans-serif}
-.project-tag{display:inline-block;padding:6px 12px;border-radius:10px;background:#f1f7fc;color:#28506f;font-size:11px;font-weight:600;font-family:'Manrope',sans-serif}
-
-/* WHY CHOOSE */
-.why-valtorix{position:relative;width:100%;overflow:hidden;background:#061a33 url('images/why-valtorix-bg.png') center/cover no-repeat;color:#fff}
-.why-valtorix::before{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(5,19,40,.99) 0%,rgba(5,19,40,.97) 38%,rgba(5,19,40,.78) 58%,rgba(5,19,40,.12) 100%);z-index:0}
-.why-container{position:relative;z-index:1;width:min(1400px,89%);margin:auto;padding:70px 0}
-.why-valtorix .section-tag{color:#19bdf4}
-.why-valtorix .section-title{color:#fff;margin-bottom:10px}
-.why-features{display:grid;grid-template-columns:repeat(4,1fr);margin-top:35px;max-width:1120px}
-.why-feature{min-height:165px;padding:0 28px;border-right:1px solid rgba(42,151,211,.28);display:flex;flex-direction:column;justify-content:center}
-.why-feature:first-child{padding-left:0}
-.why-feature:last-child{border-right:none}
-.icon-box{height:70px;display:flex;align-items:center;margin-bottom:10px}
-.icon-box i{font-size:44px;color:#13bdf4;filter:drop-shadow(0 0 6px rgba(19,189,244,.22))}
-.why-feature h3{font-size:15px;font-weight:700;color:#fff;margin-bottom:8px}
-.why-feature p{font-size:13px;font-weight:500;line-height:1.65;color:rgba(255,255,255,.80);font-family:'Manrope',sans-serif}
-
-/* PROCESS */
-.process{background:linear-gradient(180deg,#f5f9fd,#eef5fb);padding:80px 0}
-.process-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:55px}
-.process .section-tag{color:#168de0}
-.process .section-tag::before{background:linear-gradient(90deg,#168de0,#1550c9)}
-.process .section-title{color:#10294d}
-.process-steps{display:grid;grid-template-columns:repeat(5,1fr);gap:16px}
-.process-step{text-align:center;position:relative;padding:28px 12px;border-radius:14px;background:#fff;border:1px solid #e8eef5;box-shadow:0 8px 25px rgba(20,55,95,.04);transition:.35s}
-.process-step:hover{background:#fff;transform:translateY(-6px);box-shadow:0 18px 40px rgba(20,80,150,.12);border-color:#b9def6}
-.process-step:not(:last-child)::after{content:"";position:absolute;top:50%;right:-12px;width:24px;height:2px;background:linear-gradient(90deg,#168de0,#a7c8ea);transform:translateY(-50%)}
-.step-number{width:58px;height:58px;border-radius:14px;margin:0 auto 14px;background:linear-gradient(135deg,#1451c9,#1da7eb);display:grid;place-items:center;font-size:20px;font-weight:700;position:relative;z-index:2;transition:.35s;font-family:'Sora',sans-serif}
-.process-step:hover .step-number{transform:scale(1.1);box-shadow:0 0 25px rgba(30,135,230,.4)}
-.process-step h3{font-size:15px;line-height:1.45;color:#3a4a63}
-
-/* TESTIMONIALS */
-.testimonials{background:#fff}
-.testimonial-wrap{display:grid;grid-template-columns:320px 1fr;gap:50px;align-items:center}
-.testimonial-nav{display:flex;gap:12px;margin-top:24px}
-.circle-btn{width:46px;height:46px;border:1px solid #cbd9e8;border-radius:10px;display:grid;place-items:center;color:#168de0;background:#fff;cursor:pointer;transition:.3s;font-size:15px}
-.circle-btn:hover{background:#168de0;color:#fff;border-color:#168de0}
-.testimonial-slider{overflow:hidden}
-.testimonial-track{display:flex;gap:18px;width:max-content;animation:testScroll 25s linear infinite}
-.testimonial-track:hover{animation-play-state:paused}
-.testimonial-card{width:460px;flex-shrink:0;background:#f8fbff;border:1px solid #e4ebf3;border-radius:14px;padding:24px;box-shadow:0 12px 30px rgba(18,60,110,.05);transition:.3s}
-.testimonial-card:hover{box-shadow:0 18px 40px rgba(18,60,110,.1)}
-.client{display:flex;gap:16px;align-items:flex-start}
-.client-avatar{width:54px;height:54px;border-radius:10px;border:2px solid #e5eef8;flex-shrink:0;display:grid;place-items:center;font-family:'Sora',sans-serif;font-weight:700;font-size:16px;color:#fff;background:linear-gradient(135deg,#168de0,#1550c9)}
-.client-avatar.ab{background:linear-gradient(135deg,#e09b16,#c96a15)}
-.client-avatar.bc{background:linear-gradient(135deg,#16a3e0,#1550c9)}
-.client p{font-size:14px;line-height:1.8;color:#55647a;margin-bottom:12px;font-family:'Manrope',sans-serif;font-style:italic}
-.client strong{display:block;font-size:15px;font-family:'Sora',sans-serif}
-.client span{font-size:12px;color:#718096;font-family:'Manrope',sans-serif}
-@keyframes testScroll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
-
-/* FAQ */
-.faq{background:#f8fbff}
-.faq-grid{display:grid;grid-template-columns:1fr 1.2fr;gap:60px;align-items:start}
-.faq-left{position:sticky;top:100px}
-.faq-item{background:#fff;border:1px solid #e8edf5;border-radius:10px;margin-bottom:12px;transition:.3s}
-.faq-item:hover{border-color:#b9def6}
-.faq-item.active{border-color:#b9def6;box-shadow:0 8px 25px rgba(21,136,224,.08)}
-.faq-question{width:100%;padding:18px 20px;display:flex;align-items:center;justify-content:space-between;background:none;border:none;font-size:15px;font-weight:700;font-family:'Sora',sans-serif;color:#10294d;cursor:pointer;text-align:left;gap:12px}
-.faq-question i{color:#168de0;font-size:13px;transition:transform .3s;flex-shrink:0}
-.faq-item.active .faq-question i{transform:rotate(45deg)}
-.faq-answer{max-height:0;overflow:hidden;transition:max-height .4s ease}
-.faq-item.active .faq-answer{max-height:300px}
-.faq-answer-inner{padding:0 20px 16px}
-.faq-answer p{font-size:13px;color:#68758b;line-height:1.8;font-family:'Manrope',sans-serif}
-
-/* CTA */
-.cta{background:#fff;padding:70px 0}
-.cta-box{background:linear-gradient(135deg,#0e5bc0,#159fe5);border-radius:20px;padding:48px;display:flex;align-items:center;justify-content:space-between;gap:40px;position:relative;overflow:hidden}
-.cta-box::before{content:"";position:absolute;width:350px;height:350px;background:rgba(255,255,255,.05);border-radius:50%;top:-120px;right:-80px}
-.cta-box::after{content:"";position:absolute;width:250px;height:250px;background:rgba(255,255,255,.03);border-radius:50%;bottom:-80px;left:-40px}
-.cta-box .section-tag{color:#d5efff}
-.cta-box .section-tag::before{background:#d5efff}
-.cta-box h2{font-size:30px;color:#fff;line-height:1.2}
-.cta-box p{color:rgba(255,255,255,.85);margin-top:12px;font-size:15px;font-family:'Manrope',sans-serif}
-.cta-box .btn{background:#fff;color:#1550c9;padding:16px 32px;font-size:14px;white-space:nowrap;font-family:'Manrope',sans-serif;font-weight:700;border-radius:10px;position:relative;z-index:2}
-.cta-box .btn:hover{transform:translateY(-3px);box-shadow:0 15px 35px rgba(0,0,0,.2)}
-
-/* FOOTER */
-.footer{background:#020f23;color:#dce8f5;padding:60px 0 0}
-.footer-grid{display:grid;grid-template-columns:1.4fr 1fr 1fr 1.2fr 1.3fr;gap:35px;padding-bottom:40px}
-.footer-logo{width:180px;max-width:100%;margin:0 0 14px;display:block}
-.footer p{font-size:13px;line-height:1.8;color:#8899ad;max-width:290px;font-family:'Manrope',sans-serif;text-align:left}
-.footer h4{font-size:15px;color:#fff;margin-bottom:18px;font-family:'Sora',sans-serif;position:relative;padding-bottom:10px;text-align:left}
-.footer h4::after{content:"";position:absolute;bottom:0;left:0;transform:none;width:26px;height:2px;background:#168de0;border-radius:2px}
-.footer ul{list-style:none;text-align:left}
-.footer ul li{margin:9px 0;color:#8899ad;font-size:13px;font-family:'Manrope',sans-serif;transition:.3s}
-.footer ul li a{transition:.3s;display:inline-flex;align-items:center;gap:6px}
-.footer ul li a:hover{color:#25b9f5;transform:translateX(5px)}
-.socials{display:flex;gap:10px;margin-top:18px}
-.socials a{width:38px;height:38px;border-radius:10px;background:#102743;display:grid;place-items:center;color:#8899ad;transition:.3s;font-size:15px}
-.socials a:hover{background:#168de0;color:#fff;transform:translateY(-3px)}
-.contact-item{display:flex;gap:12px;margin-bottom:14px;color:#8899ad;font-size:13px;font-family:'Manrope',sans-serif}
-.contact-item i{color:#25b9f5;margin-top:2px;font-size:13px;flex-shrink:0}
-.footer-map{width:100%;height:200px;border:0;border-radius:10px;display:block;filter:grayscale(100%) invert(90%) contrast(.9);opacity:.9;margin-top:10px}
-.footer-bottom{border-top:1px solid rgba(255,255,255,.08);padding:18px 0;display:flex;justify-content:space-between;align-items:center;color:#667788;font-size:12px;font-family:'Manrope',sans-serif;gap:12px}
-.footer-bottom .tagline{flex:1;text-align:center;color:#8899ad}
-.footer-bottom a{color:#8899ad;transition:.3s}
-.footer-bottom a:hover{color:#25b9f5}
-.footer-bottom span{color:#48bdf0}
-
-/* SCROLL REVEAL */
-.reveal{opacity:0;transform:translateY(30px);transition:all .65s cubic-bezier(.16,1,.3,1)}
-.reveal-left{opacity:0;transform:translateX(-30px);transition:all .65s cubic-bezier(.16,1,.3,1)}
-.reveal-right{opacity:0;transform:translateX(30px);transition:all .65s cubic-bezier(.16,1,.3,1)}
-.revealed{opacity:1!important;transform:translate(0,0)!important}
-
-/* RESPONSIVE */
-@media(max-width:1100px){
-.section-title{font-size:28px}
-.logo img{width:160px}
-.hero h1{font-size:38px}
-.logo img{width:160px}
-.services-grid{grid-template-columns:repeat(2,1fr)}
-.projects-grid{grid-template-columns:repeat(2,1fr)}
-.about-grid{grid-template-columns:1fr}
-.about-image{order:-1}
-.about-image img{height:380px}
-.footer-grid{grid-template-columns:repeat(3,1fr)}
-.process-steps{grid-template-columns:repeat(3,1fr)}
-.process-step:nth-child(3)::after{display:none}
-.industries-grid{grid-template-columns:repeat(2,1fr)}
-.faq-grid{grid-template-columns:1fr;gap:36px}
-.faq-left{position:static}
-}
-@media(max-width:950px){
-.why-features{grid-template-columns:repeat(2,1fr);gap:26px 0}
-.why-feature{padding:0 26px;min-height:150px}
-.why-feature:nth-child(odd){padding-left:0}
-.why-feature:nth-child(even){border-right:none;padding-right:0}
-.why-feature:last-child{border-right:none}
-.why-valtorix .section-title{font-size:28px}
-}
-@media(max-width:1000px){
-.logo{flex:1;display:flex;justify-content:flex-start}
-.nav-wrap{position:static}
-.nav-links{display:flex;flex-direction:column;position:absolute;top:72px;left:0;right:0;background:linear-gradient(180deg,rgba(255,255,255,.82) 0%,rgba(226,241,253,.72) 45%,rgba(198,224,248,.85) 100%);backdrop-filter:blur(16px) saturate(1.4);-webkit-backdrop-filter:blur(16px) saturate(1.4);padding:0 24px;border-radius:0 0 16px 16px;border-bottom:1px solid rgba(255,255,255,.65);box-shadow:inset 0 1px 0 rgba(255,255,255,.9),0 12px 32px rgba(15,40,75,.18);gap:0;z-index:100;text-align:center;max-height:0;opacity:0;visibility:hidden;overflow:hidden;overflow-y:auto;transform:translateY(-10px);transition:max-height .38s cubic-bezier(.16,1,.3,1),opacity .3s ease,transform .38s cubic-bezier(.16,1,.3,1),padding .3s ease,visibility 0s .4s}
-.nav-links.show{max-height:calc(100vh - 72px);opacity:1;visibility:visible;transform:none;padding:0 24px 14px;border-radius:0 0 16px 16px;transition:max-height .42s cubic-bezier(.16,1,.3,1),opacity .3s ease,transform .42s cubic-bezier(.16,1,.3,1),padding .3s ease}
-@keyframes menuIn{from{opacity:0;transform:translateX(-14px)}to{opacity:1;transform:none}}
-.nav-links.show a{animation:menuIn .32s cubic-bezier(.16,1,.3,1) both}
-.nav-links.show a:nth-child(2){animation-delay:.04s}
-.nav-links.show a:nth-child(3){animation-delay:.08s}
-.nav-links.show a:nth-child(4){animation-delay:.12s}
-.nav-links.show a:nth-child(5){animation-delay:.16s}
-.nav-links.show a:nth-child(6){animation-delay:.2s}
-.nav-links.show a:nth-child(7){animation-delay:.24s}
-.nav-links.show a{padding:13px 0;border-bottom:1px solid #f0f0f0;width:100%;font-size:15px}
-.nav-links.show a:after{display:none}
-.nav-cta{display:none}
-.nav-cta-link{display:none}
-.nav-links.show .nav-cta-link{display:flex;align-items:center;justify-content:center;gap:10px;background:linear-gradient(135deg,#159fe5,#1550c9);color:#fff!important;border-radius:10px;padding:13px 20px;margin:12px 0 6px;font-size:14px;font-weight:600;border-bottom:none!important;width:100%}
-.nav-links.show .nav-cta-link:after{display:none}
-.menu-btn{display:block}
-}
-@media(max-width:800px){
-*{-webkit-tap-highlight-color:transparent}
-.section{padding:55px 0}
-.section-title{font-size:25px}
-.hero h1{font-size:32px}
-.hero{min-height:auto;background:#031b3a url('images/hero-bg.png') right center/cover no-repeat}
-.hero-content{min-height:auto;padding:70px 0 40px}
-.hero-features{position:relative;margin-top:0}
-.hero-text{text-align:left;padding:20px;background:rgba(2,17,39,.8);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px)}
-.feature-row{grid-template-columns:repeat(2,1fr)}
-.services-top,.tech-top,.projects-head,.process-top,.cta-box,.industries-top{flex-direction:column;align-items:flex-start}
-.tech{padding:0}
-.process-steps{grid-template-columns:1fr;gap:18px}
-.process-step:nth-child(2)::after{display:none}
-.process-top{margin-bottom:34px}
-.process-top .btn{margin-top:4px;padding:13px 28px;font-size:14px}
-.process{padding:55px 0}
-.testimonial-wrap{grid-template-columns:1fr}
-.testimonial-nav{justify-content:center}
-.faq-grid{grid-template-columns:1fr;gap:36px}
-.industries-grid{grid-template-columns:1fr}
-.faq-left{position:static}
-.footer h4{text-align:center}
-.footer h4::after{left:50%;transform:translateX(-50%)}
-.footer p{text-align:center;margin:0 auto}
-.footer-logo{margin:0 auto 14px}
-.footer ul{text-align:center}
-.footer ul li a{justify-content:center}
-.socials{justify-content:center}
-.contact-item{justify-content:center}
-.footer-grid>div:nth-child(4) h4{text-align:center}
-.footer-grid>div:nth-child(4) h4::after{left:50%;transform:translateX(-50%)}
-.footer-grid>div:nth-child(4) .contact-item{justify-content:center;text-align:center}
-.footer-map{margin:0 auto}
-.footer-grid{grid-template-columns:1fr;gap:26px}
-.footer-bottom{flex-direction:column;gap:8px;text-align:center}
-.footer-map{height:200px}
-.about-grid{gap:30px}
-.testimonial-slider{overflow:hidden}
-.testimonial-track{animation:testScroll 18s linear infinite}
-.testimonial-track:hover{animation-play-state:paused}
-.testimonial-card{width:min(420px,78vw)}
-.service-card{min-height:auto;padding:26px 20px}
-.industries-top{margin-bottom:30px}
-}
-@media(max-width:550px){
-.container{width:92%}
-.section{padding:45px 0}
-.section-title{font-size:23px;line-height:1.2}
-.hero h1{font-size:27px;line-height:1.2}
-.hero p{font-size:14px}
-.hero-content{padding:50px 0 30px}
-.hero-buttons{flex-direction:column}
-.hero-buttons .btn{width:100%}
-.hero-tag{font-size:11px;letter-spacing:3px}
-.feature-row{grid-template-columns:repeat(2,1fr);gap:14px;padding:16px 0}
-.hero-feature{font-size:12px;gap:10px}
-.hero-feature i{width:34px;height:34px;font-size:13px}
-.services-grid{grid-template-columns:1fr}
-.projects-grid{grid-template-columns:1fr}
-.why-valtorix::before{background:rgba(5,19,40,.91)}
-.why-container{padding:45px 0}
-.why-valtorix .section-tag{justify-content:center;text-align:center}
-.why-valtorix .section-title{text-align:center}
-.why-features{grid-template-columns:1fr;margin-top:22px;max-width:100%;gap:0}
-.why-feature{padding:18px 0;border-right:none;border-bottom:1px solid rgba(42,151,211,.28);min-height:auto;text-align:center}
-.why-feature:last-child{border-bottom:none}
-.icon-box{height:auto;margin-bottom:8px;justify-content:center}
-.icon-box i{font-size:32px}
-.why-feature h3{font-size:14px}
-.stats{grid-template-columns:1fr;gap:10px;margin-top:24px}
-.stat{padding:10px 14px;gap:9px}
-.stat i{font-size:16px}
-.stat strong{font-size:14px}
-.stat span{font-size:10px}
-.more-btn{margin-top:18px;width:100%;justify-content:center}
-.process-steps{grid-template-columns:1fr}
-.process-step{margin-bottom:8px}
-.tech-item{width:90px;height:90px}
-.tech-item i{font-size:32px}
-.tech-item span{font-size:11px}
-.testimonial-card{width:min(420px,84vw);min-width:0}
-.cta-box h2{font-size:24px}
-.cta-box{padding:32px 22px}
-.cta-box .btn{width:100%}
-.about-image img{height:240px}
-.logo img{width:160px}
-.industries-grid{grid-template-columns:1fr}
-.footer-map{height:180px}
-.testimonial-wrap{gap:30px}
-.footer-bottom #fb-wrap{flex-direction:column!important;justify-content:center!important;align-items:center!important;gap:8px!important;text-align:center!important}
-.footer-bottom #fb-wrap>div{width:100%!important;text-align:center!important}
-.footer-grid>div:nth-child(2),.footer-grid>div:nth-child(3){display:none}
-}
-
-/* Motion pack — 2D only, GPU-cheap */
-@keyframes tagDrop{from{opacity:0;transform:translateY(-10px)}to{opacity:1;transform:none}}
-.hero-tag{animation:tagDrop .6s ease both}
-@keyframes ctaPulse{0%,100%{box-shadow:0 0 0 0 rgba(255,255,255,.35)}50%{box-shadow:0 0 0 12px rgba(255,255,255,0)}}
-.cta-box .btn{animation:ctaPulse 2.6s ease-out infinite}
-.services-grid .reveal:nth-child(2),.projects-grid .reveal:nth-child(2),.industries-grid .reveal:nth-child(2),.process-steps .reveal:nth-child(2){transition-delay:.08s}
-.services-grid .reveal:nth-child(3),.projects-grid .reveal:nth-child(3),.industries-grid .reveal:nth-child(3),.process-steps .reveal:nth-child(3){transition-delay:.16s}
-.services-grid .reveal:nth-child(4),.projects-grid .reveal:nth-child(4),.industries-grid .reveal:nth-child(4),.process-steps .reveal:nth-child(4){transition-delay:.24s}
-.btn{position:relative;overflow:hidden}
-.btn::after{content:"";position:absolute;top:0;left:-60%;width:40%;height:100%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.45),transparent);transform:skewX(-20deg);transition:left .55s ease;pointer-events:none}
-.btn:hover::after{left:130%}
-.service-card:hover .service-icon,.industry-card:hover .industry-icon{transform:scale(1.12) rotate(-6deg)}
-.about-image img{transition:transform .6s ease}
-.about-image:hover img{transform:scale(1.045)}
-@media (prefers-reduced-motion:reduce){
-.hero-tag,.cta-box .btn,.nav-links.show a{animation:none}
-.nav-links,.nav-links.show{transition:none}
-.btn::after{display:none}
-.services-grid .reveal,.projects-grid .reveal,.industries-grid .reveal,.process-steps .reveal{transition-delay:0s}
-}
-</style>
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"LocalBusiness","name":"VALTORIX INFOTECH","description":"Websites, HRMS, SiteTrack construction tracking, e-commerce and AI solutions in Hyderabad since 2022.","address":{"@type":"PostalAddress","addressLocality":"Hyderabad","addressRegion":"Telangana","addressCountry":"IN"},"telephone":"+91-7989369571","email":"valtorix.infotech@gmail.com","foundingDate":"2022","openingHours":["Mo-Sa 09:00-21:00"]}</script>
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"What services does VALTORIX INFOTECH offer?","acceptedAnswer":{"@type":"Answer","text":"We offer web development, software solutions, AI and automation, UI/UX design and custom business applications tailored to your needs."}},{"@type":"Question","name":"How long does it take to complete a project?","acceptedAnswer":{"@type":"Answer","text":"A typical website takes 2-4 weeks, while complex applications may take 6-12 weeks depending on scope."}},{"@type":"Question","name":"Do you provide post-launch support?","acceptedAnswer":{"@type":"Answer","text":"Yes, we provide ongoing maintenance, updates and technical support after launch."}},{"@type":"Question","name":"What is the typical project cost?","acceptedAnswer":{"@type":"Answer","text":"Pricing depends on requirements. Contact us for a free consultation and detailed quote."}},{"@type":"Question","name":"What technologies does VALTORIX INFOTECH use?","acceptedAnswer":{"@type":"Answer","text":"React, Node.js, Python, PHP, MySQL, MongoDB, AWS, Figma and modern AI tools, chosen per project."}},{"@type":"Question","name":"How do I get started with VALTORIX INFOTECH?","acceptedAnswer":{"@type":"Answer","text":"Share your idea via Contact or Start a Project. We schedule a free consultation with timeline and pricing."}}]}</script>
 </head>
 <body>
+<a href="#main-content" class="skip-link">Skip to main content</a>
 
 <!-- NAVBAR -->
 <nav id="navbar">
@@ -451,24 +55,50 @@ img[src*="logo"]{background:transparent!important}
 </nav>
 
 <!-- HERO -->
+<main id="main-content">
 <section class="hero" id="home">
 <div class="container hero-content">
 <div class="hero-text reveal">
-<div class="hero-tag">WELCOME TO VALTORIX INFOTECH</div>
-<h1>We Build Digital<br>Experiences That<br><span>Grow Your Business</span></h1>
-<p>Innovative websites, web applications, AI solutions and custom software designed to help businesses move forward.</p>
+<div class="hero-tag">Concept B — Abstract Intelligence</div>
+<h1>Building Intelligent<br>Software for a<br><span>Smarter Tomorrow</span></h1>
+<p>We design and build AI-powered applications, modern web &amp; mobile platforms and custom software that solve real business problems.</p>
 <div class="hero-buttons">
-<a href="strat-project.html" class="btn btn-primary">Start Your Project <i class="fa-solid fa-arrow-right"></i></a>
-<a href="services.html" class="btn btn-outline">View Our Services</a>
+<a href="strat-project.html" class="btn btn-primary">Explore Our Work <i class="fa-solid fa-arrow-right"></i></a>
+<a href="services.html" class="btn btn-outline">Our Services</a>
 </div>
 </div>
 </div>
+
+<!-- Geometric V-inspired hero visual (pure CSS/SVG, no image dependency) -->
+<div class="hero-visual reveal">
+<svg class="v-mark" viewBox="0 0 800 600" preserveAspectRatio="xMidYMid slice" role="img" aria-label="VALTORIX abstract V mark">
+<defs>
+<linearGradient id="vGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+<stop offset="0%" stop-color="#b8b8b8"/>
+<stop offset="100%" stop-color="#ffffff"/>
+</linearGradient>
+<filter id="vGlow" x="-20%" y="-20%" width="140%" height="140%">
+<feGaussianBlur stdDeviation="12" result="blur"/>
+<feComposite in="SourceGraphic" in2="blur" operator="over"/>
+</filter>
+</defs>
+<!-- Left V arm -->
+<path d="M 120 580 L 300 120 L 400 300" fill="none" stroke="url(#vGrad)" stroke-width="22" stroke-linecap="round" filter="url(#vGlow)"/>
+<!-- Right V arm -->
+<path d="M 680 580 L 500 120 L 400 300" fill="none" stroke="url(#vGrad)" stroke-width="22" stroke-linecap="round" filter="url(#vGlow)"/>
+<!-- Crossbar / intelligence node -->
+<circle cx="400" cy="300" r="34" fill="#b8b8b8" opacity=".9"/>
+<circle cx="400" cy="300" r="14" fill="#ffffff"/>
+</svg>
+<div class="v-glow"></div>
+</div>
+
 <div class="hero-features">
 <div class="container feature-row">
-<div class="hero-feature"><i class="fa-solid fa-microchip"></i>Modern Technology</div>
-<div class="hero-feature"><i class="fa-solid fa-stopwatch"></i>On-Time Delivery</div>
-<div class="hero-feature"><i class="fa-regular fa-user"></i>Trusted Partner</div>
-<div class="hero-feature"><i class="fa-solid fa-chart-line"></i>Scalable Solutions</div>
+<div class="hero-feature reveal"><i class="fa-solid fa-microchip"></i>Modern Technology</div>
+<div class="hero-feature reveal"><i class="fa-solid fa-stopwatch"></i>On-Time Delivery</div>
+<div class="hero-feature reveal"><i class="fa-regular fa-user"></i>Trusted Partner</div>
+<div class="hero-feature reveal"><i class="fa-solid fa-chart-line"></i>Scalable Solutions</div>
 </div>
 </div>
 </section>
@@ -478,8 +108,8 @@ img[src*="logo"]{background:transparent!important}
 <div class="container">
 <div class="services-top reveal">
 <div>
-<div class="section-tag">OUR SERVICES</div>
-<h2 class="section-title">Comprehensive <span style="color:#168de0">IT</span> Solutions<br>for Modern Businesses</h2>
+<div class="section-tag">Our Services</div>
+<h2 class="section-title">Comprehensive <span class="hl">IT</span> Solutions<br>for Modern Businesses</h2>
 </div>
 <div class="services-intro">
 <p class="section-desc">We deliver innovative, scalable and secure digital solutions tailored to your business needs.</p>
@@ -506,7 +136,7 @@ img[src*="logo"]{background:transparent!important}
 <p class="service-desc">HRMS, SiteTrack construction tracking and custom business apps we already build.</p>
 <ul>
 <li><i class="fa-solid fa-check"></i>Custom Web Applications</li>
-<li><i class="fa-solid fa-check"></i>HRMS & CRM Systems</li>
+<li><i class="fa-solid fa-check"></i>HRMS &amp; CRM Systems</li>
 <li><i class="fa-solid fa-check"></i>Business Management</li>
 <li><i class="fa-solid fa-check"></i>Admin Dashboards</li>
 <li><i class="fa-solid fa-check"></i>Third-Party API Integration</li>
@@ -515,7 +145,7 @@ img[src*="logo"]{background:transparent!important}
 </div>
 <div class="service-card reveal">
 <div class="service-icon"><i class="fa-solid fa-brain"></i></div>
-<h3>AI & Automation</h3>
+<h3>AI &amp; Automation</h3>
 <p class="service-desc">Smart AI tools and automations that save time and reduce costs.</p>
 <ul>
 <li><i class="fa-solid fa-check"></i>AI Chatbots</li>
@@ -532,10 +162,10 @@ img[src*="logo"]{background:transparent!important}
 <p class="service-desc">Beautiful, user-friendly interfaces designed around real users.</p>
 <ul>
 <li><i class="fa-solid fa-check"></i>Modern UI/UX Design</li>
-<li><i class="fa-solid fa-check"></i>Web & App Interfaces</li>
+<li><i class="fa-solid fa-check"></i>Web &amp; App Interfaces</li>
 <li><i class="fa-solid fa-check"></i>Dashboard Design</li>
 <li><i class="fa-solid fa-check"></i>Design Systems</li>
-<li><i class="fa-solid fa-check"></i>Prototyping & Wireframes</li>
+<li><i class="fa-solid fa-check"></i>Prototyping &amp; Wireframes</li>
 </ul>
 <a href="services.html#detail-design" class="learn">Learn More <i class="fa-solid fa-arrow-right"></i></a>
 </div>
@@ -547,13 +177,13 @@ img[src*="logo"]{background:transparent!important}
 <section class="section about" id="about">
 <div class="container about-grid">
 <div class="about-text reveal-left">
-<div class="section-tag">ABOUT VALTORIX</div>
+<div class="section-tag">About Valtorix</div>
 <h2 class="section-title">Building Tomorrow's<br>Digital Solutions</h2>
 <p class="section-desc">VALTORIX INFOTECH is a technology-driven company focused on building modern websites, web applications, custom software and AI-powered solutions. We help businesses transform their ideas into powerful digital experiences.</p>
 <div class="stats">
-<div class="stat"><i class="fa-solid fa-calendar-check"></i><div><strong>2022</strong><span>Founded in Hyderabad</span></div></div>
-<div class="stat"><i class="fa-solid fa-gears"></i><div><strong>4+</strong><span>Core IT Solutions</span></div></div>
-<div class="stat"><i class="fa-solid fa-headset"></i><div><strong>9-9</strong><span>Mon-Sat Support</span></div></div>
+<div class="stat reveal"><i class="fa-solid fa-calendar-check"></i><div><strong>2022</strong><span>Founded in Hyderabad</span></div></div>
+<div class="stat reveal"><i class="fa-solid fa-gears"></i><div><strong>4+</strong><span>Core IT Solutions</span></div></div>
+<div class="stat reveal"><i class="fa-solid fa-headset"></i><div><strong>9-9</strong><span>Mon-Sat Support</span></div></div>
 </div>
 <a href="about-us.html" class="btn btn-primary more-btn">More About Us <i class="fa-solid fa-arrow-right"></i></a>
 </div>
@@ -568,7 +198,7 @@ img[src*="logo"]{background:transparent!important}
 <div class="container">
 <div class="tech-top reveal">
 <div>
-<div class="section-tag">TECHNOLOGIES WE USE</div>
+<div class="section-tag">Technologies We Use</div>
 <h2 class="section-title">Modern Tools for Powerful Solutions</h2>
 </div>
 <p class="section-desc tech-desc">We work with the latest technologies to deliver fast, secure and scalable digital solutions.</p>
@@ -581,19 +211,6 @@ img[src*="logo"]{background:transparent!important}
 <div class="tech-item"><i class="fa-brands fa-js" style="color:#f0db4f"></i><span>JavaScript</span></div>
 <div class="tech-item"><i class="fa-brands fa-react" style="color:#61dafb"></i><span>React</span></div>
 <div class="tech-item"><i class="fa-brands fa-node-js" style="color:#68a063"></i><span>Node.js</span></div>
-<div class="tech-item"><i class="fa-brands fa-python" style="color:#3776ab"></i><span>Python</span></div>
-<div class="tech-item"><i class="fa-solid fa-database" style="color:#00758f"></i><span>MySQL</span></div>
-<div class="tech-item"><i class="fa-solid fa-leaf" style="color:#47a248"></i><span>MongoDB</span></div>
-<div class="tech-item"><i class="fa-brands fa-aws" style="color:#ff9900"></i><span>AWS</span></div>
-<div class="tech-item"><i class="fa-brands fa-figma" style="color:#f24e1e"></i><span>Figma</span></div>
-<div class="tech-item"><i class="fa-brands fa-github" style="color:#333"></i><span>GitHub</span></div>
-<div class="tech-item"><i class="fa-brands fa-php" style="color:#777bb4"></i><span>PHP</span></div>
-<div class="tech-item"><i class="fa-brands fa-html5" style="color:#e44d26"></i><span>HTML5</span></div>
-<div class="tech-item"><i class="fa-brands fa-css3-alt" style="color:#264de4"></i><span>CSS3</span></div>
-<div class="tech-item"><i class="fa-brands fa-js" style="color:#f0db4f"></i><span>JavaScript</span></div>
-<div class="tech-item"><i class="fa-brands fa-react" style="color:#61dafb"></i><span>React</span></div>
-<div class="tech-item"><i class="fa-brands fa-node-js" style="color:#68a063"></i><span>Node.js</span></div>
-<div class="tech-item"><i class="fa-brands fa-python" style="color:#3776ab"></i><span>Python</span></div>
 <div class="tech-item"><i class="fa-solid fa-database" style="color:#00758f"></i><span>MySQL</span></div>
 <div class="tech-item"><i class="fa-solid fa-leaf" style="color:#47a248"></i><span>MongoDB</span></div>
 <div class="tech-item"><i class="fa-brands fa-aws" style="color:#ff9900"></i><span>AWS</span></div>
@@ -609,7 +226,7 @@ img[src*="logo"]{background:transparent!important}
 <div class="container">
 <div class="industries-top reveal">
 <div>
-<div class="section-tag">INDUSTRIES WE SERVE</div>
+<div class="section-tag">Industries We Serve</div>
 <h2 class="section-title">Solutions for Every Industry</h2>
 </div>
 <p class="section-desc industries-desc">We build tailored digital solutions for diverse industries, helping businesses modernize and scale efficiently.</p>
@@ -622,7 +239,7 @@ img[src*="logo"]{background:transparent!important}
 </div>
 <div class="industry-card reveal">
 <div class="industry-icon"><i class="fa-solid fa-cart-shopping"></i></div>
-<h3>Retail & E-Commerce</h3>
+<h3>Retail &amp; E-Commerce</h3>
 <p>Online stores, inventory management and payment solutions.</p>
 </div>
 <div class="industry-card reveal">
@@ -632,7 +249,7 @@ img[src*="logo"]{background:transparent!important}
 </div>
 <div class="industry-card reveal">
 <div class="industry-icon"><i class="fa-solid fa-landmark"></i></div>
-<h3>Finance & Banking</h3>
+<h3>Finance &amp; Banking</h3>
 <p>Fintech apps, payment gateways and secure dashboards.</p>
 </div>
 <div class="industry-card reveal">
@@ -642,7 +259,7 @@ img[src*="logo"]{background:transparent!important}
 </div>
 <div class="industry-card reveal">
 <div class="industry-icon"><i class="fa-solid fa-utensils"></i></div>
-<h3>Food & Hospitality</h3>
+<h3>Food &amp; Hospitality</h3>
 <p>Ordering apps, restaurant management and delivery systems.</p>
 </div>
 </div>
@@ -654,7 +271,7 @@ img[src*="logo"]{background:transparent!important}
 <div class="container">
 <div class="projects-head reveal">
 <div>
-<div class="section-tag">OUR PROJECTS</div>
+<div class="section-tag">Our Projects</div>
 <h2 class="section-title">Featured Projects</h2>
 </div>
 <a href="projects.html" class="learn">View All Projects <i class="fa-solid fa-arrow-right"></i></a>
@@ -699,7 +316,7 @@ img[src*="logo"]{background:transparent!important}
 <!-- WHY CHOOSE -->
 <section class="why-valtorix">
 <div class="why-container">
-<div class="section-tag reveal">WHY CHOOSE VALTORIX</div>
+<div class="section-tag reveal">Why Choose Valtorix</div>
 <h2 class="section-title reveal">Your Success is Our Priority</h2>
 <div class="why-features">
 <div class="why-feature reveal">
@@ -731,7 +348,7 @@ img[src*="logo"]{background:transparent!important}
 <div class="container">
 <div class="process-top">
 <div class="reveal">
-<div class="section-tag">OUR PROCESS</div>
+<div class="section-tag">Our Process</div>
 <h2 class="section-title">From Idea to Impact</h2>
 </div>
 <a href="about-us.html#journey" class="btn btn-primary reveal">How We Work <i class="fa-solid fa-arrow-right"></i></a>
@@ -739,9 +356,9 @@ img[src*="logo"]{background:transparent!important}
 <div class="process-steps">
 <div class="process-step reveal"><div class="step-number">01</div><h3>Understand<br>Requirements</h3></div>
 <div class="process-step reveal"><div class="step-number">02</div><h3>Plan<br>Strategy</h3></div>
-<div class="process-step reveal"><div class="step-number">03</div><h3>Design &<br>Develop</h3></div>
-<div class="process-step reveal"><div class="step-number">04</div><h3>Test &<br>Deploy</h3></div>
-<div class="process-step reveal"><div class="step-number">05</div><h3>Deliver &<br>Support</h3></div>
+<div class="process-step reveal"><div class="step-number">03</div><h3>Design &amp;<br>Develop</h3></div>
+<div class="process-step reveal"><div class="step-number">04</div><h3>Test &amp;<br>Deploy</h3></div>
+<div class="process-step reveal"><div class="step-number">05</div><h3>Deliver &amp;<br>Support</h3></div>
 </div>
 </div>
 </section>
@@ -750,7 +367,7 @@ img[src*="logo"]{background:transparent!important}
 <section class="section testimonials">
 <div class="container testimonial-wrap">
 <div class="reveal-left">
-<div class="section-tag">TESTIMONIALS</div>
+<div class="section-tag">Testimonials</div>
 <h2 class="section-title">Early Client Words</h2>
 <p class="section-desc" style="margin-top:12px">As a startup since 2022, we share honest words from our early work. More reviews coming soon.</p>
 <div class="testimonial-nav">
@@ -761,11 +378,8 @@ img[src*="logo"]{background:transparent!important}
 <div class="testimonial-slider">
 <div class="testimonial-track">
 <div class="testimonial-card"><div class="client"><div class="client-avatar">VC</div><div><p>"VALTORIX built our Vayomi clothing store with clear catalog and easy enquiry. Good support throughout."</p><strong>Vayomi Clothing</strong><span>Clothing Store, Hyderabad</span></div></div></div>
-<div class="testimonial-card"><div class="client"><div class="client-avatar ab">HR</div><div><p>"Our HRMS work with VALTORIX helped us organise employee data, attendance and payroll in one place."</p><strong>HRMS Client</strong><span>Hyderabad Business</span></div></div></div>
-<div class="testimonial-card"><div class="client"><div class="client-avatar bc">ST</div><div><p>"SiteTrack helped our team follow construction stages and daily site updates more clearly."</p><strong>SiteTrack Client</strong><span>Construction Team</span></div></div></div>
-<div class="testimonial-card"><div class="client"><div class="client-avatar">VC</div><div><p>"VALTORIX built our Vayomi clothing store with clear catalog and easy enquiry. Good support throughout."</p><strong>Vayomi Clothing</strong><span>Clothing Store, Hyderabad</span></div></div></div>
-<div class="testimonial-card"><div class="client"><div class="client-avatar ab">HR</div><div><p>"Our HRMS work with VALTORIX helped us organise employee data, attendance and payroll in one place."</p><strong>HRMS Client</strong><span>Hyderabad Business</span></div></div></div>
-<div class="testimonial-card"><div class="client"><div class="client-avatar bc">ST</div><div><p>"SiteTrack helped our team follow construction stages and daily site updates more clearly."</p><strong>SiteTrack Client</strong><span>Construction Team</span></div></div></div>
+<div class="testimonial-card"><div class="client"><div class="client-avatar">HR</div><div><p>"Our HRMS work with VALTORIX helped us organise employee data, attendance and payroll in one place."</p><strong>HRMS Client</strong><span>Hyderabad Business</span></div></div></div>
+<div class="testimonial-card"><div class="client"><div class="client-avatar">ST</div><div><p>"SiteTrack helped our team follow construction stages and daily site updates more clearly."</p><strong>SiteTrack Client</strong><span>Construction Team</span></div></div></div>
 </div>
 </div>
 </div>
@@ -775,7 +389,7 @@ img[src*="logo"]{background:transparent!important}
 <section class="section faq">
 <div class="container faq-grid">
 <div class="faq-left reveal-left">
-<div class="section-tag">FREQUENTLY ASKED</div>
+<div class="section-tag">Frequently Asked</div>
 <h2 class="section-title">Common Questions<br>Answered</h2>
 <p class="section-desc" style="margin-top:12px;margin-bottom:24px">Have a question? We're here to help.</p>
 <a href="contact.html" class="btn btn-primary">Contact Us <i class="fa-solid fa-arrow-right"></i></a>
@@ -783,7 +397,7 @@ img[src*="logo"]{background:transparent!important}
 <div class="faq-right">
 <div class="faq-item reveal">
 <button class="faq-question">What services does VALTORIX INFOTECH offer?<i class="fa-solid fa-plus"></i></button>
-<div class="faq-answer"><div class="faq-answer-inner"><p>We offer web development, software solutions, AI & automation, UI/UX design and custom business applications tailored to your needs.</p></div></div>
+<div class="faq-answer"><div class="faq-answer-inner"><p>We offer web development, software solutions, AI &amp; automation, UI/UX design and custom business applications tailored to your needs.</p></div></div>
 </div>
 <div class="faq-item reveal">
 <button class="faq-question">How long does it take to complete a project?<i class="fa-solid fa-plus"></i></button>
@@ -818,7 +432,7 @@ img[src*="logo"]{background:transparent!important}
 <div class="container">
 <div class="cta-box reveal">
 <div>
-<div class="section-tag">LET'S WORK TOGETHER</div>
+<div class="section-tag">Let's Work Together</div>
 <h2>Ready to Build<br>Something Amazing?</h2>
 <p>Share your idea with us and let's turn it into a powerful digital solution.</p>
 </div>
@@ -835,18 +449,18 @@ img[src*="logo"]{background:transparent!important}
 <img src="images/logo-white.png" class="footer-logo" alt="VALTORIX INFOTECH">
 <p>Innovative technology solutions for a brighter tomorrow. We build modern digital products that help businesses grow and succeed in the digital world.</p>
 <div class="socials">
-<a href="#"><i class="fa-brands fa-linkedin-in"></i></a>
-<a href="#"><i class="fa-brands fa-facebook-f"></i></a>
-<a href="#"><i class="fa-brands fa-instagram"></i></a>
-<a href="#"><i class="fa-brands fa-youtube"></i></a>
+<a href="#" aria-label="LinkedIn"><i class="fa-brands fa-linkedin-in"></i></a>
+<a href="#" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
+<a href="#" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
+<a href="#" aria-label="YouTube"><i class="fa-brands fa-youtube"></i></a>
 </div>
 </div>
 <div>
 <h4>Quick Links</h4>
 <ul>
 <li><a href="index.html">Home</a></li>
-<li><a href="services.html">Services</a></li>
 <li><a href="about-us.html">About Us</a></li>
+<li><a href="services.html">Services</a></li>
 <li><a href="projects.html">Projects</a></li>
 <li><a href="contact.html">Contact</a></li>
 </ul>
@@ -856,7 +470,7 @@ img[src*="logo"]{background:transparent!important}
 <ul>
 <li><a href="services.html#detail-web">Web Development</a></li>
 <li><a href="services.html#detail-software">Software Solutions</a></li>
-<li><a href="services.html#detail-ai">AI & Automation</a></li>
+<li><a href="services.html#detail-ai">AI &amp; Automation</a></li>
 <li><a href="services.html#detail-design">UI/UX Design</a></li>
 </ul>
 </div>
@@ -882,6 +496,7 @@ img[src*="logo"]{background:transparent!important}
 </div>
 </div>
 </footer>
+</main>
 
 <script>
 if('scrollRestoration' in history){history.scrollRestoration='manual'}
