@@ -308,6 +308,7 @@
   function setErr(el, msg) {
     if (!el) return;
     el.style.borderColor = "#d9534f";
+    el.setAttribute("aria-invalid", "true");
     var box = fieldBox(el);
     if (box) {
       box.classList.add("invalid");
@@ -315,19 +316,33 @@
       if (!m) {
         m = document.createElement("div");
         m.className = "field-err";
+        m.id = (el.id ? el.id : "field") + "-error";
         box.appendChild(m);
       }
       m.textContent = msg;
+      /* point the control at its message so a screen reader announces it */
+      var ids = (el.getAttribute("aria-describedby") || "").split(/\s+/).filter(Boolean);
+      if (ids.indexOf(m.id) === -1) {
+        ids.push(m.id);
+        el.setAttribute("aria-describedby", ids.join(" "));
+      }
     }
   }
   function clearErr(el) {
     if (!el) return;
     el.style.borderColor = "";
+    el.removeAttribute("aria-invalid");
     var box = fieldBox(el);
     if (box) {
       box.classList.remove("invalid");
       var m = box.querySelector(".field-err");
-      if (m) m.remove();
+      if (m) {
+        var ids = (el.getAttribute("aria-describedby") || "").split(/\s+/).filter(Boolean);
+        ids = ids.filter(function (id) { return id !== m.id; });
+        if (ids.length) el.setAttribute("aria-describedby", ids.join(" "));
+        else el.removeAttribute("aria-describedby");
+        m.remove();
+      }
     }
   }
   function liveClear(el) {
@@ -919,6 +934,34 @@
       });
     });
     paint();
+  }
+
+  /* ---------- 9b. Deferred map ------------------------------------------
+     The Google Maps embed is ~200 KB of third-party JavaScript. It is only
+     loaded once the map is about to be seen. */
+  var lazyMaps = document.querySelectorAll("iframe[data-map-src]");
+  if (lazyMaps.length) {
+    function loadMap(frame) {
+      if (frame.dataset.mapLoaded) return;
+      frame.dataset.mapLoaded = "1";
+      frame.src = frame.getAttribute("data-map-src");
+    }
+    if (window.IntersectionObserver) {
+      var mapObserver = new IntersectionObserver(
+        function (entries) {
+          entries.forEach(function (e) {
+            if (e.isIntersecting) {
+              loadMap(e.target);
+              mapObserver.unobserve(e.target);
+            }
+          });
+        },
+        { rootMargin: "400px 0px" }
+      );
+      lazyMaps.forEach(function (f) { mapObserver.observe(f); });
+    } else {
+      lazyMaps.forEach(loadMap);
+    }
   }
 
   /* ---------- 10. Character counters ---------- */

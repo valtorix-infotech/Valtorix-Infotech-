@@ -93,11 +93,10 @@ html {
   scroll-behavior: smooth;
   scroll-padding-top: calc(var(--nav-h) + 24px);
   -webkit-text-size-adjust: 100%;
-  /* `clip` (not `hidden`) contains the entrance transforms without turning
-     the viewport into a scroll container, so sticky positioning and scroll
-     anchoring keep working. */
-  overflow-x: hidden;
-  overflow-x: clip;
+  /* NB: no overflow clipping here. A non-visible overflow on the root makes
+     the root the containing block for fixed-position descendants, which
+     resizes the header and the 3D canvas to the body's scroll width instead
+     of the viewport. The guard lives on <body> instead. */
   /* the page background lives on the root so the fixed 3D canvas can sit
      between the background and the content */
   background: var(--paper);
@@ -110,6 +109,10 @@ body {
   line-height: 1.65;
   color: var(--fg);
   background: transparent;
+  /* horizontal-scroll guard: this propagates to the viewport, so the page can
+     never be scrolled sideways while fixed elements stay sized to the
+     viewport */
+  overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   overflow-wrap: break-word;
@@ -185,6 +188,24 @@ hr {
   margin-inline: auto;
 }
 
+/* Grid and flex children default to `min-width: auto`, which stops a track
+   from shrinking below its content's min-content width and pushes the layout
+   past the viewport. Let every track shrink. */
+.split > *,
+.grid > *,
+.work-grid > *,
+.form-layout > *,
+.faq-grid > *,
+.footer-grid > *,
+.stats > *,
+.process-steps > *,
+.progress > *,
+.feature-row > *,
+.option-grid > *,
+.chips > * {
+  min-width: 0;
+}
+
 .section {
   padding-block: var(--section-y);
 }
@@ -255,9 +276,9 @@ hr {
   align-items: center;
   gap: 10px;
   font-family: var(--font-mark);
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 700;
-  letter-spacing: 0.2em;
+  letter-spacing: 0.16em;
   text-transform: uppercase;
   color: var(--fg-muted);
   margin-bottom: var(--sp-4);
@@ -545,7 +566,8 @@ hr {
 
 .logo-word span {
   font-family: var(--font-mark);
-  font-size: 8.5px;
+  /* brand lockup: intentionally smaller than the 12px body-text floor */
+  font-size: 9px;
   font-weight: 600;
   letter-spacing: 0.42em;
   color: var(--fg-muted);
@@ -964,6 +986,11 @@ main,
   margin-bottom: var(--sp-5);
 }
 
+.breadcrumb a {
+  display: inline-block;
+  padding-block: 4px;
+}
+
 .breadcrumb a:hover {
   color: var(--accent);
 }
@@ -1319,7 +1346,7 @@ main,
 }
 
 .tag {
-  font-size: 11.5px;
+  font-size: 12px;
   font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -1691,7 +1718,7 @@ main,
 
 .footer h3 {
   font-family: var(--font-mark);
-  font-size: 11.5px;
+  font-size: 12px;
   font-weight: 700;
   letter-spacing: 0.18em;
   text-transform: uppercase;
@@ -1709,7 +1736,14 @@ main,
 
 .footer ul {
   display: grid;
-  gap: 11px;
+  gap: 4px;
+}
+
+/* WCAG 2.5.8 target size: every link is at least 24x24 CSS px */
+.footer ul a,
+.footer .contact-item a {
+  display: inline-block;
+  padding-block: 5px;
 }
 
 .footer a {
@@ -1742,6 +1776,11 @@ main,
   flex: none;
 }
 
+.contact-item a {
+  padding-block: 3px;
+  display: inline-block;
+}
+
 .phone-pair {
   display: flex;
   flex-direction: column;
@@ -1758,8 +1797,8 @@ main,
 }
 
 .socials a {
-  width: 38px;
-  height: 38px;
+  width: 44px;
+  height: 44px;
   border: 1px solid var(--line-dark-2);
   border-radius: var(--r-sm);
   display: flex;
@@ -1789,7 +1828,13 @@ main,
 
 .footer-bottom .links {
   display: flex;
-  gap: var(--sp-5);
+  flex-wrap: wrap;
+  gap: var(--sp-2) var(--sp-5);
+}
+
+.footer-bottom .links a {
+  display: inline-block;
+  padding-block: 5px;
 }
 
 /* ---------- 22. Forms ---------- */
@@ -1844,7 +1889,8 @@ main,
   border-radius: var(--r-sm);
   background: var(--paper);
   padding: 13px 14px;
-  font-size: 15px;
+  /* 16px minimum: iOS zooms the page when a focused field is smaller */
+  font-size: 16px;
   color: var(--fg);
   transition: border-color var(--t-fast), box-shadow var(--t-fast);
 }
@@ -1946,7 +1992,7 @@ main,
 
 .option small,
 .choice small {
-  font-size: 11.5px;
+  font-size: 12px;
   font-weight: 600;
   color: var(--fg-dim);
 }
@@ -2062,6 +2108,8 @@ main,
   letter-spacing: 0.06em;
   text-transform: uppercase;
   color: var(--fg-dim);
+  min-width: 0;
+  overflow-wrap: break-word;
 }
 
 .progress-step.active span {
@@ -2078,7 +2126,7 @@ main,
 
 .step-kicker {
   font-family: var(--font-mark);
-  font-size: 11.5px;
+  font-size: 12px;
   font-weight: 700;
   letter-spacing: 0.16em;
   text-transform: uppercase;
@@ -2105,7 +2153,7 @@ main,
   align-items: center;
   justify-content: space-between;
   gap: var(--sp-4);
-  font-size: 11.5px;
+  font-size: 12px;
   font-weight: 700;
   letter-spacing: 0.14em;
   text-transform: uppercase;
@@ -2115,7 +2163,7 @@ main,
 
 .review-head h3 {
   font-family: var(--font-mark);
-  font-size: 11.5px;
+  font-size: 12px;
   font-weight: 700;
   letter-spacing: 0.14em;
   text-transform: uppercase;
@@ -2373,6 +2421,15 @@ main,
   transform: none;
 }
 
+/* On narrow screens a horizontal slide pushes the block past the viewport
+   edge, so the entrance becomes a vertical rise instead. */
+@media (max-width: 720px) {
+  .reveal-left,
+  .reveal-right {
+    transform: translateY(18px);
+  }
+}
+
 /* ---------- 25. Toast ---------- */
 .v-toast {
   position: fixed;
@@ -2498,6 +2555,9 @@ main,
     padding: 14px 0;
     border-bottom: 1px solid var(--line);
     font-size: 16px;
+    min-height: 44px;
+    display: flex;
+    align-items: center;
   }
 
   .nav-links a::after {

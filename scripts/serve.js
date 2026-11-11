@@ -48,13 +48,14 @@ const server = http.createServer((req, res) => {
         if (e2) {
           res.writeHead(404, { 'Content-Type': 'text/plain' }).end('Not found');
         } else {
-          res.writeHead(404, { 'Content-Type': TYPES['.html'] }).end(nf);
+          res.writeHead(404, { 'Content-Type': TYPES['.html'], 'Content-Length': nf.length }).end(nf);
         }
       });
       return;
     }
     res.writeHead(200, {
       'Content-Type': TYPES[path.extname(file).toLowerCase()] || 'application/octet-stream',
+      'Content-Length': buf.length,
       'Cache-Control': 'no-cache'
     });
     res.end(buf);
