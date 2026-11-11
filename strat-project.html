@@ -30,11 +30,12 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Oxanium:wght@600;700&family=Sora:wght@400;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
-<link rel="stylesheet" href="styles.css?v=13">
+<link rel="stylesheet" href="styles.css?v=14">
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Is submitting the request free?","acceptedAnswer":{"@type":"Answer","text":"Yes. The project request is for discussion only and creates no purchase commitment."}},{"@type":"Question","name":"Can I change my requirements later?","acceptedAnswer":{"@type":"Answer","text":"Yes. Requirements are refined with our team before the final proposal and scope are agreed."}},{"@type":"Question","name":"How quickly will I hear back?","acceptedAnswer":{"@type":"Answer","text":"Usually within 24 hours on business days."}}]}</script>
 </head>
 <body>
 <a href="#main-content" class="skip-link">Skip to main content</a>
+<canvas class="site-stage" data-stage-root aria-hidden="true"></canvas>
 
 <nav id="navbar">
   <div class="nav-wrap">
@@ -58,7 +59,7 @@
 
 <main id="main-content">
 
-  <header class="page-hero">
+  <header class="page-hero" data-stage="hero">
     <div class="container">
       <nav class="breadcrumb" aria-label="Breadcrumb"><a href="index.html">Home</a><span class="sep">/</span><span>Start a project</span></nav>
       <div class="eyebrow"><span class="dot"></span> Start a project</div>
@@ -71,12 +72,6 @@
         <div><strong>No lock-in</strong><span>Decide after the proposal</span></div>
       </div>
     </div>
-    <div class="page-hero-art">
-    <div class="hero-frame hero-frame--sm">
-      <img class="hero-poster" src="images/brand/valtorix-mark.svg" alt="" width="200" height="165">
-      <canvas class="hero-canvas" data-hero3d='{"distance":4.05}' aria-hidden="true"></canvas>
-    </div>
-  </div>
 </header>
 
   <!-- FORM -->
@@ -385,7 +380,7 @@
   </section>
 
   <!-- WHAT WE BUILD -->
-  <section class="section">
+  <section class="section stage-section" data-stage="work">
     <div class="container">
       <div class="split-head reveal">
         <div>
@@ -494,9 +489,9 @@
   </div>
 </footer>
 
-<script src="hero3d-geometry.js?v=3" defer></script>
-<script src="hero3d.js?v=5" defer></script>
-<script src="hero3d-init.js?v=3" defer></script>
+<script src="stage3d-geometry.js?v=2" defer></script>
+<script src="stage3d.js?v=6" defer></script>
+<script src="stage3d-init.js?v=1" defer></script>
 <script src="app.js?v=14" defer></script>
 </body>
 </html>

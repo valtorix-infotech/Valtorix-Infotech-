@@ -98,6 +98,9 @@ html {
      anchoring keep working. */
   overflow-x: hidden;
   overflow-x: clip;
+  /* the page background lives on the root so the fixed 3D canvas can sit
+     between the background and the content */
+  background: var(--paper);
 }
 
 body {
@@ -106,7 +109,7 @@ body {
   font-size: 16px;
   line-height: 1.65;
   color: var(--fg);
-  background: var(--paper);
+  background: transparent;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   overflow-wrap: break-word;
@@ -756,11 +759,101 @@ hr {
   will-change: auto;
 }
 
-/* Hero visual: the brand mark, framed */
-.hero-visual {
+/* ==========================================================================
+   3D STAGE
+   --------------------------------------------------------------------------
+   One persistent WebGL canvas fixed behind the whole page. The page scrolls
+   normally; the canvas does not move, so there is never any drift between
+   the DOM and the scene. Scroll position drives the camera through the world.
+
+   Layers:
+     html          the page background
+     .site-stage   the 3D world (fixed, z-index 0)
+     main / footer the content (z-index 1)
+   ========================================================================== */
+.site-stage {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0;
+  display: block;
+}
+
+main,
+.footer {
+  position: relative;
+  z-index: 1;
+}
+
+/* Sections the world is allowed to show through. The content inside stays on
+   solid cards, so text contrast is untouched. */
+.stage-section {
+  background: rgba(247, 247, 245, 0.5);
+}
+
+.stage-section.section--tint {
+  background: rgba(247, 247, 245, 0.5);
+}
+
+.stage-section.section--ink {
+  background: rgba(10, 10, 10, 0.9);
+}
+
+.stage-section.cta-band {
+  background: rgba(10, 10, 10, 0.9);
+}
+
+/* The hero stays clear so the object is fully visible */
+.hero {
+  background: transparent;
+}
+
+/* Page heroes on inner pages carry the same stage */
+.page-hero[data-stage] {
+  background: transparent;
+}
+
+/* Soft scrim behind the hero copy so the world never fights the text */
+.hero-text {
   position: relative;
 }
 
+.hero-text::before {
+  content: "";
+  position: absolute;
+  inset: -40% -55% -50% -45%;
+  background: radial-gradient(
+    ellipse 52% 52% at 42% 46%,
+    rgba(255, 255, 255, 0.96) 0%,
+    rgba(255, 255, 255, 0.9) 34%,
+    rgba(255, 255, 255, 0.55) 60%,
+    rgba(255, 255, 255, 0) 80%
+  );
+  z-index: -1;
+  pointer-events: none;
+}
+
+/* The space where the 3D object lives, and the chips that label it */
+.hero-aside {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-end;
+  gap: 10px;
+  padding-top: 18px;
+  min-height: 240px;
+}
+
+.hero-aside .hero-chip {
+  position: static;
+  box-shadow: var(--sh-sm);
+}
+
+/* The framed mark panel is only used where there is no 3D canvas */
 .hero-frame {
   position: relative;
   border: 1px solid var(--line);
@@ -782,29 +875,8 @@ hr {
   pointer-events: none;
 }
 
-/* The static poster is the fallback for reduced motion / no WebGL. It must be
-   visible from the first paint, before any script runs. */
-.hero-poster {
-  width: min(78%, 320px);
-  filter: drop-shadow(0 16px 30px rgba(10, 10, 10, 0.18));
-  transition: opacity 0.55s var(--ease);
-}
 
-/* The WebGL canvas is layered over the poster and fades in once it is ready.
-   Its box is reserved by CSS, so nothing shifts when it appears. */
-.hero-canvas {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  opacity: 0;
-  pointer-events: none;
-  z-index: 1;
-}
 
-.hero-frame.is-3d .hero-poster {
-  opacity: 0;
-}
 
 /* Inner-page hero: the same brand object, smaller. Positioned absolutely so
    the hero copy keeps its single-column flow.
@@ -822,15 +894,7 @@ hr {
   z-index: 1;
 }
 
-.hero-frame--sm {
-  padding: clamp(22px, 3vw, 34px);
-  border-radius: var(--r-lg);
-}
 
-.hero-frame--sm .hero-poster {
-  width: min(74%, 200px);
-  filter: drop-shadow(0 12px 22px rgba(10, 10, 10, 0.16));
-}
 
 
 .hero-chip {

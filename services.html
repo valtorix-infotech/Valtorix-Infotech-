@@ -30,11 +30,12 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Oxanium:wght@600;700&family=Sora:wght@400;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
-<link rel="stylesheet" href="styles.css?v=13">
+<link rel="stylesheet" href="styles.css?v=14">
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"ItemList","name":"VALTORIX INFOTECH services","itemListElement":[{"@type":"ListItem","position":1,"item":{"@type":"Service","name":"Web Development","serviceType":"Business websites and e-commerce","description":"Responsive, fast-loading business websites, corporate sites, e-commerce storefronts and landing pages.","provider":{"@type":"ProfessionalService","name":"VALTORIX INFOTECH"}}},{"@type":"ListItem","position":2,"item":{"@type":"Service","name":"Software & Web Applications","serviceType":"Custom business software","description":"HRMS, dashboards, portals and internal tools with role-based access, reporting and third-party integrations.","provider":{"@type":"ProfessionalService","name":"VALTORIX INFOTECH"}}},{"@type":"ListItem","position":3,"item":{"@type":"Service","name":"AI & Automation","serviceType":"AI and workflow automation","description":"AI assistants, document processing, workflow automation and reporting models that remove repetitive manual work.","provider":{"@type":"ProfessionalService","name":"VALTORIX INFOTECH"}}},{"@type":"ListItem","position":4,"item":{"@type":"Service","name":"UI/UX & Design","serviceType":"Product design","description":"Wireframes, prototypes, design systems and product interfaces built around real user journeys.","provider":{"@type":"ProfessionalService","name":"VALTORIX INFOTECH"}}}]}</script>
 </head>
 <body>
 <a href="#main-content" class="skip-link">Skip to main content</a>
+<canvas class="site-stage" data-stage-root aria-hidden="true"></canvas>
 
 <nav id="navbar">
   <div class="nav-wrap">
@@ -58,7 +59,7 @@
 
 <main id="main-content">
 
-  <header class="page-hero">
+  <header class="page-hero" data-stage="hero">
     <div class="container">
       <nav class="breadcrumb" aria-label="Breadcrumb"><a href="index.html">Home</a><span class="sep">/</span><span>Services</span></nav>
       <div class="eyebrow"><span class="dot"></span> Services</div>
@@ -71,16 +72,10 @@
         <div><strong>In-house</strong><span>Design, build and support</span></div>
       </div>
     </div>
-    <div class="page-hero-art">
-    <div class="hero-frame hero-frame--sm">
-      <img class="hero-poster" src="images/brand/valtorix-mark.svg" alt="" width="200" height="165">
-      <canvas class="hero-canvas" data-hero3d='{"distance":4.05}' aria-hidden="true"></canvas>
-    </div>
-  </div>
 </header>
 
   <!-- OVERVIEW -->
-  <section class="section">
+  <section class="section stage-section">
     <div class="container">
       <div class="split-head reveal">
         <div>
@@ -323,7 +318,7 @@
 
 </main>
 
-<section class="cta-band">
+<section class="cta-band stage-section" data-stage="cta">
   <div class="container cta-band-inner">
     <div>
       <h2>Not sure which service you need?</h2>
@@ -389,9 +384,9 @@
   </div>
 </footer>
 
-<script src="hero3d-geometry.js?v=3" defer></script>
-<script src="hero3d.js?v=5" defer></script>
-<script src="hero3d-init.js?v=3" defer></script>
+<script src="stage3d-geometry.js?v=2" defer></script>
+<script src="stage3d.js?v=6" defer></script>
+<script src="stage3d-init.js?v=1" defer></script>
 <script src="app.js?v=14" defer></script>
 </body>
 </html>
