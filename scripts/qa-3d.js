@@ -54,7 +54,7 @@ function check(name, ok, detail) {
   // Prove pixels were actually drawn by analysing the rendered pixels of the
   // hero frame (readPixels after compositing returns an empty buffer).
   const frameShot = await page.locator('.hero-frame').screenshot({ path: path.join(OUT, 'hero-desktop.png') });
-  const lit = require('./_pixels.js').countDistinct(frameShot);
+  const lit = require('./qa-pixels.js').countDistinct(frameShot);
   check('3d: pixels actually rendered', lit > 2000, `${lit} non-background pixels`);
   check('3d: canvas faded in over the poster', st.is3d && st.canvasOpacity === '1' && st.posterOpacity === '0',
     `canvas=${st.canvasOpacity} poster=${st.posterOpacity}`);
@@ -84,7 +84,7 @@ function check(name, ok, detail) {
     return c ? { found: true, is3d: c.parentElement.classList.contains('is-3d') } : { found: false };
   });
   const innerShot = await page.locator('.page-hero-art').screenshot({ path: path.join(OUT, 'inner-hero.png') });
-  const innerLit = require('./_pixels.js').countDistinct(innerShot);
+  const innerLit = require('./qa-pixels.js').countDistinct(innerShot);
   check('3d: inner page hero renders', innerState.found && innerState.is3d && innerLit > 1500,
     innerState.found ? `is3d=${innerState.is3d} lit=${innerLit}` : 'canvas missing');
 
