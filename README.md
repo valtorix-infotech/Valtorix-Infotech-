@@ -44,8 +44,22 @@ stage3d-geometry.js   Generated buffers (mark, slabs, grid, motes)
 stage3d-init.js       Lazy bootstrap and the fallbacks
 
 images/brand/         The traced logo asset set
-scripts/              Generators and the test suites
+scripts/
+├── lint.js           The project lint gate
+├── qa/_lib.js        Shared browser launch + reporting
+├── build_brand.py    Traced logo -> the asset set
+├── build_stage3d.py  Traced logo -> the 3D buffers
+└── ...               the generators and the test suites
 ```
+
+### Conventions
+
+- **No inline styles.** Every visual value lives in `styles.css`; the markup carries intent
+  (`mt-md`, `card--ink`) rather than presentation.
+- **ES6 only.** `const` / `let` throughout, no `var`.
+- **One canvas per page.** The 3D stage is a single fixed WebGL context behind the content.
+- **The lint is the gate.** `npm run lint` fails on duplicate ids, missing labels, dead CSS,
+  trailing commas in selectors, loose equality and `var`.
 
 ---
 
@@ -111,7 +125,8 @@ Re-run `extract_brand.py` only if the master artwork changes (it needs the sourc
 ## Testing
 
 ```bash
-npm run qa                 # everything below
+npm run qa                 # lint + every suite below
+npm run lint               # the project lint gate
 npm run qa:site            # links, 404, content, forms, keyboard, Core Web Vitals, SEO data
 npm run qa:responsive       # 25 viewports, reflow, 400% zoom, JavaScript disabled, tap targets
 npm run qa:3d              # the 3D stage: chapters, camera, fallbacks, layout
