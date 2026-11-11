@@ -215,7 +215,12 @@
   document.querySelectorAll(".marquee-track").forEach(function (track) {
     if (track.children.length && !track.dataset.doubled) {
       track.dataset.doubled = "1";
-      track.innerHTML += track.innerHTML;
+      /* the loop needs the content twice, but only the first copy is for
+         people - a screen reader would otherwise announce every item twice */
+      var clone = track.cloneNode(true);
+      clone.setAttribute("aria-hidden", "true");
+      clone.removeAttribute("data-doubled");
+      track.parentNode.appendChild(clone);
     }
   });
 
@@ -938,14 +943,28 @@
 
   /* ---------- 9b. Deferred map ------------------------------------------
      The Google Maps embed is ~200 KB of third-party JavaScript. It is only
-     loaded once the map is about to be seen. */
+     loaded once the map is about to be seen, and a styled placeholder holds
+     the space until it arrives. */
   var lazyMaps = document.querySelectorAll("iframe[data-map-src]");
   if (lazyMaps.length) {
     function loadMap(frame) {
       if (frame.dataset.mapLoaded) return;
       frame.dataset.mapLoaded = "1";
+      frame.addEventListener("load", function () {
+        var card = frame.closest(".map-card");
+        if (card) card.classList.add("is-loaded");
+      });
       frame.src = frame.getAttribute("data-map-src");
     }
+    function wireMap(frame) {
+      var btn = frame.parentNode && frame.parentNode.querySelector("[data-map-load]");
+      if (btn) {
+        btn.addEventListener("click", function () {
+          loadMap(frame);
+        });
+      }
+    }
+    lazyMaps.forEach(wireMap);
     if (window.IntersectionObserver) {
       var mapObserver = new IntersectionObserver(
         function (entries) {

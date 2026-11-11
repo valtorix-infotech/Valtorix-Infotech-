@@ -882,18 +882,95 @@ main,
 /* The space where the 3D object lives, and the chips that label it */
 .hero-aside {
   position: relative;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  align-items: flex-end;
-  gap: 10px;
-  padding-top: 18px;
   min-height: 240px;
 }
 
-.hero-aside .hero-chip {
-  position: static;
-  box-shadow: var(--sh-sm);
+/* Trust row under the hero buttons */
+.hero-trust {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 26px;
+  margin-top: var(--sp-5);
+  list-style: none;
+  padding: 0;
+}
+
+.hero-trust li {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--fg-muted);
+}
+
+.hero-trust i {
+  color: var(--accent);
+  font-size: 12px;
+}
+
+/* The map loads from Google, which is ~200 KB of third-party JavaScript.
+   Until it is ready the placeholder holds the space, so the page never shows
+   an empty white box. */
+.map-card {
+  position: relative;
+  overflow: hidden;
+  min-height: 340px;
+}
+
+.map-placeholder {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: var(--sp-6);
+  text-align: center;
+  background: linear-gradient(160deg, var(--paper-2), var(--paper-3));
+}
+
+.map-placeholder > i {
+  font-size: 26px;
+  color: var(--accent);
+}
+
+.map-placeholder strong {
+  font-family: var(--font-display);
+  font-size: 18px;
+}
+
+.map-placeholder span {
+  font-size: 14px;
+  color: var(--fg-muted);
+  max-width: 34ch;
+}
+
+.map-placeholder .btn {
+  margin-top: 6px;
+}
+
+.map-frame {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  min-height: 340px;
+  border: 0;
+  display: block;
+  opacity: 0;
+  transition: opacity 0.4s var(--ease);
+}
+
+.map-card.is-loaded .map-frame {
+  opacity: 1;
+}
+
+.map-card.is-loaded .map-placeholder {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s var(--ease);
 }
 
 /* The framed mark panel is only used where there is no 3D canvas */

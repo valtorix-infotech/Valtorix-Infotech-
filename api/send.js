@@ -118,7 +118,7 @@ function ownerHtml(subject, fields) {
     ';color:' + PAPER + ';text-decoration:none;padding:11px 20px;border-radius:8px;font-weight:bold;font-size:13px;">Open website</a></div>' +
     '</div>' +
     '<div style="text-align:center;font-size:12px;color:' + MUTED + ';padding:14px;">' +
-    'Sent from the VALTORIX website &bull; Mon&ndash;Sat 9AM&ndash;9PM (Sunday closed)</div></div>'
+    'Sent from the VALTORIX website &bull; Mon&ndash;Sat, 9 AM &ndash; 9 PM (Sun closed)</div></div>'
   );
 }
 
@@ -145,7 +145,7 @@ function replyHtml(name, subject) {
     '<p style="font-size:14px;color:' + TEXT + ';">Need it urgent? Reply to this mail or chat now:<br>' +
     '<a href="' + WA + '" style="display:inline-block;margin-top:10px;background:' + INK + ';color:' + PAPER +
     ';text-decoration:none;padding:11px 22px;border-radius:8px;font-weight:bold;">Chat on WhatsApp</a></p>' +
-    '<p style="font-size:12px;color:' + MUTED + ';margin-top:16px;">Mon&ndash;Sat 9:00 AM&ndash;9:00 PM (Sunday closed) &middot; ' +
+    '<p style="font-size:12px;color:' + MUTED + ';margin-top:16px;">Mon&ndash;Sat, 9 AM &ndash; 9 PM (Sun closed) &middot; ' +
     PHONE + ' &middot; ' + SITE + '</p></div></div>'
   );
 }
@@ -159,7 +159,7 @@ function replyText(name) {
     '2. We call / WhatsApp you to discuss the best approach.\n' +
     '3. You get a written plan with timeline and cost.\n\n' +
     'Urgent? WhatsApp us: ' + WA + '\n\n' +
-    'Mon-Sat 9AM-9PM (Sunday closed) | ' + PHONE + '\n' +
+    'Mon-Sat, 9 AM - 9 PM (Sun closed) | ' + PHONE + '\n' +
     '— Team VALTORIX INFOTECH, Hyderabad\n' +
     SITE
   );
