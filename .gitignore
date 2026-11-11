@@ -1,1 +1,13 @@
 .vercel
+node_modules
+.env
+.env.local
+.DS_Store
+
+# QA artefacts (local only)
+scripts/shots/
+scripts/qa-report.json
+scripts/_*.jpg
+scripts/_*.py
+scripts/_sheet*.py
+scripts/_sheet*.jpg

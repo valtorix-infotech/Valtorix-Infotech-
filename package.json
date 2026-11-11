@@ -1,7 +1,15 @@
 {
   "name": "valtorix-website",
   "private": true,
-  "version": "1.0.0",
+  "version": "2.0.0",
+  "description": "VALTORIX INFOTECH marketing website — static HTML/CSS/JS with a Vercel serverless mail endpoint.",
+  "scripts": {
+    "dev": "python -m http.server 8099",
+    "build:brand": "python scripts/build_brand.py",
+    "build:images": "python scripts/optimize-images.py",
+    "check:links": "python scripts/check-links.py",
+    "check:brand": "python scripts/cleanup-legacy-assets.py"
+  },
   "dependencies": {
     "@vercel/functions": "^1.0.0",
     "nodemailer": "^6.9.14"
