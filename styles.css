@@ -93,6 +93,11 @@ html {
   scroll-behavior: smooth;
   scroll-padding-top: calc(var(--nav-h) + 24px);
   -webkit-text-size-adjust: 100%;
+  /* `clip` (not `hidden`) contains the entrance transforms without turning
+     the viewport into a scroll container, so sticky positioning and scroll
+     anchoring keep working. */
+  overflow-x: hidden;
+  overflow-x: clip;
 }
 
 body {
@@ -104,7 +109,7 @@ body {
   background: var(--paper);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  overflow-x: hidden;
+  overflow-wrap: break-word;
 }
 
 body.is-locked {
@@ -725,6 +730,32 @@ hr {
   letter-spacing: 0.02em;
 }
 
+/* Hero copy must never start at opacity:0 — Chrome ignores fully transparent
+   text as an LCP candidate, so a fade-in would delay Largest Contentful Paint
+   by the length of the animation. Start from a barely-visible value instead. */
+@keyframes hero-rise {
+  from {
+    opacity: 0.35;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.hero-text {
+  animation: hero-rise 0.7s var(--ease) both;
+}
+
+.hero-visual {
+  animation: hero-rise 0.8s 0.08s var(--ease) both;
+}
+
+.hero-grid > * {
+  will-change: auto;
+}
+
 /* Hero visual: the brand mark, framed */
 .hero-visual {
   position: relative;
@@ -751,10 +782,56 @@ hr {
   pointer-events: none;
 }
 
-.hero-frame img {
+/* The static poster is the fallback for reduced motion / no WebGL. It must be
+   visible from the first paint, before any script runs. */
+.hero-poster {
   width: min(78%, 320px);
   filter: drop-shadow(0 16px 30px rgba(10, 10, 10, 0.18));
+  transition: opacity 0.55s var(--ease);
 }
+
+/* The WebGL canvas is layered over the poster and fades in once it is ready.
+   Its box is reserved by CSS, so nothing shifts when it appears. */
+.hero-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.hero-frame.is-3d .hero-poster {
+  opacity: 0;
+}
+
+/* Inner-page hero: the same brand object, smaller. Positioned absolutely so
+   the hero copy keeps its single-column flow.
+   NB: this needs the child combinator to outrank `.page-hero > *` below. */
+.page-hero {
+  position: relative;
+}
+
+.page-hero > .page-hero-art {
+  position: absolute;
+  right: max(4%, calc((100% - var(--container)) / 2));
+  top: 50%;
+  transform: translateY(-50%);
+  width: clamp(170px, 20vw, 260px);
+  z-index: 1;
+}
+
+.hero-frame--sm {
+  padding: clamp(22px, 3vw, 34px);
+  border-radius: var(--r-lg);
+}
+
+.hero-frame--sm .hero-poster {
+  width: min(74%, 200px);
+  filter: drop-shadow(0 12px 22px rgba(10, 10, 10, 0.16));
+}
+
 
 .hero-chip {
   position: absolute;
@@ -1104,6 +1181,33 @@ hr {
   border-color: var(--line-2);
   transform: translateY(-4px);
   box-shadow: var(--sh-md);
+}
+
+/* 3D tilt on the work cards — transform only, so it stays on the compositor.
+   Declared after the plain hover rule so the tilt wins. */
+.work-card {
+  transform: perspective(1000px) rotateX(var(--tilt-x, 0deg)) rotateY(var(--tilt-y, 0deg))
+    translateZ(0);
+  transform-style: preserve-3d;
+}
+
+.work-card:hover {
+  transform: perspective(1000px) rotateX(var(--tilt-x, 0deg)) rotateY(var(--tilt-y, 0deg))
+    translateY(-4px) translateZ(14px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-text,
+  .hero-visual {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
+
+  .work-card,
+  .work-card:hover {
+    transform: none;
+  }
 }
 
 .work-media {
@@ -2297,6 +2401,10 @@ hr {
 @media (max-width: 960px) {
   :root {
     --nav-h: 64px;
+  }
+
+  .page-hero-art {
+    display: none;
   }
 
   .nav-links {

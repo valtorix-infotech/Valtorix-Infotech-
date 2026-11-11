@@ -20,7 +20,7 @@ function check(name, ok, detail) {
   const page = await ctx.newPage();
 
   /* ---------- 1. Contact form validation ---------- */
-  await page.goto(`${BASE}/contact.html?t=${Date.now()}`, { waitUntil: 'networkidle' });
+  await page.goto(`${BASE}/contact.html?t=${Date.now()}`, { waitUntil: 'load', timeout: 30000 });
   let posts = 0;
   page.on('request', (r) => { if (r.url().includes('/api/send')) posts++; });
 
@@ -53,7 +53,7 @@ function check(name, ok, detail) {
   check('contact: fallback links to WhatsApp', (waLink || '').includes('wa.me/917989369571'), waLink);
 
   /* ---------- 3. Multi-step project form ---------- */
-  await page.goto(`${BASE}/strat-project.html?t=${Date.now()}`, { waitUntil: 'networkidle' });
+  await page.goto(`${BASE}/strat-project.html?t=${Date.now()}`, { waitUntil: 'load', timeout: 30000 });
   let posts2 = 0;
   page.on('request', (r) => { if (r.url().includes('/api/send')) posts2++; });
 
@@ -120,7 +120,7 @@ function check(name, ok, detail) {
   check('project: reference id is generated', /^VTX-\d{4}-\d{4}-\d{4}$/.test(refId.trim()), refId);
 
   /* ---------- 4. Back button + edit ---------- */
-  await page.goto(`${BASE}/strat-project.html?t=${Date.now()}`, { waitUntil: 'networkidle' });
+  await page.goto(`${BASE}/strat-project.html?t=${Date.now()}`, { waitUntil: 'load', timeout: 30000 });
   await page.click('#projectType .option[data-value="Website"]');
   await page.fill('#projectTitle', 'Rebrand site');
   await page.fill('#name', 'Sam');
@@ -135,7 +135,7 @@ function check(name, ok, detail) {
   check('project: back button returns to step 1', backOk, '');
 
   /* ---------- 5. FAQ accordion ---------- */
-  await page.goto(`${BASE}/index.html?t=${Date.now()}`, { waitUntil: 'networkidle' });
+  await page.goto(`${BASE}/index.html?t=${Date.now()}`, { waitUntil: 'load', timeout: 30000 });
   const firstFaq = page.locator('.faq-item').first();
   // measure the clipping container, not the paragraph inside it
   const visibleH = (item) => item.locator('.faq-answer').evaluate((e) => e.getBoundingClientRect().height);
@@ -151,7 +151,7 @@ function check(name, ok, detail) {
   check('faq: single-open behaviour', h0 < 5 && h1 > 10, `first=${Math.round(h0)} second=${Math.round(h1)}`);
 
   /* ---------- 6. Project filters ---------- */
-  await page.goto(`${BASE}/projects.html?t=${Date.now()}`, { waitUntil: 'networkidle' });
+  await page.goto(`${BASE}/projects.html?t=${Date.now()}`, { waitUntil: 'load', timeout: 30000 });
   const total = await page.locator('[data-category]').count();
   await page.click('.filter-btn[data-filter="ai"]');
   await page.waitForTimeout(300);
@@ -163,13 +163,13 @@ function check(name, ok, detail) {
   check('work: "all" restores every card', allVisible === total, `${allVisible}/${total}`);
 
   /* ---------- 7. Nav active state + mobile menu ---------- */
-  await page.goto(`${BASE}/services.html?t=${Date.now()}`, { waitUntil: 'networkidle' });
+  await page.goto(`${BASE}/services.html?t=${Date.now()}`, { waitUntil: 'load', timeout: 30000 });
   const activeHref = await page.locator('#navbar .nav-links a.active').getAttribute('href');
   check('nav: current page is marked active', activeHref === 'services.html', activeHref);
 
   const m = await ctx.newPage();
   await m.setViewportSize({ width: 390, height: 844 });
-  await m.goto(`${BASE}/index.html?t=${Date.now()}`, { waitUntil: 'networkidle' });
+  await m.goto(`${BASE}/index.html?t=${Date.now()}`, { waitUntil: 'load', timeout: 30000 });
   const hiddenBefore = await m.locator('#navbar .nav-links').isVisible();
   await m.click('.menu-btn');
   await m.waitForTimeout(500);
@@ -183,7 +183,7 @@ function check(name, ok, detail) {
   check('mobile: drawer closes after navigating', !closedAfterNav, '');
 
   /* ---------- 8. Honeypot ---------- */
-  await page.goto(`${BASE}/contact.html?t=${Date.now()}`, { waitUntil: 'networkidle' });
+  await page.goto(`${BASE}/contact.html?t=${Date.now()}`, { waitUntil: 'load', timeout: 30000 });
   let posts3 = 0;
   page.on('request', (r) => { if (r.url().includes('/api/send')) posts3++; });
   await page.fill('#website', 'http://spam.example');

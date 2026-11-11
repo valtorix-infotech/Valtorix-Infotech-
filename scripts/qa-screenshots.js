@@ -51,8 +51,8 @@ const PAGES = [
       page.on('console', onMsg);
       page.on('requestfailed', onFail);
 
-      await page.goto(`${BASE}/${p}?qa=${Date.now()}`, { waitUntil: 'networkidle' });
-      await page.waitForTimeout(700);
+      await page.goto(`${BASE}/${p}?qa=${Date.now()}`, { waitUntil: 'load', timeout: 30000 });
+      await page.waitForTimeout(1400);
       // trigger every reveal so full-page capture is not blank
       await page.evaluate(() => {
         document.querySelectorAll('.reveal,.reveal-left,.reveal-right').forEach((e) => e.classList.add('revealed'));

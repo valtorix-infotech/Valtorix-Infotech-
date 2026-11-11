@@ -219,6 +219,51 @@
     }
   });
 
+  /* ---------- 6b. 3D pointer tilt on the work cards -----------------------
+     Transform-only, so the tilt stays on the compositor and never triggers
+     layout. Skipped on touch devices and when reduced motion is requested. */
+  var tiltCards = document.querySelectorAll(".work-card");
+  if (
+    tiltCards.length &&
+    window.matchMedia &&
+    window.matchMedia("(pointer: fine)").matches &&
+    !(window.matchMedia("(prefers-reduced-motion: reduce)").matches)
+  ) {
+    var MAX_TILT = 4.5; // degrees
+    var pending = null;
+    var ticking = false;
+
+    function applyTilt() {
+      ticking = false;
+      if (!pending) return;
+      var card = pending.card;
+      var r = pending.rect;
+      var px = (pending.x - (r.left + r.width / 2)) / (r.width / 2);
+      var py = (pending.y - (r.top + r.height / 2)) / (r.height / 2);
+      card.style.setProperty("--tilt-x", (-py * MAX_TILT).toFixed(2) + "deg");
+      card.style.setProperty("--tilt-y", (px * MAX_TILT).toFixed(2) + "deg");
+      pending = null;
+    }
+
+    tiltCards.forEach(function (card) {
+      card.addEventListener(
+        "pointermove",
+        function (e) {
+          pending = { card: card, x: e.clientX, y: e.clientY, rect: card.getBoundingClientRect() };
+          if (!ticking) {
+            ticking = true;
+            requestAnimationFrame(applyTilt);
+          }
+        },
+        { passive: true }
+      );
+      card.addEventListener("pointerleave", function () {
+        card.style.setProperty("--tilt-x", "0deg");
+        card.style.setProperty("--tilt-y", "0deg");
+      });
+    });
+  }
+
   /* ---------- 7. Animated counters ---------- */
   var counters = document.querySelectorAll("[data-count-to]");
   if (counters.length && "IntersectionObserver" in window) {
