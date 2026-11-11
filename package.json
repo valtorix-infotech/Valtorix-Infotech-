@@ -1,17 +1,34 @@
 {
   "name": "valtorix-website",
   "private": true,
-  "version": "2.0.0",
-  "description": "VALTORIX INFOTECH marketing website — static HTML/CSS/JS with a Vercel serverless mail endpoint.",
+  "version": "2.1.0",
+  "description": "VALTORIX INFOTECH marketing website — static HTML/CSS/JS with a persistent WebGL stage and a Vercel serverless mail endpoint.",
   "scripts": {
-    "dev": "python -m http.server 8099",
+    "dev": "node scripts/serve.js 8099",
     "build:brand": "python scripts/build_brand.py",
+    "build:stage": "python scripts/build_stage3d.py",
+    "build:webp": "python scripts/build_webp.py",
+    "use:webp": "python scripts/use_webp.py",
     "build:images": "python scripts/optimize-images.py",
     "check:links": "python scripts/check-links.py",
-    "check:brand": "python scripts/cleanup-legacy-assets.py"
+    "qa": "npm run qa:site && npm run qa:responsive && npm run qa:3d && npm run qa:functions && npm run qa:screenshots && npm run qa:crossbrowser",
+    "qa:site": "node scripts/qa-site.js",
+    "qa:responsive": "node scripts/qa-responsive.js",
+    "qa:3d": "node scripts/qa-3d.js",
+    "qa:functions": "node scripts/qa-functions.js",
+    "qa:screenshots": "node scripts/qa-screenshots.js",
+    "qa:crossbrowser": "node scripts/qa-crossbrowser.js",
+    "qa:lighthouse": "node scripts/qa-lighthouse.js"
   },
   "dependencies": {
     "@vercel/functions": "^1.0.0",
     "nodemailer": "^6.9.14"
+  },
+  "devDependencies": {
+    "lighthouse": "^13.6.0",
+    "playwright": "^1.49.0"
+  },
+  "engines": {
+    "node": ">=18"
   }
 }

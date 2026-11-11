@@ -16,7 +16,7 @@ const fs = require('fs');
 const path = require('path');
 
 const BASE = process.env.BASE || 'http://localhost:8099';
-const PAGES = (process.env.PAGES || 'index.html,about-us.html,services.html,solutions.html,projects.html,contact.html,strat-project.html,privacy-policy.html,terms.html,404.html').split(',');
+const PAGES = (process.env.PAGES || 'index.html,about-us.html,services.html,solutions.html,projects.html,contact.html,start-a-project.html,privacy-policy.html,terms.html,404.html').split(',');
 
 const findings = [];
 const notes = [];
@@ -299,7 +299,7 @@ function pass(area, message, extra) {
 
     /* --- multi-step form --- */
     posts = 0;
-    await page.goto(`${BASE}/strat-project.html`, { waitUntil: 'load', timeout: 30000 });
+    await page.goto(`${BASE}/start-a-project.html`, { waitUntil: 'load', timeout: 30000 });
     /* back navigation keeps the data */
     await page.click('#projectType .option[data-value="Website"]');
     await page.fill('#projectTitle', 'A brand new site');
@@ -467,7 +467,7 @@ function pass(area, message, extra) {
   {
     const ctx = await browser.newContext({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true });
     const page = await ctx.newPage();
-    for (const p of ['index.html', 'contact.html', 'strat-project.html']) {
+    for (const p of ['index.html', 'contact.html', 'start-a-project.html']) {
       await page.goto(`${BASE}/${p}`, { waitUntil: 'load', timeout: 30000 });
       await page.setViewportSize({ width: 844, height: 390 });
       await page.waitForTimeout(400);
@@ -495,6 +495,139 @@ function pass(area, message, extra) {
     if (printed.nav !== 'none') fail('print', 'the navigation is not hidden in print', 'display=' + printed.nav);
     else pass('print', 'the navigation is hidden when printing');
     await pctx.close();
+  }
+
+  /* ================================== P1: INP, zoom, long strings, SEO data */
+  console.log('\n== P1: interaction latency, zoom, long strings, SEO data ==');
+  {
+    const ctx = await browser.newContext({ viewport: { width: 1440, height: 900 } });
+    const page = await ctx.newPage();
+
+    /* --- INP: interaction latency, measured not guessed --- */
+    await page.goto(`${BASE}/projects.html?inp=${Date.now()}`, { waitUntil: 'load', timeout: 30000 });
+    await page.waitForTimeout(1200);
+    const inp = await page.evaluate(async () => {
+      const durations = [];
+      let po = null;
+      try {
+        po = new PerformanceObserver((l) => {
+          for (const e of l.getEntries()) durations.push(e.duration);
+        });
+        po.observe({ type: 'event', buffered: true, durationThreshold: 16 });
+      } catch (e) { po = null; }
+      /* drive a few real interactions */
+      const cards = document.querySelectorAll('.work-card');
+      const btn = document.querySelector('.filter-btn[data-filter="ai"]');
+      if (btn) { btn.click(); await new Promise((r) => setTimeout(r, 200)); btn.click(); }
+      if (cards[0]) { cards[0].scrollIntoView(); cards[0].click(); }
+      const q = document.querySelector('.faq-question');
+      if (q) q.click();
+      await new Promise((r) => setTimeout(r, 900));
+      if (po) po.disconnect();
+      durations.sort((a, b) => a - b);
+      return {
+        count: durations.length,
+        worst: durations.length ? durations[durations.length - 1] : 0,
+        p98: durations.length ? durations[Math.floor(durations.length * 0.98)] : 0
+      };
+    });
+    if (inp.count === 0) notes.push('INP: no interaction was long enough to be recorded (good)');
+    else if (inp.worst > 200) fail('inp', `the slowest interaction took ${Math.round(inp.worst)}ms`, 'budget 200ms');
+    else pass('inp', `interaction latency is ${Math.round(inp.worst)}ms worst case`, `${inp.count} interactions`);
+
+    /* --- 200% text zoom (WCAG 1.4.4) --- */
+    for (const p of ['index.html', 'contact.html', 'start-a-project.html']) {
+      await page.goto(`${BASE}/${p}?z=${Date.now()}`, { waitUntil: 'load', timeout: 30000 });
+      await page.waitForTimeout(300);
+      const z = await page.evaluate(() => {
+        document.documentElement.style.fontSize = '200%';
+        window.scrollTo(300, 0);
+        const x = window.scrollX;
+        window.scrollTo(0, 0);
+        /* find anything whose text is cut off */
+        const clipped = [];
+        document.querySelectorAll('h1,h2,h3,p,li,a,label,button').forEach((el) => {
+          if (el.closest('.skip-link')) return;
+          const cs = getComputedStyle(el);
+          if (cs.overflow === 'hidden' && cs.textOverflow !== 'ellipsis' && el.scrollWidth > el.clientWidth + 2) {
+            clipped.push(el.tagName + '.' + (el.className || '').toString().slice(0, 24));
+          }
+        });
+        return { canScrollX: x, clipped };
+      });
+      if (z.canScrollX > 0) fail('zoom', `${p} scrolls sideways at 200% text`, z.canScrollX + 'px');
+      if (z.clipped.length) fail('zoom', `${p} clips text at 200%`, z.clipped.slice(0, 3).join(', '));
+    }
+    pass('zoom', '200% text zoom does not break the layout');
+
+    /* --- long unbroken strings must wrap or scroll, never escape --- */
+    await page.goto(`${BASE}/index.html?ls=${Date.now()}`, { waitUntil: 'load', timeout: 30000 });
+    const longStr = await page.evaluate(() => {
+      const target = document.querySelector('.section-title') || document.querySelector('h1');
+      const original = target.textContent;
+      const token = 'SUPERCALIFRAGILISTICEXPIALIDOCIOUSVERYLONGUNBROKENIDENTIFIER1234567890';
+      target.textContent = token;
+      const r = target.getBoundingClientRect();
+      const overflows = r.right > document.documentElement.clientWidth + 1;
+      target.textContent = original;
+      return { overflows, w: Math.round(r.width) };
+    });
+    if (longStr.overflows) fail('text', 'a long unbroken string overflows the viewport');
+    else pass('text', 'a long unbroken string stays inside the viewport');
+
+    /* --- sitemap: every listed URL must resolve --- */
+    const sm = await page.request.get(`${BASE}/sitemap.xml`).catch(() => null);
+    if (!sm || !sm.ok()) fail('seo', 'sitemap.xml could not be fetched');
+    else {
+      const xml = await sm.text();
+      const locs = [...xml.matchAll(/<loc>([^<]+)<\/loc>/g)].map((m) => m[1].trim());
+      if (!locs.length) fail('seo', 'sitemap.xml lists no URLs');
+      let bad = 0;
+      for (const loc of locs) {
+        const path = loc.replace(/^https?:\/\/[^/]+/, '');
+        const res = await page.request.get(`${BASE}${path}`).catch(() => null);
+        if (!res || res.status() !== 200) { bad++; fail('seo', `sitemap URL does not resolve: ${path}`, res ? res.status() : 'no response'); }
+      }
+      if (!bad) pass('seo', `all ${locs.length} sitemap URLs resolve`);
+      /* the legal pages must be listed - they were missing before */
+      for (const need of ['privacy-policy', 'terms']) {
+        if (!locs.some((l) => l.includes(need))) fail('seo', `the sitemap is missing ${need}`);
+      }
+    }
+
+    /* --- robots.txt --- */
+    const rb = await page.request.get(`${BASE}/robots.txt`).catch(() => null);
+    if (!rb || !rb.ok()) fail('seo', 'robots.txt could not be fetched');
+    else {
+      const txt = await rb.text();
+      if (!/Sitemap:/i.test(txt)) fail('seo', 'robots.txt does not point at the sitemap');
+      else pass('seo', 'robots.txt points at the sitemap');
+    }
+
+    /* --- structured data must be valid JSON-LD --- */
+    for (const p of PAGES) {
+      await page.goto(`${BASE}/${p}?ld=${Date.now()}`, { waitUntil: 'load', timeout: 30000 });
+      const ld = await page.evaluate(() => {
+        const blocks = [...document.querySelectorAll('script[type="application/ld+json"]')];
+        const types = [];
+        const errors = [];
+        blocks.forEach((b) => {
+          try {
+            const parsed = JSON.parse(b.textContent);
+            const list = Array.isArray(parsed) ? parsed : (parsed['@graph'] || [parsed]);
+            list.forEach((n) => { if (n['@type']) types.push(n['@type']); });
+          } catch (e) {
+            errors.push(e.message);
+          }
+        });
+        return { count: blocks.length, types, errors };
+      });
+      if (ld.errors.length) fail('seo', `${p}: invalid JSON-LD`, ld.errors[0]);
+      else if (!ld.count) notes.push(`${p}: no structured data`);
+    }
+    pass('seo', 'all structured data blocks parse');
+
+    await ctx.close();
   }
 
   /* ============================================ P0: the 3D stage hygiene */

@@ -11,7 +11,7 @@ const PAGES = [
   'solutions.html',
   'projects.html',
   'contact.html',
-  'strat-project.html',
+  'start-a-project.html',
   'privacy-policy.html',
   'terms.html',
   '404.html',

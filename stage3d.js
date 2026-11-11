@@ -568,7 +568,7 @@
       gl.uniform3f(mu.uFillDir, 0.65, -0.25, 0.4);
       gl.uniform3f(mu.uSky, 0.62, 0.66, 0.74);
       gl.uniform3f(mu.uGround, 0.12, 0.12, 0.14);
-      gl.uniform3f(mu.uRim, 0.122, 0.435, 0.921);
+      gl.uniform3f(mu.uRim, 0.102, 0.373, 0.816);
       gl.uniform3f(mu.uFog, fogColor[0], fogColor[1], fogColor[2]);
       gl.uniform1f(mu.uFogNear, fogNear);
       gl.uniform1f(mu.uFogFar, fogFar);

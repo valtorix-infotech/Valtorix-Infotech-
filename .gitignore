@@ -1,5 +1,5 @@
 .vercel
-node_modules
+node_modules/
 .env
 .env.local
 .DS_Store
@@ -13,3 +13,5 @@ scripts/_*.jpg
 scripts/_*.py
 scripts/_sheet*.py
 scripts/_sheet*.jpg
+scripts/.lighthouse/
+scripts/crossbrowser-report.json

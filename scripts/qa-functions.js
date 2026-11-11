@@ -53,7 +53,7 @@ function check(name, ok, detail) {
   check('contact: fallback links to WhatsApp', (waLink || '').includes('wa.me/917989369571'), waLink);
 
   /* ---------- 3. Multi-step project form ---------- */
-  await page.goto(`${BASE}/strat-project.html?t=${Date.now()}`, { waitUntil: 'load', timeout: 30000 });
+  await page.goto(`${BASE}/start-a-project.html?t=${Date.now()}`, { waitUntil: 'load', timeout: 30000 });
   let posts2 = 0;
   page.on('request', (r) => { if (r.url().includes('/api/send')) posts2++; });
 
@@ -120,7 +120,7 @@ function check(name, ok, detail) {
   check('project: reference id is generated', /^VTX-\d{4}-\d{4}-\d{4}$/.test(refId.trim()), refId);
 
   /* ---------- 4. Back button + edit ---------- */
-  await page.goto(`${BASE}/strat-project.html?t=${Date.now()}`, { waitUntil: 'load', timeout: 30000 });
+  await page.goto(`${BASE}/start-a-project.html?t=${Date.now()}`, { waitUntil: 'load', timeout: 30000 });
   await page.click('#projectType .option[data-value="Website"]');
   await page.fill('#projectTitle', 'Rebrand site');
   await page.fill('#name', 'Sam');

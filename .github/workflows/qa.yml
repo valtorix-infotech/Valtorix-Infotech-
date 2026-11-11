@@ -1,0 +1,109 @@
+name: QA
+
+# The P0 checks run on every push and pull request.
+# The research is blunt: "P0 tests should always be automated and run in CI/CD".
+on:
+  push:
+    branches: [main, prod]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: qa-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  qa:
+    name: QA (site, responsive, 3D, functions, screenshots, cross-browser)
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install browsers
+        run: npx playwright install --with-deps chromium firefox webkit
+
+      - name: Start the static server
+        run: |
+          node scripts/serve.js 8099 > /tmp/serve.log 2>&1 &
+          for i in $(seq 1 30); do
+            if curl -sf http://localhost:8099/index.html > /dev/null; then break; fi
+            sleep 1
+          done
+          curl -sf http://localhost:8099/index.html > /dev/null
+
+      - name: Site QA (links, 404, content, forms, keyboard, Core Web Vitals, SEO data)
+        run: node scripts/qa-site.js
+
+      - name: Responsive and reflow (25 viewports, 400% zoom, no-JS)
+        run: node scripts/qa-responsive.js
+
+      - name: 3D stage
+        run: node scripts/qa-3d.js
+
+      - name: Functional behaviour
+        run: node scripts/qa-functions.js
+
+      - name: Visual and asset audit
+        run: node scripts/qa-screenshots.js
+
+      - name: Cross-browser (Chromium, Firefox, WebKit)
+        run: node scripts/qa-crossbrowser.js
+
+      - name: Upload the visual audit output
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: screenshots
+          path: scripts/shots3d/
+          retention-days: 7
+          if-no-files-found: ignore
+
+  lighthouse:
+    name: Lighthouse gate (a11y / best practices / SEO)
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    needs: qa
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - run: npm ci
+
+      - name: Install Chrome
+        uses: browser-actions/setup-chrome@v1
+
+      - name: Start the static server
+        run: |
+          node scripts/serve.js 8099 > /tmp/serve.log 2>&1 &
+          for i in $(seq 1 30); do
+            if curl -sf http://localhost:8099/index.html > /dev/null; then break; fi
+            sleep 1
+          done
+
+      - name: Lighthouse
+        run: node scripts/qa-lighthouse.js http://localhost:8099/index.html 0.95
+
+      - name: Upload the Lighthouse reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: lighthouse
+          path: scripts/.lighthouse/
+          retention-days: 7
+          if-no-files-found: ignore

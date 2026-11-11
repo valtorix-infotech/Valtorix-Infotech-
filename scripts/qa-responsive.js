@@ -20,7 +20,7 @@ const fs = require('fs');
 const path = require('path');
 
 const BASE = process.env.BASE || 'http://localhost:8099';
-const PAGES = (process.env.PAGES || 'index.html,about-us.html,services.html,solutions.html,projects.html,contact.html,strat-project.html,privacy-policy.html,terms.html,404.html').split(',');
+const PAGES = (process.env.PAGES || 'index.html,about-us.html,services.html,solutions.html,projects.html,contact.html,start-a-project.html,privacy-policy.html,terms.html,404.html').split(',');
 
 /* width, height, touch? */
 const VIEWPORTS = [

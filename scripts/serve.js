@@ -34,6 +34,12 @@ const server = http.createServer((req, res) => {
   if (pathname === '/') pathname = '/index.html';
   let file = path.join(ROOT, pathname);
 
+  /* Vercel runs with cleanUrls: true, so /services serves services.html.
+     The local server must behave the same way or the QA results are a lie. */
+  if (!path.extname(file) && !fs.existsSync(file) && fs.existsSync(file + '.html')) {
+    file = file + '.html';
+  }
+
   if (!file.startsWith(ROOT)) {
     res.writeHead(403).end('Forbidden');
     return;
