@@ -59,9 +59,18 @@
   }
 
   function afterPaint(fn) {
+    /* requestAnimationFrame is suspended in a background tab, so the mount
+       must never depend on it alone. */
+    var done = false;
+    function go() {
+      if (done) return;
+      done = true;
+      fn();
+    }
     window.requestAnimationFrame(function () {
-      window.requestAnimationFrame(fn);
+      window.requestAnimationFrame(go);
     });
+    window.setTimeout(go, 250);
   }
 
   if (!window.ValtorixStage) return;
