@@ -15,12 +15,9 @@
      - landscape checked separately: a fixed header must not eat a short screen
      - JS disabled must still deliver the content
    ========================================================================== */
-const { chromium } = require('playwright');
+const { BASE, PAGES, launch, newPage } = require('./qa/_lib.js');
 const fs = require('fs');
 const path = require('path');
-
-const BASE = process.env.BASE || 'http://localhost:8099';
-const PAGES = (process.env.PAGES || 'index.html,about-us.html,services.html,solutions.html,projects.html,contact.html,start-a-project.html,privacy-policy.html,terms.html,404.html').split(',');
 
 /* width, height, touch? */
 const VIEWPORTS = [
@@ -242,10 +239,7 @@ const AUDIT = () => {
 };
 
 (async () => {
-  const msCache = path.join(process.env.USERPROFILE || '', 'AppData', 'Local', 'ms-playwright');
-  const exe = ['chromium-1248/chrome-win64/chrome.exe', 'chromium-1228/chrome-win64/chrome.exe']
-    .map((c) => path.join(msCache, c)).find((p) => fs.existsSync(p));
-  const browser = await chromium.launch(exe ? { executablePath: exe } : {});
+  const browser = await launch('chromium');
 
   console.log('== responsive matrix ==');
   for (const vp of VIEWPORTS) {

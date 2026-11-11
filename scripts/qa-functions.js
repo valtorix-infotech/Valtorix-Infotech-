@@ -1,8 +1,6 @@
-const { chromium } = require('playwright');
+const { BASE, launch, newPage } = require('./qa/_lib.js');
 const fs = require('fs');
 const path = require('path');
-
-const BASE = process.env.BASE || 'http://localhost:8099';
 const results = [];
 
 function check(name, ok, detail) {
@@ -11,11 +9,7 @@ function check(name, ok, detail) {
 }
 
 (async () => {
-  const msCache = path.join(process.env.USERPROFILE || '', 'AppData', 'Local', 'ms-playwright');
-  const exe = ['chromium-1248/chrome-win64/chrome.exe', 'chromium-1228/chrome-win64/chrome.exe']
-    .map((c) => path.join(msCache, c))
-    .find((p) => fs.existsSync(p));
-  const browser = await chromium.launch(exe ? { executablePath: exe } : {});
+  const browser = await launch('chromium');
   const ctx = await browser.newContext({ viewport: { width: 1440, height: 900 } });
   const page = await ctx.newPage();
 

@@ -8,6 +8,7 @@ node_modules/
 scripts/shots/
 scripts/shots3d/
 scripts/qa-report.json
+scripts/qa-3d-report.json
 scripts/responsive-report.json
 scripts/_*.jpg
 scripts/_*.py

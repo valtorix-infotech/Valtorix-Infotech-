@@ -33,6 +33,9 @@ jobs:
       - name: Install browsers
         run: npx playwright install --with-deps chromium firefox webkit
 
+      - name: Lint
+        run: npm run lint
+
       - name: Start the static server
         run: |
           node scripts/serve.js 8099 > /tmp/serve.log 2>&1 &

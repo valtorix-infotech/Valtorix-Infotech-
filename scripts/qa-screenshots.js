@@ -1,36 +1,12 @@
-const { chromium } = require('playwright');
+const { BASE, PAGES, launch, newPage } = require('./qa/_lib.js');
 const fs = require('fs');
 const path = require('path');
 
-const BASE = process.env.BASE || 'http://localhost:8099';
 const OUT = path.join(__dirname, 'shots');
-const PAGES = [
-  'index.html',
-  'about-us.html',
-  'services.html',
-  'solutions.html',
-  'projects.html',
-  'contact.html',
-  'start-a-project.html',
-  'privacy-policy.html',
-  'terms.html',
-  '404.html',
-];
 
 (async () => {
   fs.mkdirSync(OUT, { recursive: true });
-  const msCache = path.join(process.env.USERPROFILE || '', 'AppData', 'Local', 'ms-playwright');
-  const candidates = [
-    'chromium-1248/chrome-win64/chrome.exe',
-    'chromium-1228/chrome-win64/chrome.exe',
-    'chromium_headless_shell-1248/chrome-headless-shell-win64/chrome-headless-shell.exe',
-  ];
-  let executablePath;
-  for (const c of candidates) {
-    const p = path.join(msCache, c);
-    if (fs.existsSync(p)) { executablePath = p; break; }
-  }
-  const browser = await chromium.launch(executablePath ? { executablePath } : {});
+  const browser = await launch('chromium');
   const report = [];
 
   for (const vp of [

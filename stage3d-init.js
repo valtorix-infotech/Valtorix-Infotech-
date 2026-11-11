@@ -14,8 +14,8 @@
 (function () {
   "use strict";
 
-  var started = false;
-  var booted = false;
+  let started = false;
+  let booted = false;
 
   function mount(canvas, fn, opts) {
     try {
@@ -28,18 +28,18 @@
   function boot() {
     if (booted) return;
     booted = true;
-    var S = window.ValtorixStage;
+    const S = window.ValtorixStage;
     if (!S) return;
 
-    var stages = document.querySelectorAll("canvas[data-stage-root]");
-    for (var i = 0; i < stages.length; i++) {
+    const stages = document.querySelectorAll("canvas[data-stage-root]");
+    for (let i = 0; i < stages.length; i++) {
       mount(stages[i], S.mountStage, parseOpts(stages[i]));
     }
 
   }
 
   function parseOpts(canvas) {
-    var opts = {};
+    let opts = {};
     try {
       opts = JSON.parse(canvas.getAttribute("data-hero3d") || canvas.getAttribute("data-stage-opts") || "{}");
     } catch (e) {
@@ -61,7 +61,7 @@
   function afterPaint(fn) {
     /* requestAnimationFrame is suspended in a background tab, so the mount
        must never depend on it alone. */
-    var done = false;
+    let done = false;
     function go() {
       if (done) return;
       done = true;
@@ -82,7 +82,7 @@
   }
 
   /* An engaged visitor should not wait. */
-  var once = function () {
+  const once = function () {
     start();
     ["pointerdown", "pointermove", "scroll", "keydown", "touchstart", "wheel"].forEach(function (evt) {
       window.removeEventListener(evt, once);

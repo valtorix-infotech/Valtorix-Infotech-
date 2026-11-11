@@ -23,11 +23,11 @@
 (function () {
   "use strict";
 
-  var DEG = Math.PI / 180;
-  var FOV = 34;
+  const DEG = Math.PI / 180;
+  const FOV = 34;
 
   /* ---------------------------------------------------------------- shaders */
-  var MESH_VERT = [
+  const MESH_VERT = [
     "attribute vec3 aPosition;",
     "attribute vec3 aNormal;",
     "uniform mat4 uProjection;",
@@ -47,7 +47,7 @@
     "}"
   ].join("\n");
 
-  var MESH_FRAG = [
+  const MESH_FRAG = [
     "precision mediump float;",
     "uniform vec3 uBase;",
     "uniform vec3 uKey;",
@@ -86,7 +86,7 @@
     "}"
   ].join("\n");
 
-  var LINE_VERT = [
+  const LINE_VERT = [
     "attribute vec3 aPosition;",
     "uniform mat4 uProjection;",
     "uniform mat4 uView;",
@@ -98,7 +98,7 @@
     "}"
   ].join("\n");
 
-  var LINE_FRAG = [
+  const LINE_FRAG = [
     "precision mediump float;",
     "uniform vec3 uColor;",
     "uniform vec3 uFog;",
@@ -114,7 +114,7 @@
     "}"
   ].join("\n");
 
-  var POINT_VERT = [
+  const POINT_VERT = [
     "attribute vec3 aPosition;",
     "attribute float aSize;",
     "uniform mat4 uProjection;",
@@ -129,7 +129,7 @@
     "}"
   ].join("\n");
 
-  var POINT_FRAG = [
+  const POINT_FRAG = [
     "precision mediump float;",
     "uniform vec3 uColor;",
     "uniform float uOpacity;",
@@ -148,8 +148,8 @@
     return new Float32Array([1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]);
   }
   function perspective(out, fovy, aspect, near, far) {
-    var f = 1 / Math.tan(fovy / 2);
-    var nf = 1 / (near - far);
+    const f = 1 / Math.tan(fovy / 2);
+    const nf = 1 / (near - far);
     out[0] = f / aspect; out[1] = 0; out[2] = 0; out[3] = 0;
     out[4] = 0; out[5] = f; out[6] = 0; out[7] = 0;
     out[8] = 0; out[9] = 0; out[10] = (far + near) * nf; out[11] = -1;
@@ -157,13 +157,13 @@
     return out;
   }
   function lookAt(out, eye, center, up) {
-    var zx = eye[0] - center[0], zy = eye[1] - center[1], zz = eye[2] - center[2];
-    var len = Math.hypot(zx, zy, zz) || 1;
+    let zx = eye[0] - center[0], zy = eye[1] - center[1], zz = eye[2] - center[2];
+    let len = Math.hypot(zx, zy, zz) || 1;
     zx /= len; zy /= len; zz /= len;
-    var xx = up[1] * zz - up[2] * zy, xy = up[2] * zx - up[0] * zz, xz = up[0] * zy - up[1] * zx;
+    let xx = up[1] * zz - up[2] * zy, xy = up[2] * zx - up[0] * zz, xz = up[0] * zy - up[1] * zx;
     len = Math.hypot(xx, xy, xz) || 1;
     xx /= len; xy /= len; xz /= len;
-    var yx = zy * xz - zz * xy, yy = zz * xx - zx * xz, yz = zx * xy - zy * xx;
+    const yx = zy * xz - zz * xy, yy = zz * xx - zx * xz, yz = zx * xy - zy * xx;
     out[0] = xx; out[1] = yx; out[2] = zx; out[3] = 0;
     out[4] = xy; out[5] = yy; out[6] = zy; out[7] = 0;
     out[8] = xz; out[9] = yz; out[10] = zz; out[11] = 0;
@@ -174,8 +174,8 @@
     return out;
   }
   function multiply(out, a, b) {
-    for (var i = 0; i < 4; i++) {
-      for (var j = 0; j < 4; j++) {
+    for (let i = 0; i < 4; i++) {
+      for (let j = 0; j < 4; j++) {
         out[i * 4 + j] =
           a[j] * b[i * 4] + a[4 + j] * b[i * 4 + 1] +
           a[8 + j] * b[i * 4 + 2] + a[12 + j] * b[i * 4 + 3];
@@ -191,7 +191,7 @@
     return out;
   }
   function rotationX(out, a) {
-    var s = Math.sin(a), c = Math.cos(a);
+    const s = Math.sin(a), c = Math.cos(a);
     out[0] = 1; out[1] = 0; out[2] = 0; out[3] = 0;
     out[4] = 0; out[5] = c; out[6] = -s; out[7] = 0;
     out[8] = 0; out[9] = s; out[10] = c; out[11] = 0;
@@ -199,7 +199,7 @@
     return out;
   }
   function rotationY(out, a) {
-    var s = Math.sin(a), c = Math.cos(a);
+    const s = Math.sin(a), c = Math.cos(a);
     out[0] = c; out[1] = 0; out[2] = s; out[3] = 0;
     out[4] = 0; out[5] = 1; out[6] = 0; out[7] = 0;
     out[8] = -s; out[9] = 0; out[10] = c; out[11] = 0;
@@ -207,7 +207,7 @@
     return out;
   }
   function rotationZ(out, a) {
-    var s = Math.sin(a), c = Math.cos(a);
+    const s = Math.sin(a), c = Math.cos(a);
     out[0] = c; out[1] = -s; out[2] = 0; out[3] = 0;
     out[4] = s; out[5] = c; out[6] = 0; out[7] = 0;
     out[8] = 0; out[9] = 0; out[10] = 1; out[11] = 0;
@@ -225,10 +225,10 @@
     out9[0] = m[0]; out9[1] = m[1]; out9[2] = m[2];
     out9[3] = m[4]; out9[4] = m[5]; out9[5] = m[6];
     out9[6] = m[8]; out9[7] = m[9]; out9[8] = m[10];
-    var sx = Math.hypot(out9[0], out9[1], out9[2]) || 1;
-    var sy = Math.hypot(out9[3], out9[4], out9[5]) || 1;
-    var sz = Math.hypot(out9[6], out9[7], out9[8]) || 1;
-    for (var i = 0; i < 3; i++) {
+    const sx = Math.hypot(out9[0], out9[1], out9[2]) || 1;
+    const sy = Math.hypot(out9[3], out9[4], out9[5]) || 1;
+    const sz = Math.hypot(out9[6], out9[7], out9[8]) || 1;
+    for (let i = 0; i < 3; i++) {
       out9[i] /= sx; out9[3 + i] /= sy; out9[6 + i] /= sz;
     }
     return out9;
@@ -248,7 +248,7 @@
   */
   /* The camera only ever travels FORWARD through the world — one continuous
      place, never a rewind. The chapters get deeper and the fog thickens. */
-  var CHAPTERS = {
+  const CHAPTERS = {
     hero: {
       mark: { sx: 0.08, sy: 0.02, size: 0.30, depth: 5.6, rx: 0.0, ry: 0.0, rz: 0.0 },
       camZ: 0, fog: 1.0, slabs: 0.5, motes: 1.0, grid: 1.0,
@@ -282,9 +282,9 @@
     }
   };
 
-  var NARROW = 900;
+  const NARROW = 900;
 
-  var CHAPTER_ORDER = ["hero", "capabilities", "work", "numbers", "process", "cta"];
+  const CHAPTER_ORDER = ["hero", "capabilities", "work", "numbers", "process", "cta"];
 
   /* --------------------------------------------------------------- helpers */
   /* requestAnimationFrame is suspended in a background tab, so the reveal
@@ -301,7 +301,7 @@
   }
 
   function compile(gl, type, src) {
-    var sh = gl.createShader(type);
+    const sh = gl.createShader(type);
     gl.shaderSource(sh, src);
     gl.compileShader(sh);
     if (!gl.getShaderParameter(sh, gl.COMPILE_STATUS)) {
@@ -312,9 +312,9 @@
     return sh;
   }
   function program(gl, vs, fs) {
-    var p = gl.createProgram();
-    var a = compile(gl, gl.VERTEX_SHADER, vs);
-    var b = compile(gl, gl.FRAGMENT_SHADER, fs);
+    const p = gl.createProgram();
+    let a = compile(gl, gl.VERTEX_SHADER, vs);
+    let b = compile(gl, gl.FRAGMENT_SHADER, fs);
     if (!a || !b) return null;
     gl.attachShader(p, a);
     gl.attachShader(p, b);
@@ -335,13 +335,13 @@
   /* =========================================================== the stage */
   function mountStage(canvas, options) {
     options = options || {};
-    var H = window.ValtorixStage;
+    const H = window.ValtorixStage;
     function refuse(reason) { if (H) H.lastRefusal = reason; return null; }
 
     if (!canvas || !window.VALTORIX_STAGE) return refuse("no-canvas-or-geometry");
     if (prefersReducedMotion()) return refuse("reduced-motion");
 
-    var gl = canvas.getContext("webgl", {
+    const gl = canvas.getContext("webgl", {
       alpha: true,
       antialias: true,
       premultipliedAlpha: false,
@@ -350,69 +350,69 @@
     });
     if (!gl) return refuse("no-webgl");
 
-    var geo = window.VALTORIX_STAGE;
-    var meshProg = program(gl, MESH_VERT, MESH_FRAG);
-    var lineProg = program(gl, LINE_VERT, LINE_FRAG);
-    var pointProg = program(gl, POINT_VERT, POINT_FRAG);
+    const geo = window.VALTORIX_STAGE;
+    const meshProg = program(gl, MESH_VERT, MESH_FRAG);
+    const lineProg = program(gl, LINE_VERT, LINE_FRAG);
+    const pointProg = program(gl, POINT_VERT, POINT_FRAG);
     if (!meshProg || !lineProg || !pointProg) return refuse("shader");
 
     function buf(data) {
-      var b = gl.createBuffer();
+      let b = gl.createBuffer();
       gl.bindBuffer(gl.ARRAY_BUFFER, b);
       gl.bufferData(gl.ARRAY_BUFFER, data, gl.STATIC_DRAW);
       return b;
     }
 
     /* --- mark --- */
-    var markPos = buf(geo.mark.positions);
-    var markNrm = buf(geo.mark.normals);
-    var markIdx = gl.createBuffer();
+    const markPos = buf(geo.mark.positions);
+    const markNrm = buf(geo.mark.normals);
+    const markIdx = gl.createBuffer();
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, markIdx);
     gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, geo.mark.indices, gl.STATIC_DRAW);
-    var markCount = geo.mark.indices.length;
+    const markCount = geo.mark.indices.length;
 
     /* --- slabs --- */
-    var slabPos = buf(geo.slabs.positions);
-    var slabNrm = buf(geo.slabs.normals);
-    var slabIdx = gl.createBuffer();
+    const slabPos = buf(geo.slabs.positions);
+    const slabNrm = buf(geo.slabs.normals);
+    const slabIdx = gl.createBuffer();
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, slabIdx);
     gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, geo.slabs.indices, gl.STATIC_DRAW);
-    var slabCount = geo.slabs.indices.length;
+    const slabCount = geo.slabs.indices.length;
 
     /* --- grid --- */
-    var gridPos = buf(geo.grid.positions);
+    const gridPos = buf(geo.grid.positions);
 
     /* --- motes --- */
-    var moteBuf = buf(geo.motes.data);
-    var moteStride = 4 * 4;
+    const moteBuf = buf(geo.motes.data);
+    const moteStride = 4 * 4;
 
     /* --- uniforms --- */
     function U(prog, names) {
-      var o = {};
-      for (var i = 0; i < names.length; i++) o[names[i]] = gl.getUniformLocation(prog, names[i]);
+      const o = {};
+      for (let i = 0; i < names.length; i++) o[names[i]] = gl.getUniformLocation(prog, names[i]);
       return o;
     }
-    var mu = U(meshProg, ["uProjection", "uView", "uModel", "uNormalMatrix", "uBase", "uKey",
+    const mu = U(meshProg, ["uProjection", "uView", "uModel", "uNormalMatrix", "uBase", "uKey",
       "uKeyDir", "uFillDir", "uSky", "uGround", "uRim", "uCamera", "uFog", "uFogNear",
       "uFogFar", "uOpacity"]);
-    var lu = U(lineProg, ["uProjection", "uView", "uColor", "uFog", "uFogNear", "uFogFar", "uOpacity"]);
-    var pu = U(pointProg, ["uProjection", "uView", "uColor", "uOpacity", "uPixelRatio"]);
+    const lu = U(lineProg, ["uProjection", "uView", "uColor", "uFog", "uFogNear", "uFogFar", "uOpacity"]);
+    const pu = U(pointProg, ["uProjection", "uView", "uColor", "uOpacity", "uPixelRatio"]);
 
     gl.enable(gl.DEPTH_TEST);
     gl.enable(gl.BLEND);
     gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
 
     /* ------------------------------------------------------------ sizing */
-    var maxDpr = options.maxDpr || (isTouch() ? 1.5 : 2);
-    var dpr = maxDpr;
-    var cssW = 1, cssH = 1;
+    const maxDpr = options.maxDpr || (isTouch() ? 1.5 : 2);
+    let dpr = maxDpr;
+    let cssW = 1, cssH = 1;
 
     function resize() {
-      var rect = canvas.getBoundingClientRect();
+      const rect = canvas.getBoundingClientRect();
       cssW = Math.max(1, Math.round(rect.width));
       cssH = Math.max(1, Math.round(rect.height));
-      var w = Math.max(1, Math.round(cssW * dpr));
-      var h = Math.max(1, Math.round(cssH * dpr));
+      const w = Math.max(1, Math.round(cssW * dpr));
+      let h = Math.max(1, Math.round(cssH * dpr));
       if (canvas.width !== w || canvas.height !== h) {
         canvas.width = w;
         canvas.height = h;
@@ -424,19 +424,19 @@
     else window.addEventListener("resize", resize);
 
     /* ------------------------------------------------------- scroll state */
-    var sections = [];
-    var anchors = [];
+    let sections = [];
+    let anchors = [];
     function measureSections() {
       sections = [];
       anchors = [];
-      var nodes = document.querySelectorAll("[data-stage]");
-      var docEl = document.scrollingElement || document.documentElement;
-      var maxScroll = Math.max(1, docEl.scrollHeight - window.innerHeight);
-      for (var i = 0; i < nodes.length; i++) {
-        var key = nodes[i].getAttribute("data-stage");
+      const nodes = document.querySelectorAll("[data-stage]");
+      const docEl = document.scrollingElement || document.documentElement;
+      const maxScroll = Math.max(1, docEl.scrollHeight - window.innerHeight);
+      for (let i = 0; i < nodes.length; i++) {
+        const key = nodes[i].getAttribute("data-stage");
         if (!CHAPTERS[key]) continue;
-        var top = nodes[i].getBoundingClientRect().top + docEl.scrollTop;
-        var h = nodes[i].offsetHeight;
+        const top = nodes[i].getBoundingClientRect().top + docEl.scrollTop;
+        let h = nodes[i].offsetHeight;
         sections.push({ key: key, node: nodes[i] });
         anchors.push(clamp((top + h * 0.35 - window.innerHeight * 0.45) / maxScroll, 0, 1));
       }
@@ -445,21 +445,21 @@
         anchors = [0];
       }
       // guarantee a strictly increasing sequence
-      for (var j = 1; j < anchors.length; j++) {
+      for (let j = 1; j < anchors.length; j++) {
         if (anchors[j] <= anchors[j - 1]) anchors[j] = Math.min(1, anchors[j - 1] + 0.001);
       }
       anchors[anchors.length - 1] = Math.max(anchors[anchors.length - 1], 0.999);
     }
 
-    var progress = 0;
+    let progress = 0;
     function readScroll() {
-      var docEl = document.scrollingElement || document.documentElement;
-      var maxScroll = Math.max(1, docEl.scrollHeight - window.innerHeight);
+      const docEl = document.scrollingElement || document.documentElement;
+      const maxScroll = Math.max(1, docEl.scrollHeight - window.innerHeight);
       progress = clamp(docEl.scrollTop / maxScroll, 0, 1);
     }
 
     /* interpolate the chapter states at the current scroll progress */
-    var state = {};
+    const state = {};
     function narrow(ch) {
       if (!ch.m) return ch;
       return {
@@ -469,34 +469,34 @@
     }
     function blend(a, b, t) {
       if (window.innerWidth < NARROW) { a = narrow(a); b = narrow(b); }
-      var out = { mark: {} };
-      var keys = ["camZ", "fog", "slabs", "motes", "grid"];
-      for (var i = 0; i < keys.length; i++) out[keys[i]] = mix(a[keys[i]], b[keys[i]], t);
-      var mk = ["sx", "sy", "size", "depth", "rx", "ry", "rz"];
-      for (var j = 0; j < mk.length; j++) out.mark[mk[j]] = mix(a.mark[mk[j]], b.mark[mk[j]], t);
+      const out = { mark: {} };
+      const keys = ["camZ", "fog", "slabs", "motes", "grid"];
+      for (let i = 0; i < keys.length; i++) out[keys[i]] = mix(a[keys[i]], b[keys[i]], t);
+      const mk = ["sx", "sy", "size", "depth", "rx", "ry", "rz"];
+      for (let j = 0; j < mk.length; j++) out.mark[mk[j]] = mix(a.mark[mk[j]], b.mark[mk[j]], t);
       return out;
     }
     function currentState() {
       if (anchors.length === 1) return CHAPTERS[anchors.length ? sections[0].key : "hero"];
-      var i = 0;
+      let i = 0;
       while (i < anchors.length - 1 && progress > anchors[i + 1]) i++;
-      var a = CHAPTERS[sections[i].key];
-      var b = CHAPTERS[sections[Math.min(i + 1, sections.length - 1)].key];
+      let a = CHAPTERS[sections[i].key];
+      let b = CHAPTERS[sections[Math.min(i + 1, sections.length - 1)].key];
       if (!b) return a;
-      var span = Math.max(0.0001, anchors[i + 1] - anchors[i]);
-      var t = smoothstep(clamp((progress - anchors[i]) / span, 0, 1));
+      const span = Math.max(0.0001, anchors[i + 1] - anchors[i]);
+      const t = smoothstep(clamp((progress - anchors[i]) / span, 0, 1));
       return blend(a, b, t);
     }
 
     /* -------------------------------------------------------- the loop */
-    var proj = mat4(), view = mat4(), model = mat4();
-    var t1 = mat4(), t2 = mat4(), t3 = mat4(), t4 = mat4();
-    var nrm = new Float32Array(9);
-    var pointer = { x: 0, y: 0, tx: 0, ty: 0 };
-    var start = 0;
-    var running = false;
-    var visible = true;
-    var frameAcc = 0, frameCount = 0;
+    const proj = mat4(), view = mat4(), model = mat4();
+    const t1 = mat4(), t2 = mat4(), t3 = mat4(), t4 = mat4();
+    const nrm = new Float32Array(9);
+    const pointer = { x: 0, y: 0, tx: 0, ty: 0 };
+    let start = 0;
+    let running = false;
+    const visible = true;
+    let frameAcc = 0, frameCount = 0;
 
     function onPointer(e) {
       pointer.tx = (e.clientX / window.innerWidth) * 2 - 1;
@@ -507,12 +507,12 @@
     function drawMesh(prog, uniforms, positions, normals, indices, count, modelMat, cam, opacity) {
       gl.useProgram(prog);
       gl.bindBuffer(gl.ARRAY_BUFFER, positions);
-      var ap = gl.getAttribLocation(prog, "aPosition");
+      const ap = gl.getAttribLocation(prog, "aPosition");
       gl.enableVertexAttribArray(ap);
       gl.vertexAttribPointer(ap, 3, gl.FLOAT, false, 0, 0);
       if (normals) {
         gl.bindBuffer(gl.ARRAY_BUFFER, normals);
-        var an = gl.getAttribLocation(prog, "aNormal");
+        const an = gl.getAttribLocation(prog, "aNormal");
         gl.enableVertexAttribArray(an);
         gl.vertexAttribPointer(an, 3, gl.FLOAT, false, 0, 0);
       }
@@ -530,10 +530,10 @@
     function frame(now) {
       if (!running) return;
       if (!start) start = now;
-      var time = (now - start) / 1000;
+      const time = (now - start) / 1000;
 
       readScroll();
-      var st = currentState();
+      const st = currentState();
 
       pointer.x += (pointer.tx - pointer.x) * 0.06;
       pointer.y += (pointer.ty - pointer.y) * 0.06;
@@ -542,27 +542,27 @@
       gl.clearColor(0, 0, 0, 0);
       gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
-      var aspect = cssW / cssH;
-      var camZ = st.camZ;
-      var cam = [pointer.x * 0.35, 0.35 + pointer.y * 0.18, camZ];
+      const aspect = cssW / cssH;
+      const camZ = st.camZ;
+      const cam = [pointer.x * 0.35, 0.35 + pointer.y * 0.18, camZ];
       perspective(proj, FOV * DEG, aspect, 0.1, 120);
       lookAt(view, cam, [cam[0], cam[1], cam[2] - 1], [0, 1, 0]);
 
-      var fogNear = 4.0;
-      var fogFar = 26 + st.fog * 16;
-      var fogColor = [0.965, 0.969, 0.980];
+      const fogNear = 4.0;
+      const fogFar = 26 + st.fog * 16;
+      const fogColor = [0.965, 0.969, 0.980];
 
       /* ---- the mark ---- */
       if (st.mark.size > 0.002) {
-      var depth = st.mark.depth;
-      var visH = 2 * depth * Math.tan((FOV * DEG) / 2);
-      var visW = visH * aspect;
-      var worldScale = (st.mark.size * visH) / 1.4212;
-      var wx = st.mark.sx * visW * 0.5;
-      var wy = st.mark.sy * visH * 0.5;
-      var rock = Math.sin(time * 0.5) * 0.30;
-      var tiltX = st.mark.rx + (-pointer.y * 6 * DEG);
-      var tiltZ = st.mark.rz + (-pointer.x * 6 * DEG);
+      const depth = st.mark.depth;
+      const visH = 2 * depth * Math.tan((FOV * DEG) / 2);
+      const visW = visH * aspect;
+      const worldScale = (st.mark.size * visH) / 1.4212;
+      const wx = st.mark.sx * visW * 0.5;
+      const wy = st.mark.sy * visH * 0.5;
+      const rock = Math.sin(time * 0.5) * 0.30;
+      const tiltX = st.mark.rx + (-pointer.y * 6 * DEG);
+      const tiltZ = st.mark.rz + (-pointer.x * 6 * DEG);
 
       rotationY(t1, st.mark.ry + rock);
       rotationX(t2, tiltX);
@@ -606,7 +606,7 @@
       if (st.grid > 0.02) {
         gl.useProgram(lineProg);
         gl.bindBuffer(gl.ARRAY_BUFFER, gridPos);
-        var gp = gl.getAttribLocation(lineProg, "aPosition");
+        const gp = gl.getAttribLocation(lineProg, "aPosition");
         gl.enableVertexAttribArray(gp);
         gl.vertexAttribPointer(gp, 3, gl.FLOAT, false, 0, 0);
         gl.uniformMatrix4fv(lu.uProjection, false, proj);
@@ -623,8 +623,8 @@
       if (st.motes > 0.02) {
         gl.useProgram(pointProg);
         gl.bindBuffer(gl.ARRAY_BUFFER, moteBuf);
-        var mp = gl.getAttribLocation(pointProg, "aPosition");
-        var ms = gl.getAttribLocation(pointProg, "aSize");
+        const mp = gl.getAttribLocation(pointProg, "aPosition");
+        const ms = gl.getAttribLocation(pointProg, "aSize");
         gl.enableVertexAttribArray(mp);
         gl.vertexAttribPointer(mp, 3, gl.FLOAT, false, moteStride, 0);
         gl.enableVertexAttribArray(ms);
@@ -668,7 +668,7 @@
     }
     document.addEventListener("visibilitychange", onVisibility);
 
-    var resizeTimer = null;
+    let resizeTimer = null;
     window.addEventListener("resize", function () {
       clearTimeout(resizeTimer);
       resizeTimer = setTimeout(function () { measureSections(); resize(); }, 150);
@@ -692,187 +692,8 @@
     };
   }
 
-  /* ============================================================== the hero */
-  function mountHero(canvas, options) {
-    options = options || {};
-    var H = window.ValtorixStage;
-    function refuse(reason) { if (H) H.lastRefusal = reason; return null; }
-
-    if (!canvas || !window.VALTORIX_STAGE) return refuse("no-canvas-or-geometry");
-    if (prefersReducedMotion()) return refuse("reduced-motion");
-
-    var gl = canvas.getContext("webgl", {
-      alpha: true, antialias: true, premultipliedAlpha: false,
-      powerPreference: "default", failIfMajorPerformanceCaveat: true
-    });
-    if (!gl) return refuse("no-webgl");
-
-    var geo = window.VALTORIX_STAGE;
-    var prog = program(gl, MESH_VERT, MESH_FRAG);
-    if (!prog) return refuse("shader");
-
-    function buf(data) {
-      var b = gl.createBuffer();
-      gl.bindBuffer(gl.ARRAY_BUFFER, b);
-      gl.bufferData(gl.ARRAY_BUFFER, data, gl.STATIC_DRAW);
-      return b;
-    }
-    var markPos = buf(geo.mark.positions);
-    var markNrm = buf(geo.mark.normals);
-    var markIdx = gl.createBuffer();
-    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, markIdx);
-    gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, geo.mark.indices, gl.STATIC_DRAW);
-
-    function U(prog, names) {
-      var o = {};
-      for (var i = 0; i < names.length; i++) o[names[i]] = gl.getUniformLocation(prog, names[i]);
-      return o;
-    }
-    var mu = U(prog, ["uProjection", "uView", "uModel", "uNormalMatrix", "uBase", "uKey",
-      "uKeyDir", "uFillDir", "uSky", "uGround", "uRim", "uCamera", "uFog", "uFogNear",
-      "uFogFar", "uOpacity"]);
-
-    gl.enable(gl.DEPTH_TEST);
-    gl.enable(gl.BLEND);
-    gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
-
-    var maxDpr = options.maxDpr || (isTouch() ? 1.5 : 2);
-    var dpr = maxDpr;
-    var cssW = 1, cssH = 1;
-
-    function resize() {
-      var rect = canvas.getBoundingClientRect();
-      cssW = Math.max(1, Math.round(rect.width));
-      cssH = Math.max(1, Math.round(rect.height));
-      var w = Math.max(1, Math.round(cssW * dpr));
-      var h = Math.max(1, Math.round(cssH * dpr));
-      if (canvas.width !== w || canvas.height !== h) { canvas.width = w; canvas.height = h; }
-      gl.viewport(0, 0, w, h);
-    }
-    resize();
-    if (window.ResizeObserver) new ResizeObserver(resize).observe(canvas);
-    else window.addEventListener("resize", resize);
-
-    var pointer = { x: 0, y: 0, tx: 0, ty: 0 };
-    window.addEventListener("pointermove", function (e) {
-      var r = canvas.getBoundingClientRect();
-      pointer.tx = ((e.clientX - r.left) / r.width) * 2 - 1;
-      pointer.ty = ((e.clientY - r.top) / r.height) * 2 - 1;
-    }, { passive: true });
-
-    var proj = mat4(), view = mat4(), model = mat4();
-    var t1 = mat4(), t2 = mat4(), t3 = mat4(), t4 = mat4();
-    var nrm = new Float32Array(9);
-    var start = 0, running = false, visible = true;
-    var frameAcc = 0, frameCount = 0;
-    var scrollEl = document.scrollingElement || document.documentElement;
-    var scrollProgress = 0;
-
-    function frame(now) {
-      if (!running) return;
-      if (!start) start = now;
-      var t = (now - start) / 1000;
-
-      pointer.x += (pointer.tx - pointer.x) * 0.08;
-      pointer.y += (pointer.ty - pointer.y) * 0.08;
-
-      var heroEl = canvas.closest ? canvas.closest(".hero, .page-hero") : null;
-      var heroH = heroEl ? heroEl.offsetHeight : window.innerHeight;
-      scrollProgress = clamp(scrollEl.scrollTop / Math.max(1, heroH), 0, 1);
-
-      resize();
-      gl.clearColor(0, 0, 0, 0);
-      gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-
-      var aspect = cssW / cssH;
-      var depth = options.distance || 3.9;
-      var visH = 2 * depth * Math.tan((FOV * DEG) / 2);
-      var visW = visH * aspect;
-      var sc = (1 - 0.15 * scrollProgress) * ((options.size || 0.72) * visH) / 1.4212;
-      var opacity = 1 - 0.6 * scrollProgress;
-      var rock = Math.sin(t * 0.5) * 0.30;
-      var bob = Math.sin(t * 0.72) * 0.022;
-      var tiltX = -pointer.y * 8 * DEG;
-      var tiltZ = -pointer.x * 8 * DEG;
-
-      var cam = [0, 0, depth];
-      perspective(proj, FOV * DEG, aspect, 0.1, 60);
-      lookAt(view, cam, [0, 0, 0], [0, 1, 0]);
-
-      rotationY(t1, rock);
-      rotationX(t2, tiltX);
-      multiply(t3, t1, t2);
-      rotationZ(t1, tiltZ);
-      multiply(t4, t3, t1);
-      translation(t2, 0, bob, 0);
-      multiply(t3, t4, t2);
-      scaleMat(t4, sc);
-      multiply(model, t3, t4);
-
-      gl.useProgram(prog);
-      gl.bindBuffer(gl.ARRAY_BUFFER, markPos);
-      var ap = gl.getAttribLocation(prog, "aPosition");
-      gl.enableVertexAttribArray(ap);
-      gl.vertexAttribPointer(ap, 3, gl.FLOAT, false, 0, 0);
-      gl.bindBuffer(gl.ARRAY_BUFFER, markNrm);
-      var an = gl.getAttribLocation(prog, "aNormal");
-      gl.enableVertexAttribArray(an);
-      gl.vertexAttribPointer(an, 3, gl.FLOAT, false, 0, 0);
-      gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, markIdx);
-      normalMatrix(nrm, model);
-      gl.uniformMatrix4fv(mu.uProjection, false, proj);
-      gl.uniformMatrix4fv(mu.uView, false, view);
-      gl.uniformMatrix4fv(mu.uModel, false, model);
-      gl.uniformMatrix3fv(mu.uNormalMatrix, false, nrm);
-      gl.uniform3f(mu.uBase, 0.072, 0.075, 0.090);
-      gl.uniform3f(mu.uKey, 1.0, 0.99, 0.97);
-      gl.uniform3f(mu.uKeyDir, -0.45, 0.72, 0.52);
-      gl.uniform3f(mu.uFillDir, 0.65, -0.25, 0.4);
-      gl.uniform3f(mu.uSky, 0.62, 0.66, 0.74);
-      gl.uniform3f(mu.uGround, 0.12, 0.12, 0.14);
-      gl.uniform3f(mu.uRim, 0.122, 0.435, 0.921);
-      gl.uniform3f(mu.uCamera, cam[0], cam[1], cam[2]);
-      gl.uniform3f(mu.uFog, 0.965, 0.969, 0.980);
-      gl.uniform1f(mu.uFogNear, 40);
-      gl.uniform1f(mu.uFogFar, 120);
-      gl.uniform1f(mu.uOpacity, opacity);
-      gl.drawElements(gl.TRIANGLES, geo.mark.indices.length, gl.UNSIGNED_SHORT, 0);
-
-      canvas.__heroOpacity = opacity;
-      canvas.__stage = { sx: 0, sy: 0, size: 0.72, camZ: 0, progress: 0 };
-
-      frameAcc += now - (frame.last || now);
-      frame.last = now;
-      frameCount++;
-      if (frameCount >= 60) {
-        if (frameAcc / frameCount > 24 && dpr > 0.75) { dpr = Math.max(0.75, dpr - 0.5); resize(); }
-        frameAcc = 0; frameCount = 0;
-      }
-      requestAnimationFrame(frame);
-    }
-
-    function startLoop() { if (!running) { running = true; requestAnimationFrame(frame); } }
-    function stopLoop() { running = false; }
-    if (window.IntersectionObserver) {
-      new IntersectionObserver(function (e) {
-        visible = e[0].isIntersecting;
-        if (visible) startLoop(); else stopLoop();
-      }, { threshold: 0.01 }).observe(canvas);
-    }
-    document.addEventListener("visibilitychange", function () {
-      if (document.hidden) stopLoop(); else startLoop();
-    });
-
-    reveal(canvas, 700);
-
-    startLoop();
-    if (H) H.instances++;
-    return { destroy: stopLoop };
-  }
-
   window.ValtorixStage = {
     mountStage: mountStage,
-    mountHero: mountHero,
     chapters: CHAPTERS,
     chapterOrder: CHAPTER_ORDER,
     instances: 0,

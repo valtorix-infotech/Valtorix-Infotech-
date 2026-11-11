@@ -1,22 +1,17 @@
-const { chromium } = require('playwright');
+const { BASE, launch, newPage, Reporter } = require('./qa/_lib.js');
 const fs = require('fs');
 const path = require('path');
 
-const BASE = process.env.BASE || 'http://localhost:8099';
 const OUT = path.join(__dirname, 'shots3d');
-const results = [];
-
+const reporter = new Reporter('3D stage');
 function check(name, ok, detail) {
-  results.push({ name, ok: !!ok, detail: detail || '' });
-  console.log(`${ok ? 'PASS' : 'FAIL'}  ${name}${detail ? '  -- ' + detail : ''}`);
+  if (ok) reporter.pass('3d', name, detail);
+  else reporter.fail('3d', name, detail);
 }
 
 (async () => {
   fs.mkdirSync(OUT, { recursive: true });
-  const msCache = path.join(process.env.USERPROFILE || '', 'AppData', 'Local', 'ms-playwright');
-  const exe = ['chromium-1248/chrome-win64/chrome.exe', 'chromium-1228/chrome-win64/chrome.exe']
-    .map((c) => path.join(msCache, c)).find((p) => fs.existsSync(p));
-  const browser = await chromium.launch(exe ? { executablePath: exe } : {});
+  const browser = await launch('chromium');
 
   /* ================= desktop ================= */
   const ctx = await browser.newContext({ viewport: { width: 1440, height: 900 } });
@@ -196,10 +191,7 @@ function check(name, ok, detail) {
   await mCtx.close();
 
   await browser.close();
-  const failed = results.filter((r) => !r.ok);
-  console.log(`\n${results.length - failed.length}/${results.length} checks passed`);
-  if (failed.length) {
-    failed.forEach((f) => console.log('  - ' + f.name + (f.detail ? ' :: ' + f.detail : '')));
-    process.exitCode = 1;
-  }
+  const failed = reporter.findings.length;
+  console.log(`\n${reporter.findings.length === 0 ? 'all checks passed' : failed + ' check(s) failed'}`);
+  reporter.summary(path.join(__dirname, 'qa-3d-report.json'));
 })();

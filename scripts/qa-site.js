@@ -11,29 +11,17 @@
          orientation change, multi-step back navigation, hover-only controls,
          long strings, print styles, one WebGL context per page
    ========================================================================== */
-const { chromium } = require('playwright');
+const { BASE, PAGES, launch, newPage, Reporter } = require('./qa/_lib.js');
 const fs = require('fs');
 const path = require('path');
 
-const BASE = process.env.BASE || 'http://localhost:8099';
-const PAGES = (process.env.PAGES || 'index.html,about-us.html,services.html,solutions.html,projects.html,contact.html,start-a-project.html,privacy-policy.html,terms.html,404.html').split(',');
-
-const findings = [];
+const reporter = new Reporter('site QA');
+const fail = (area, message, extra) => reporter.fail(area, message, extra);
+const pass = (area, message, extra) => reporter.pass(area, message, extra);
 const notes = [];
 
-function fail(area, message, extra) {
-  findings.push({ area, message, extra: extra || '' });
-  console.log(`  FAIL [${area}] ${message}${extra ? ' :: ' + extra : ''}`);
-}
-function pass(area, message, extra) {
-  console.log(`  PASS [${area}] ${message}${extra ? ' :: ' + extra : ''}`);
-}
-
 (async () => {
-  const msCache = path.join(process.env.USERPROFILE || '', 'AppData', 'Local', 'ms-playwright');
-  const exe = ['chromium-1248/chrome-win64/chrome.exe', 'chromium-1228/chrome-win64/chrome.exe']
-    .map((c) => path.join(msCache, c)).find((p) => fs.existsSync(p));
-  const browser = await chromium.launch(exe ? { executablePath: exe } : {});
+  const browser = await launch('chromium');
 
   /* ============================================================ P0: links */
   console.log('\n== P0: links and routing ==');
@@ -674,21 +662,6 @@ function pass(area, message, extra) {
 
   await browser.close();
 
-  /* ---------- report ---------- */
-  console.log('\n================ SUMMARY ================');
-  if (!findings.length) console.log('0 failures.');
-  else {
-    const byArea = {};
-    for (const f of findings) (byArea[f.area] = byArea[f.area] || []).push(f);
-    for (const a of Object.keys(byArea)) {
-      console.log(`\n-- ${a} (${byArea[a].length})`);
-      byArea[a].forEach((f) => console.log(`   ${f.message}${f.extra ? ' :: ' + f.extra : ''}`));
-    }
-  }
-  if (notes.length) {
-    console.log('\n-- notes (improvements, not failures) --');
-    notes.forEach((n) => console.log('   ' + n));
-  }
-  fs.writeFileSync(path.join(__dirname, 'qa-report.json'), JSON.stringify({ findings, notes }, null, 2));
-  process.exitCode = findings.length ? 1 : 0;
+  notes.forEach((n) => reporter.note(n));
+  reporter.summary(path.join(__dirname, 'qa-report.json'));
 })();

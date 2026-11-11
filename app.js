@@ -17,17 +17,17 @@
 (function () {
   "use strict";
 
-  var WHATSAPP = "917989369571";
-  var EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+  const WHATSAPP = "917989369571";
+  const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 
   /* ---------- 0. Missing-image fallback ---------- */
   document.addEventListener(
     "error",
     function (e) {
-      var t = e.target;
+      const t = e.target;
       if (t && t.tagName === "IMG" && !t.classList.contains("broken")) {
         t.classList.add("broken");
-        var p = t.parentElement;
+        const p = t.parentElement;
         if (p) p.classList.add("has-broken");
       }
     },
@@ -39,9 +39,9 @@
     history.scrollRestoration = "manual";
   }
 
-  var navbar = document.getElementById("navbar");
-  var menuBtn = document.querySelector(".menu-btn");
-  var navLinks = document.querySelector(".nav-links");
+  const navbar = document.getElementById("navbar");
+  const menuBtn = document.querySelector(".menu-btn");
+  const navLinks = document.querySelector(".nav-links");
 
   function isOpen() {
     return !!(navLinks && navLinks.classList.contains("show"));
@@ -52,7 +52,7 @@
     navLinks.classList.remove("show");
     if (menuBtn) {
       menuBtn.setAttribute("aria-expanded", "false");
-      var icon = menuBtn.querySelector("i");
+      const icon = menuBtn.querySelector("i");
       if (icon) {
         icon.classList.add("fa-bars");
         icon.classList.remove("fa-xmark");
@@ -66,7 +66,7 @@
     navLinks.classList.add("show");
     if (menuBtn) {
       menuBtn.setAttribute("aria-expanded", "true");
-      var icon = menuBtn.querySelector("i");
+      const icon = menuBtn.querySelector("i");
       if (icon) {
         icon.classList.remove("fa-bars");
         icon.classList.add("fa-xmark");
@@ -106,10 +106,10 @@
   );
 
   /* Mark the current page in the nav (unless the markup already did it) */
-  var here = (location.pathname.split("/").pop() || "index.html").toLowerCase();
+  const here = (location.pathname.split("/").pop() || "index.html").toLowerCase();
   if (navLinks) {
     navLinks.querySelectorAll("a[href]").forEach(function (a) {
-      var target = a.getAttribute("href").split("#")[0].toLowerCase();
+      const target = a.getAttribute("href").split("#")[0].toLowerCase();
       if (!target || target === "#") return;
       if (target === here || (here === "" && target === "index.html")) {
         a.classList.add("active");
@@ -119,12 +119,12 @@
   }
 
   /* ---------- 2. Scroll progress bar ---------- */
-  var bar = document.createElement("div");
+  let bar = document.createElement("div");
   bar.className = "scroll-progress";
   document.body.appendChild(bar);
   function paintProgress() {
-    var h = document.documentElement.scrollHeight - window.innerHeight;
-    var pct = h > 0 ? Math.min(100, (window.scrollY / h) * 100) : 0;
+    const h = document.documentElement.scrollHeight - window.innerHeight;
+    const pct = h > 0 ? Math.min(100, (window.scrollY / h) * 100) : 0;
     bar.style.width = pct + "%";
   }
   window.addEventListener("scroll", paintProgress, { passive: true });
@@ -132,9 +132,9 @@
   paintProgress();
 
   /* ---------- 3. Scroll reveal ---------- */
-  var revealEls = document.querySelectorAll(".reveal,.reveal-left,.reveal-right");
+  const revealEls = document.querySelectorAll(".reveal,.reveal-left,.reveal-right");
   if (revealEls.length && "IntersectionObserver" in window) {
-    var io = new IntersectionObserver(
+    const io = new IntersectionObserver(
       function (entries) {
         entries.forEach(function (en) {
           if (en.isIntersecting) {
@@ -171,15 +171,15 @@
 
   /* ---------- 4. FAQ accordion ---------- */
   document.querySelectorAll(".faq-question").forEach(function (btn) {
-    var item = btn.closest(".faq-item");
+    const item = btn.closest(".faq-item");
     if (item) btn.setAttribute("aria-expanded", item.classList.contains("active") ? "true" : "false");
     btn.addEventListener("click", function () {
-      var row = this.closest(".faq-item");
+      const row = this.closest(".faq-item");
       if (!row) return;
-      var wasActive = row.classList.contains("active");
+      const wasActive = row.classList.contains("active");
       document.querySelectorAll(".faq-item").forEach(function (i) {
         i.classList.remove("active");
-        var q = i.querySelector(".faq-question");
+        const q = i.querySelector(".faq-question");
         if (q) q.setAttribute("aria-expanded", "false");
       });
       if (!wasActive) {
@@ -190,8 +190,8 @@
   });
 
   /* ---------- 5. Project filters ---------- */
-  var filterBtns = document.querySelectorAll(".filter-btn");
-  var filterCards = document.querySelectorAll("[data-category]");
+  const filterBtns = document.querySelectorAll(".filter-btn");
+  const filterCards = document.querySelectorAll("[data-category]");
   if (filterBtns.length && filterCards.length) {
     filterBtns.forEach(function (btn) {
       btn.setAttribute("aria-pressed", btn.classList.contains("active") ? "true" : "false");
@@ -202,9 +202,9 @@
         });
         btn.classList.add("active");
         btn.setAttribute("aria-pressed", "true");
-        var f = btn.getAttribute("data-filter");
+        const f = btn.getAttribute("data-filter");
         filterCards.forEach(function (card) {
-          var show = f === "all" || card.getAttribute("data-category") === f;
+          const show = f === "all" || card.getAttribute("data-category") === f;
           card.style.display = show ? "" : "none";
         });
       });
@@ -217,7 +217,7 @@
       track.dataset.doubled = "1";
       /* the loop needs the content twice, but only the first copy is for
          people - a screen reader would otherwise announce every item twice */
-      var clone = track.cloneNode(true);
+      const clone = track.cloneNode(true);
       clone.setAttribute("aria-hidden", "true");
       clone.removeAttribute("data-doubled");
       track.parentNode.appendChild(clone);
@@ -227,24 +227,24 @@
   /* ---------- 6b. 3D pointer tilt on the work cards -----------------------
      Transform-only, so the tilt stays on the compositor and never triggers
      layout. Skipped on touch devices and when reduced motion is requested. */
-  var tiltCards = document.querySelectorAll(".work-card");
+  const tiltCards = document.querySelectorAll(".work-card");
   if (
     tiltCards.length &&
     window.matchMedia &&
     window.matchMedia("(pointer: fine)").matches &&
     !(window.matchMedia("(prefers-reduced-motion: reduce)").matches)
   ) {
-    var MAX_TILT = 4.5; // degrees
-    var pending = null;
-    var ticking = false;
+    const MAX_TILT = 4.5; // degrees
+    let pending = null;
+    let ticking = false;
 
     function applyTilt() {
       ticking = false;
       if (!pending) return;
-      var card = pending.card;
-      var r = pending.rect;
-      var px = (pending.x - (r.left + r.width / 2)) / (r.width / 2);
-      var py = (pending.y - (r.top + r.height / 2)) / (r.height / 2);
+      const card = pending.card;
+      const r = pending.rect;
+      const px = (pending.x - (r.left + r.width / 2)) / (r.width / 2);
+      const py = (pending.y - (r.top + r.height / 2)) / (r.height / 2);
       card.style.setProperty("--tilt-x", (-py * MAX_TILT).toFixed(2) + "deg");
       card.style.setProperty("--tilt-y", (px * MAX_TILT).toFixed(2) + "deg");
       pending = null;
@@ -270,27 +270,27 @@
   }
 
   /* ---------- 7. Animated counters ---------- */
-  var counters = document.querySelectorAll("[data-count-to]");
+  let counters = document.querySelectorAll("[data-count-to]");
   if (counters.length && "IntersectionObserver" in window) {
-    var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    var cio = new IntersectionObserver(
+    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const cio = new IntersectionObserver(
       function (entries) {
         entries.forEach(function (en) {
           if (!en.isIntersecting) return;
           cio.unobserve(en.target);
-          var el = en.target;
-          var to = parseFloat(el.getAttribute("data-count-to"));
-          var suffix = el.getAttribute("data-count-suffix") || "";
+          const el = en.target;
+          const to = parseFloat(el.getAttribute("data-count-to"));
+          const suffix = el.getAttribute("data-count-suffix") || "";
           if (reduce || !isFinite(to)) {
             el.textContent = to + suffix;
             return;
           }
-          var start = performance.now();
-          var dur = 1100;
+          const start = performance.now();
+          const dur = 1100;
           (function tick(now) {
-            var p = Math.min(1, (now - start) / dur);
-            var eased = 1 - Math.pow(1 - p, 3);
-            var val = to * eased;
+            const p = Math.min(1, (now - start) / dur);
+            const eased = 1 - Math.pow(1 - p, 3);
+            const val = to * eased;
             el.textContent = (to % 1 === 0 ? Math.round(val) : val.toFixed(1)) + suffix;
             if (p < 1) requestAnimationFrame(tick);
           })(start);
@@ -314,10 +314,10 @@
     if (!el) return;
     el.style.borderColor = "#d9534f";
     el.setAttribute("aria-invalid", "true");
-    var box = fieldBox(el);
+    const box = fieldBox(el);
     if (box) {
       box.classList.add("invalid");
-      var m = box.querySelector(".field-err");
+      let m = box.querySelector(".field-err");
       if (!m) {
         m = document.createElement("div");
         m.className = "field-err";
@@ -326,7 +326,7 @@
       }
       m.textContent = msg;
       /* point the control at its message so a screen reader announces it */
-      var ids = (el.getAttribute("aria-describedby") || "").split(/\s+/).filter(Boolean);
+      let ids = (el.getAttribute("aria-describedby") || "").split(/\s+/).filter(Boolean);
       if (ids.indexOf(m.id) === -1) {
         ids.push(m.id);
         el.setAttribute("aria-describedby", ids.join(" "));
@@ -337,12 +337,12 @@
     if (!el) return;
     el.style.borderColor = "";
     el.removeAttribute("aria-invalid");
-    var box = fieldBox(el);
+    const box = fieldBox(el);
     if (box) {
       box.classList.remove("invalid");
-      var m = box.querySelector(".field-err");
+      let m = box.querySelector(".field-err");
       if (m) {
-        var ids = (el.getAttribute("aria-describedby") || "").split(/\s+/).filter(Boolean);
+        let ids = (el.getAttribute("aria-describedby") || "").split(/\s+/).filter(Boolean);
         ids = ids.filter(function (id) { return id !== m.id; });
         if (ids.length) el.setAttribute("aria-describedby", ids.join(" "));
         else el.removeAttribute("aria-describedby");
@@ -372,9 +372,9 @@
     }, 450);
   }
   function toast(msg) {
-    var old = document.querySelector(".v-toast");
+    const old = document.querySelector(".v-toast");
     if (old) old.remove();
-    var t = document.createElement("div");
+    const t = document.createElement("div");
     t.className = "v-toast";
     t.setAttribute("role", "status");
     t.textContent = msg;
@@ -390,7 +390,7 @@
     }, 3200);
   }
   function checkField(id, test, msg) {
-    var e = document.getElementById(id);
+    const e = document.getElementById(id);
     if (!e) return { ok: true, el: null };
     liveClear(e);
     if (test(e.value.trim())) {
@@ -402,16 +402,16 @@
   }
   function pickBox(g) {
     if (!g) return null;
-    var box = g.closest ? g.closest(".field") : null;
+    const box = g.closest ? g.closest(".field") : null;
     return box || g.parentElement;
   }
   function setPickErr(groupId, msg) {
-    var g = document.getElementById(groupId);
+    const g = document.getElementById(groupId);
     if (!g) return null;
-    var box = pickBox(g);
+    const box = pickBox(g);
     if (box) box.classList.add("invalid");
     g.classList.add("pick-missing");
-    var m = box ? box.querySelector(".pick-error") : null;
+    let m = box ? box.querySelector(".pick-error") : null;
     if (box && !m) {
       m = document.createElement("div");
       m.className = "pick-error";
@@ -424,22 +424,22 @@
     return g;
   }
   function clearPickErr(groupId) {
-    var g = document.getElementById(groupId);
+    const g = document.getElementById(groupId);
     if (!g) return;
-    var box = pickBox(g);
+    const box = pickBox(g);
     if (box) {
       box.classList.remove("invalid");
-      var m = box.querySelector(".pick-error");
+      let m = box.querySelector(".pick-error");
       if (m) m.style.display = "none";
     }
     g.classList.remove("pick-missing");
   }
   function setTermsErr(msg) {
-    var t = document.getElementById("terms");
+    const t = document.getElementById("terms");
     if (!t) return;
     t.style.outline = "2px solid #d9534f";
-    var host = t.closest(".review-body") || t.parentElement;
-    var m = host.querySelector(".pick-error");
+    const host = t.closest(".review-body") || t.parentElement;
+    let m = host.querySelector(".pick-error");
     if (!m) {
       m = document.createElement("div");
       m.className = "pick-error";
@@ -449,12 +449,12 @@
     m.style.display = "";
   }
   function clearTermsErr() {
-    var t = document.getElementById("terms");
+    const t = document.getElementById("terms");
     if (!t) return;
     t.style.outline = "";
-    var host = t.closest(".review-body") || t.parentElement;
+    const host = t.closest(".review-body") || t.parentElement;
     if (host) {
-      var m = host.querySelector(".pick-error");
+      let m = host.querySelector(".pick-error");
       if (m) m.style.display = "none";
     }
   }
@@ -462,21 +462,21 @@
     return "https://wa.me/" + WHATSAPP + "?text=" + encodeURIComponent(msg);
   }
   function formError(hostSel, msg, wa) {
-    var host = document.querySelector(hostSel);
+    const host = document.querySelector(hostSel);
     if (!host) {
       toast(msg);
       return;
     }
-    var old = host.querySelector(".send-error");
+    const old = host.querySelector(".send-error");
     if (old) old.remove();
-    var d = document.createElement("div");
+    const d = document.createElement("div");
     d.className = "send-error";
     d.setAttribute("role", "alert");
-    var p = document.createElement("div");
+    const p = document.createElement("div");
     p.textContent = msg;
     d.appendChild(p);
     if (wa) {
-      var a = document.createElement("a");
+      const a = document.createElement("a");
       a.href = wa;
       a.target = "_blank";
       a.rel = "noopener noreferrer";
@@ -488,12 +488,12 @@
     d.scrollIntoView({ behavior: "smooth", block: "center" });
   }
   function sendToOwner(payload) {
-    var fields = {};
+    const fields = {};
     Object.keys(payload).forEach(function (k) {
       if (k.charAt(0) !== "_") fields[k] = payload[k];
     });
-    var ctrl = null;
-    var timer = null;
+    let ctrl = null;
+    let timer = null;
     if (window.AbortController) {
       ctrl = new AbortController();
       timer = window.setTimeout(function () {
@@ -502,7 +502,7 @@
         } catch (e) {}
       }, 30000);
     }
-    var p = fetch("/api/send", {
+    const p = fetch("/api/send", {
       method: "POST",
       headers: { "Content-Type": "application/json", Accept: "application/json" },
       body: JSON.stringify({
@@ -537,12 +537,12 @@
     return "Could not send right now. Please try again in a minute, or tap below to send the same details on WhatsApp — we reply Mon–Sat 9AM–9PM.";
   }
   function honeypotTripped() {
-    var hp = document.getElementById("website");
+    const hp = document.getElementById("website");
     return !!(hp && hp.value.trim().length > 0);
   }
 
   /* ---------- 8. Contact form ---------- */
-  var subjects = document.querySelectorAll(".subject");
+  const subjects = document.querySelectorAll(".subject");
   subjects.forEach(function (s) {
     s.addEventListener("click", function () {
       subjects.forEach(function (x) {
@@ -552,18 +552,18 @@
     });
   });
 
-  var contactForm = document.getElementById("contactFormElement");
+  const contactForm = document.getElementById("contactFormElement");
   if (contactForm) {
     contactForm.addEventListener("submit", function (e) {
       e.preventDefault();
-      var checks = [
+      const checks = [
         checkField("cname", function (v) { return v.length >= 3; }, "Please enter your full name (min 3 letters)."),
         checkField("cemail", function (v) { return EMAIL_RE.test(v); }, "Please enter a valid email address (e.g. you@company.com)."),
         checkField("cphone", function (v) { return digitsOnly(v).length >= 10; }, "Please enter a valid 10-digit mobile number."),
         checkField("cmessage", function (v) { return v.length >= 10; }, "Please write your message (min 10 characters).")
       ];
-      var firstBad = null;
-      var allOk = true;
+      let firstBad = null;
+      let allOk = true;
       checks.forEach(function (c) {
         if (!c.ok) {
           allOk = false;
@@ -580,18 +580,18 @@
         return;
       }
 
-      var btn = contactForm.querySelector('[type="submit"]');
-      var orig = btn ? btn.innerHTML : "";
+      const btn = contactForm.querySelector('[type="submit"]');
+      const orig = btn ? btn.innerHTML : "";
       if (btn) {
         btn.disabled = true;
         btn.innerHTML = "Sending…";
       }
-      var gv = function (id) {
-        var el = document.getElementById(id);
+      const gv = function (id) {
+        const el = document.getElementById(id);
         return (el && el.value.trim()) || "—";
       };
-      var subj = document.querySelector(".subject.selected");
-      var payload = {
+      const subj = document.querySelector(".subject.selected");
+      const payload = {
         Name: gv("cname"),
         Company: gv("ccompany"),
         Email: gv("cemail"),
@@ -603,7 +603,7 @@
         _subject: "New Contact Message — VALTORIX Website",
         _replyto: gv("cemail")
       };
-      var waTextC =
+      const waTextC =
         "New enquiry — VALTORIX website\nName: " +
         gv("cname") +
         "\nPhone: " +
@@ -616,8 +616,8 @@
         sendToOwner(payload)
           .then(function (res) {
             if (!isSent(res)) sendFailed();
-            var card = document.getElementById("contactForm");
-            var success = document.getElementById("successMessage");
+            const card = document.getElementById("contactForm");
+            const success = document.getElementById("successMessage");
             if (card) card.style.display = "none";
             if (success) {
               success.style.display = "block";
@@ -640,7 +640,7 @@
                 b.classList.remove("invalid");
               });
               ["cname", "cemail", "cphone", "cmessage"].forEach(function (id) {
-                var x = document.getElementById(id);
+                const x = document.getElementById(id);
                 if (x) x.style.borderColor = "";
               });
               if (btn) {
@@ -667,16 +667,16 @@
   }
 
   /* ---------- 9. Start-a-project multi-step ---------- */
-  var projectForm = document.getElementById("projectForm");
+  const projectForm = document.getElementById("projectForm");
   if (projectForm) {
-    var state = { step: 1, type: "", timeline: "", budget: "", goals: [] };
-    var steps = document.querySelectorAll(".form-step");
-    var backBtn = document.getElementById("backBtn");
-    var nextBtn = document.getElementById("nextBtn");
+    const state = { step: 1, type: "", timeline: "", budget: "", goals: [] };
+    const steps = document.querySelectorAll(".form-step");
+    const backBtn = document.getElementById("backBtn");
+    const nextBtn = document.getElementById("nextBtn");
 
     function paint() {
       document.querySelectorAll(".progress-step").forEach(function (el, i) {
-        var n = i + 1;
+        const n = i + 1;
         el.classList.toggle("active", n === state.step);
         el.classList.toggle("done", n < state.step);
       });
@@ -692,19 +692,19 @@
         el.style.display = +el.getAttribute("data-step") === n ? "block" : "none";
       });
       paint();
-      var area = document.getElementById("formArea");
+      const area = document.getElementById("formArea");
       if (area) area.scrollIntoView({ behavior: "smooth", block: "start" });
       if (n === 4) fillReview();
     }
 
     function val(id) {
-      var e = document.getElementById(id);
+      const e = document.getElementById(id);
       return (e && e.value.trim()) || "—";
     }
 
     function fillReview() {
-      var set = function (id, v) {
-        var e = document.getElementById(id);
+      const set = function (id, v) {
+        const e = document.getElementById(id);
         if (e) e.textContent = v;
       };
       set("rType", state.type || "—");
@@ -727,8 +727,8 @@
 
     function validStep() {
       if (state.step === 1) {
-        var firstBad = null;
-        var ok = true;
+        let firstBad = null;
+        let ok = true;
         if (!state.type) {
           setPickErr("projectType", "Please choose a project type to continue.");
           ok = false;
@@ -736,7 +736,7 @@
         } else {
           clearPickErr("projectType");
         }
-        var checks = [
+        const checks = [
           checkField("projectTitle", function (v) { return v.length >= 3; }, "Please give your project a title."),
           checkField("name", function (v) { return v.length >= 3; }, "Please enter your full name (min 3 letters)."),
           checkField("email", function (v) { return EMAIL_RE.test(v); }, "Please enter a valid email address."),
@@ -756,7 +756,7 @@
         return ok;
       }
       if (state.step === 2) {
-        var c2 = checkField("requirements", function (v) { return v.length >= 10; }, "Please describe your requirements in detail (min 10 characters).");
+        const c2 = checkField("requirements", function (v) { return v.length >= 10; }, "Please describe your requirements in detail (min 10 characters).");
         if (!c2.ok) {
           toast("Please complete the highlighted field.");
           gotoEl(c2.el);
@@ -765,7 +765,7 @@
         return true;
       }
       if (state.step === 3) {
-        var bad3 = null;
+        let bad3 = null;
         if (!state.timeline) {
           setPickErr("timelineChoices", "Please pick your project timeline.");
           bad3 = bad3 || document.getElementById("timelineChoices");
@@ -786,7 +786,7 @@
         return true;
       }
       if (state.step === 4) {
-        var t = document.getElementById("terms");
+        const t = document.getElementById("terms");
         if (t && !t.checked) {
           setTermsErr("Please tick this box to agree to the Terms & Privacy Policy.");
           toast("Please agree to the Terms & Privacy Policy.");
@@ -811,7 +811,7 @@
     });
 
     function choiceGroup(groupId, prop, multi) {
-      var sel = multi ? "#" + groupId + " .option" : "#" + groupId + " .choice";
+      const sel = multi ? "#" + groupId + " .option" : "#" + groupId + " .choice";
       document.querySelectorAll(sel).forEach(function (o) {
         o.addEventListener("click", function () {
           clearPickErr(groupId);
@@ -849,8 +849,8 @@
           return;
         }
 
-        var d = new Date();
-        var id =
+        const d = new Date();
+        const id =
           "VTX-" +
           d.getFullYear() +
           "-" +
@@ -858,12 +858,12 @@
           String(d.getDate()).padStart(2, "0") +
           "-" +
           Math.floor(1000 + Math.random() * 9000);
-        var ref = document.getElementById("referenceId");
+        const ref = document.getElementById("referenceId");
         if (ref) ref.textContent = id;
-        var origNext = nextBtn.innerHTML;
+        const origNext = nextBtn.innerHTML;
         nextBtn.disabled = true;
         nextBtn.innerHTML = "Sending…";
-        var payload = {
+        const payload = {
           "Reference ID": id,
           "Project Type": state.type || "—",
           "Project Title": val("projectTitle"),
@@ -886,7 +886,7 @@
           _subject: "New Project Request [" + id + "] — VALTORIX Website",
           _replyto: val("email")
         };
-        var waTextP =
+        const waTextP =
           "New project request — VALTORIX website\nType: " +
           (state.type || "-") +
           "\nTitle: " +
@@ -903,8 +903,8 @@
           sendToOwner(payload)
             .then(function (res) {
               if (!isSent(res)) sendFailed();
-              var flow = document.getElementById("formFlow");
-              var done = document.getElementById("successPage");
+              const flow = document.getElementById("formFlow");
+              const done = document.getElementById("successPage");
               if (flow) flow.style.display = "none";
               if (done) done.style.display = "block";
               window.scrollTo({ top: 0, behavior: "smooth" });
@@ -927,7 +927,7 @@
         show(state.step - 1);
       });
     }
-    var termsBox = document.getElementById("terms");
+    const termsBox = document.getElementById("terms");
     if (termsBox) {
       termsBox.addEventListener("change", function () {
         clearTermsErr();
@@ -945,19 +945,19 @@
      The Google Maps embed is ~200 KB of third-party JavaScript. It is only
      loaded once the map is about to be seen, and a styled placeholder holds
      the space until it arrives. */
-  var lazyMaps = document.querySelectorAll("iframe[data-map-src]");
+  const lazyMaps = document.querySelectorAll("iframe[data-map-src]");
   if (lazyMaps.length) {
     function loadMap(frame) {
       if (frame.dataset.mapLoaded) return;
       frame.dataset.mapLoaded = "1";
       frame.addEventListener("load", function () {
-        var card = frame.closest(".map-card");
+        const card = frame.closest(".map-card");
         if (card) card.classList.add("is-loaded");
       });
       frame.src = frame.getAttribute("data-map-src");
     }
     function wireMap(frame) {
-      var btn = frame.parentNode && frame.parentNode.querySelector("[data-map-load]");
+      const btn = frame.parentNode && frame.parentNode.querySelector("[data-map-load]");
       if (btn) {
         btn.addEventListener("click", function () {
           loadMap(frame);
@@ -966,7 +966,7 @@
     }
     lazyMaps.forEach(wireMap);
     if (window.IntersectionObserver) {
-      var mapObserver = new IntersectionObserver(
+      const mapObserver = new IntersectionObserver(
         function (entries) {
           entries.forEach(function (e) {
             if (e.isIntersecting) {
@@ -985,9 +985,9 @@
 
   /* ---------- 10. Character counters ---------- */
   document.querySelectorAll("textarea[id]").forEach(function (ta) {
-    var out = document.querySelector('[data-count="' + ta.id + '"]');
+    const out = document.querySelector('[data-count="' + ta.id + '"]');
     if (!out) return;
-    var update = function () {
+    const update = function () {
       out.textContent = ta.value.length;
     };
     ta.addEventListener("input", update);

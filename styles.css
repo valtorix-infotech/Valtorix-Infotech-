@@ -11,8 +11,6 @@
 :root {
   /* Ink & surfaces */
   --ink: #0a0a0a;
-  --ink-2: #1c1c1c;
-  --ink-3: #2e2e2e;
   --paper: #ffffff;
   --paper-2: #f7f7f5;
   --paper-3: #efefec;
@@ -39,6 +37,8 @@
      section tint, 5.08 on paper-3. */
   --accent: #1a5fd0;
   --accent-2: #0b4eb8;
+  /* the accent on an ink surface: #1a5fd0 is only 3.18:1 there */
+  --accent-light: #4f9bff;
   --accent-soft: rgba(26, 95, 208, 0.1);
   --accent-line: rgba(26, 95, 208, 0.32);
 
@@ -68,14 +68,12 @@
   --r-pill: 999px;
 
   /* Shadow */
-  --sh-xs: 0 1px 2px rgba(10, 10, 10, 0.05);
   --sh-sm: 0 2px 10px rgba(10, 10, 10, 0.06);
   --sh-md: 0 12px 32px rgba(10, 10, 10, 0.08);
   --sh-lg: 0 28px 64px rgba(10, 10, 10, 0.12);
 
   /* Layout */
   --container: min(1240px, 92%);
-  --gutter: clamp(20px, 4vw, 40px);
   --nav-h: 72px;
   --section-y: clamp(68px, 8.5vw, 118px);
 
@@ -251,10 +249,6 @@ hr {
   color: var(--fg-on-dark-2);
 }
 
-.section--line {
-  border-top: 1px solid var(--line);
-}
-
 .grid {
   display: grid;
   gap: var(--sp-5);
@@ -353,8 +347,7 @@ hr {
   flex: none;
 }
 
-.on-dark .eyebrow,
-.section--ink .eyebrow {
+.section--ink .eyebrow{
   border-color: var(--line-dark-2);
   background: rgba(255, 255, 255, 0.04);
   color: var(--fg-on-dark-2);
@@ -380,48 +373,37 @@ hr {
 .cta-band h3,
 .cta-band h4,
 .cta-band h5,
-.cta-band h6,
-.on-dark h1,
-.on-dark h2,
-.on-dark h3,
-.on-dark h4,
-.on-dark h5,
-.on-dark h6 {
+.cta-band h6{
   color: var(--fg-on-dark);
 }
 
 .section--ink .section-tag,
 .dark-band .section-tag,
-.cta-band .section-tag,
-.on-dark .section-tag {
+.cta-band .section-tag{
   color: var(--fg-on-dark-2);
 }
 
 .section--ink .section-tag::before,
 .dark-band .section-tag::before,
-.cta-band .section-tag::before,
-.on-dark .section-tag::before {
+.cta-band .section-tag::before{
   background: var(--accent);
 }
 
 .section--ink p,
 .dark-band p,
-.cta-band p,
-.on-dark p {
+.cta-band p{
   color: var(--fg-on-dark-2);
 }
 
 .section--ink .notice,
 .dark-band .notice,
-.cta-band .notice,
-.on-dark .notice {
+.cta-band .notice{
   color: var(--fg-on-dark-3);
 }
 
 .section--ink .card-num,
 .dark-band .card-num,
-.cta-band .card-num,
-.on-dark .card-num {
+.cta-band .card-num{
   color: var(--fg-on-dark-3);
 }
 
@@ -486,27 +468,23 @@ hr {
   color: var(--accent);
 }
 
-.section--ink .btn-primary,
-.on-dark .btn-primary {
+.section--ink .btn-primary{
   background: #fff;
   color: var(--ink);
 }
 
-.section--ink .btn-primary:hover,
-.on-dark .btn-primary:hover {
+.section--ink .btn-primary:hover{
   background: var(--accent);
   color: #fff;
 }
 
-.section--ink .btn-outline,
-.on-dark .btn-outline {
+.section--ink .btn-outline{
   background: transparent;
   color: #fff;
   border-color: var(--line-dark-2);
 }
 
-.section--ink .btn-outline:hover,
-.on-dark .btn-outline:hover {
+.section--ink .btn-outline:hover{
   border-color: #fff;
   background: rgba(255, 255, 255, 0.06);
 }
@@ -596,13 +574,11 @@ hr {
   padding-left: 1px;
 }
 
-.on-dark .logo-word b,
-.section--ink .logo-word b {
+.section--ink .logo-word b{
   color: #fff;
 }
 
-.on-dark .logo-word span,
-.section--ink .logo-word span {
+.section--ink .logo-word span{
   color: var(--fg-on-dark-3);
 }
 
@@ -748,34 +724,6 @@ hr {
   margin-top: var(--sp-6);
 }
 
-.hero-meta {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px 28px;
-  margin-top: var(--sp-7);
-  padding-top: var(--sp-5);
-  border-top: 1px solid var(--line);
-}
-
-.hero-meta div {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-}
-
-.hero-meta strong {
-  font-family: var(--font-display);
-  font-size: 22px;
-  font-weight: 700;
-  letter-spacing: -0.02em;
-}
-
-.hero-meta span {
-  font-size: 12.5px;
-  color: var(--fg-dim);
-  letter-spacing: 0.02em;
-}
-
 /* Hero copy must never start at opacity:0 — Chrome ignores fully transparent
    text as an LCP candidate, so a fade-in would delay Largest Contentful Paint
    by the length of the animation. Start from a barely-visible value instead. */
@@ -792,10 +740,6 @@ hr {
 
 .hero-text {
   animation: hero-rise 0.7s var(--ease) both;
-}
-
-.hero-visual {
-  animation: hero-rise 0.8s 0.08s var(--ease) both;
 }
 
 .hero-grid > * {
@@ -974,77 +918,12 @@ main,
 }
 
 /* The framed mark panel is only used where there is no 3D canvas */
-.hero-frame {
-  position: relative;
-  border: 1px solid var(--line);
-  border-radius: var(--r-xl);
-  background: linear-gradient(160deg, var(--paper-2), var(--paper-3));
-  padding: clamp(28px, 4vw, 56px);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: var(--sh-md);
-  overflow: hidden;
-}
-
-.hero-frame::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: radial-gradient(circle at 78% 18%, rgba(31, 111, 235, 0.12), transparent 52%);
-  pointer-events: none;
-}
-
-
-
 
 /* Inner-page hero: the same brand object, smaller. Positioned absolutely so
    the hero copy keeps its single-column flow.
    NB: this needs the child combinator to outrank `.page-hero > *` below. */
 .page-hero {
   position: relative;
-}
-
-.page-hero > .page-hero-art {
-  position: absolute;
-  right: max(4%, calc((100% - var(--container)) / 2));
-  top: 50%;
-  transform: translateY(-50%);
-  width: clamp(170px, 20vw, 260px);
-  z-index: 1;
-}
-
-
-
-
-.hero-chip {
-  position: absolute;
-  display: flex;
-  align-items: center;
-  gap: 9px;
-  padding: 10px 15px;
-  border-radius: var(--r-pill);
-  background: var(--paper);
-  border: 1px solid var(--line);
-  box-shadow: var(--sh-md);
-  font-size: 12.5px;
-  font-weight: 700;
-  color: var(--fg-2);
-  white-space: nowrap;
-}
-
-.hero-chip i {
-  color: var(--accent);
-}
-
-.hero-chip--tl {
-  top: 20px;
-  left: -14px;
-}
-
-.hero-chip--br {
-  bottom: 22px;
-  right: -12px;
 }
 
 /* ---------- 9. Page hero (inner pages) ---------- */
@@ -1251,19 +1130,16 @@ main,
   color: var(--fg-muted);
 }
 
-.section--ink .stats,
-.on-dark .stats {
+.section--ink .stats{
   background: var(--line-dark);
   border-color: var(--line-dark);
 }
 
-.section--ink .stat,
-.on-dark .stat {
+.section--ink .stat{
   background: var(--ink);
 }
 
-.section--ink .stat span,
-.on-dark .stat span {
+.section--ink .stat span{
   color: var(--fg-on-dark-2);
 }
 
@@ -1368,7 +1244,6 @@ main,
 
 .work-card:hover {
   border-color: var(--line-2);
-  transform: translateY(-4px);
   box-shadow: var(--sh-md);
 }
 
@@ -1386,8 +1261,7 @@ main,
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .hero-text,
-  .hero-visual {
+  .hero-text{
     animation: none;
     opacity: 1;
     transform: none;
@@ -1406,7 +1280,8 @@ main,
   overflow: hidden;
 }
 
-.work-media img {
+/* every media surface fills its frame the same way */
+.work-media img{
   width: 100%;
   height: 100%;
   object-fit: cover;
@@ -2352,14 +2227,6 @@ main,
   margin-top: 4px;
 }
 
-.note {
-  border-left: 2px solid var(--accent);
-  padding: var(--sp-3) 0 var(--sp-3) var(--sp-4);
-  color: var(--fg-muted);
-  font-size: 14.5px;
-  line-height: 1.7;
-}
-
 .prose {
   max-width: 72ch;
 }
@@ -2466,17 +2333,6 @@ main,
   overflow: hidden;
 }
 
-.img-card-media img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transition: transform 0.6s var(--ease);
-}
-
-.img-card:hover .img-card-media img {
-  transform: scale(1.04);
-}
-
 .img-card-body {
   padding: var(--sp-4) var(--sp-5) var(--sp-5);
 }
@@ -2579,25 +2435,216 @@ main,
 }
 
 /* ---------- 27. Scroll progress ---------- */
-.scroll-progress {
-  position: fixed;
-  top: 0;
-  left: 0;
-  height: 2px;
-  background: var(--accent);
-  z-index: 1000;
-  width: 0;
-  transition: width 0.1s linear;
+
+/* ---------- 29. Utilities -----------------------------------------------
+   These replace the inline styles the markup used to carry. Everything
+   visual now lives in this file, so a change is one edit and a diff. */
+.mt-sm { margin-top: var(--sp-3); }
+.mt-md { margin-top: var(--sp-4); }
+.mt-lg { margin-top: var(--sp-5); }
+.mt-xl { margin-top: var(--sp-6); }
+.mt-2xl { margin-top: var(--sp-7); }
+.mb-md { margin-bottom: var(--sp-4); }
+.mb-lg { margin-bottom: var(--sp-6); }
+.mt-md-center { margin: var(--sp-4) auto 0; }
+.mt-lg-center { margin: var(--sp-5) auto 0; }
+.mb-lg-center { margin: 0 auto var(--sp-6); }
+.center { justify-content: center; }
+.center-text { text-align: center; }
+.center-inline { margin-inline: auto; }
+.narrow { max-width: 760px; }
+.is-hidden { display: none; }
+.is-shown { display: block; }
+.no-top-rule { border-top: 0; }
+.flex-none { flex: none; }
+.order-1 { order: 1; }
+.order-2 { order: 2; }
+
+/* A card on a dark surface. The colours are scoped to the container rather
+   than set on each element, so they outrank the base .card rules instead of
+   losing to them. */
+.card--ink {
+  background: #131313;
+  border-color: var(--line-dark);
+  color: var(--fg-on-dark-2);
+}
+.card--ink h2,
+.card--ink h3,
+.card--ink h4 {
+  color: var(--fg-on-dark);
+}
+.card--ink p,
+.card--ink li {
+  color: var(--fg-on-dark-2);
+}
+.card--ink .card-num {
+  color: var(--fg-on-dark-3);
+}
+.card--ink .card-num.is-accent {
+  color: var(--accent-light);
+}
+.card--ink .section-tag {
+  color: var(--fg-on-dark-3);
+}
+.card--ink .note-sm {
+  color: var(--fg-on-dark-2);
+}
+.surface-2 { background: var(--paper-2); }
+.on-light { color: var(--fg); }
+.muted-icon { color: var(--fg-dim); }
+.muted-strong { color: var(--fg-dim); font-weight: 600; }
+.link-strong { color: var(--accent); font-weight: 700; }
+
+/* headings used inside cards */
+.h-inline { font-size: 24px; }
+.h-card-sm {
+  font-size: 20px;
+  margin: 6px 0 10px;
+}
+.note-sm {
+  font-size: 15px;
+  color: var(--fg-muted);
+}
+
+/* two-up variants of the stats grid */
+.stats--two { grid-template-columns: 1fr 1fr; }
+
+@media (max-width: 480px) {
+  .stats--two { grid-template-columns: 1fr; }
+}
+
+/* the 404 page */
+.error-hero {
+  min-height: 70vh;
+  display: flex;
+  align-items: center;
+}
+.error-title {
+  font-size: clamp(34px, 6vw, 64px);
+  max-width: none;
+}
+
+/* the project-request form */
+.row-center {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: var(--sp-5);
+}
+.ref-card {
+  max-width: 520px;
+  margin: var(--sp-6) auto 0;
+  text-align: left;
+  display: flex;
+  gap: 16px;
+  align-items: center;
+}
+.ref-id {
+  font-family: var(--font-display);
+  font-size: 21px;
+}
+.checkbox {
+  margin-top: 3px;
+  accent-color: var(--accent);
+  width: 17px;
+  height: 17px;
+  flex: none;
+}
+.terms-check {
+  display: flex;
+  gap: 11px;
+  align-items: flex-start;
+  font-size: 13.5px;
+  color: var(--fg-2);
+  line-height: 1.55;
+  cursor: pointer;
+}
+
+/* the map placeholder that holds the space until Google Maps loads */
+.map-card {
+  position: relative;
+  overflow: hidden;
+  min-height: 340px;
+}
+.map-placeholder {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: var(--sp-6);
+  text-align: center;
+  background: linear-gradient(160deg, var(--paper-2), var(--paper-3));
+}
+.map-placeholder > i {
+  font-size: 26px;
+  color: var(--accent);
+}
+.map-placeholder strong {
+  font-family: var(--font-display);
+  font-size: 18px;
+}
+.map-placeholder span {
+  font-size: 14px;
+  color: var(--fg-muted);
+  max-width: 34ch;
+}
+.map-placeholder .btn {
+  margin-top: 6px;
+}
+.map-frame {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  min-height: 340px;
+  border: 0;
+  display: block;
+  opacity: 0;
+  transition: opacity 0.4s var(--ease);
+}
+.map-card.is-loaded .map-frame {
+  opacity: 1;
+}
+.map-card.is-loaded .map-placeholder {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s var(--ease);
+}
+
+/* the trust row under the hero buttons */
+.hero-trust {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 26px;
+  margin-top: var(--sp-5);
+  list-style: none;
+  padding: 0;
+}
+.hero-trust li {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--fg-muted);
+}
+.hero-trust i {
+  color: var(--accent);
+  font-size: 12px;
+}
+.hero-aside {
+  position: relative;
+  min-height: 240px;
 }
 
 /* ---------- 28. Responsive ---------- */
 @media (max-width: 1080px) {
   .hero-grid {
     grid-template-columns: 1fr;
-  }
-
-  .hero-frame {
-    max-width: 460px;
   }
 
   .grid-4 {
@@ -2620,10 +2667,6 @@ main,
 @media (max-width: 960px) {
   :root {
     --nav-h: 64px;
-  }
-
-  .page-hero-art {
-    display: none;
   }
 
   .nav-links {
@@ -2711,16 +2754,6 @@ main,
     align-items: flex-start;
   }
 
-  .hero-chip--tl {
-    left: 8px;
-    top: 10px;
-  }
-
-  .hero-chip--br {
-    right: 8px;
-    bottom: 12px;
-  }
-
   .cta-band-inner {
     flex-direction: column;
     align-items: flex-start;
@@ -2733,10 +2766,6 @@ main,
   .t-item {
     grid-template-columns: 1fr;
     gap: 8px;
-  }
-
-  .hero-meta {
-    gap: 18px 24px;
   }
 }
 
@@ -2780,10 +2809,8 @@ main,
   #navbar,
   .menu-btn,
   .cta-band,
-  .hero-visual,
   .footer,
-  .v-toast,
-  .scroll-progress {
+  .v-toast{
     display: none !important;
   }
 

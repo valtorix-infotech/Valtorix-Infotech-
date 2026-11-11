@@ -16,38 +16,23 @@
      - the mobile drawer, the FAQ accordion and the work filters
      - console errors
    ========================================================================== */
-const { chromium, firefox, webkit } = require('playwright');
+const { BASE, PAGES, launch, newPage, Reporter } = require('./qa/_lib.js');
 const fs = require('fs');
 const path = require('path');
 
-const BASE = process.env.BASE || 'http://localhost:8099';
-const PAGES = ['index.html', 'services.html', 'projects.html', 'contact.html', 'start-a-project.html'];
-
-const findings = [];
-
-function flag(engine, page, kind, detail) {
-  findings.push({ engine, page, kind, detail });
-  console.log(`  FAIL [${engine}] ${page}: ${kind} :: ${detail}`);
-}
+const reporter = new Reporter('cross-browser');
+const flag = (engine, page, kind, detail) => reporter.fail(kind, `${engine} / ${page}`, detail);
 
 (async () => {
-  const msCache = path.join(process.env.USERPROFILE || '', 'AppData', 'Local', 'ms-playwright');
-  const exe = ['chromium-1248/chrome-win64/chrome.exe', 'chromium-1228/chrome-win64/chrome.exe']
-    .map((c) => path.join(msCache, c)).find((p) => fs.existsSync(p));
-
-  const engines = [
-    { name: 'chromium', type: chromium, opts: exe ? { executablePath: exe } : {} },
-    { name: 'firefox', type: firefox, opts: {} },
-    { name: 'webkit', type: webkit, opts: {} },
-  ];
+  const engines = ['chromium', 'firefox', 'webkit'];
 
   for (const eng of engines) {
-    console.log(`\n== ${eng.name} ==`);
+    console.log(`\n== ${eng} ==`);
     let browser;
     try {
-      browser = await eng.type.launch(eng.opts);
+      browser = await launch(eng);
     } catch (e) {
-      flag(eng.name, '-', 'browser-unavailable', e.message.slice(0, 90));
+      flag(eng, '-', 'browser-unavailable', e.message.slice(0, 90));
       continue;
     }
 
@@ -102,20 +87,21 @@ function flag(engine, page, kind, detail) {
         });
       });
 
-      if (r.canScrollX > 0) flag(eng.name, p, 'horizontal-scroll', r.canScrollX + 'px');
-      if (r.broken) flag(eng.name, p, 'broken-images', r.broken + ' image(s)');
-      if (!r.h1) flag(eng.name, p, 'no-heading', 'the page did not render');
-      if (!r.supports.overflowClip) flag(eng.name, p, 'css-gap', 'overflow-x: clip is not supported');
-      if (!r.supports.displayContents) flag(eng.name, p, 'css-gap', 'display: contents is not supported');
-      if (!r.supports.webp) flag(eng.name, p, 'no-webp', 'WebP decoding failed');
+      if (r.canScrollX > 0) flag(eng, p, 'horizontal-scroll', r.canScrollX + 'px');
+      if (r.broken) flag(eng, p, 'broken-images', r.broken + ' image(s)');
+      if (!r.h1) flag(eng, p, 'no-heading', 'the page did not render');
+      if (!r.supports.overflowClip) flag(eng, p, 'css-gap', 'overflow-x: clip is not supported');
+      if (!r.supports.displayContents) flag(eng, p, 'css-gap', 'display: contents is not supported');
+      if (!r.supports.webp) flag(eng, p, 'no-webp', 'WebP decoding failed');
       if (r.refusal && r.refusal !== 'reduced-motion') {
-        flag(eng.name, p, '3d-refused', r.refusal);
+        flag(eng, p, '3d-refused', r.refusal);
       }
       if (r.refusal === 'reduced-motion') {
         /* the reduced-motion path must still be a complete page */
-        if (Number(r.canvasOpacity) > 0.01) flag(eng.name, p, '3d-shown', 'the scene rendered under reduced motion');
-      } else if (r.instances !== 1) {
-        flag(eng.name, p, '3d-not-mounted', 'instances=' + r.instances);
+        if (Number(r.canvasOpacity) > 0.01) flag(eng, p, '3d-shown', 'the scene rendered under reduced motion');
+      } else if (r.instances !== 1 && !/404/.test(p)) {
+        /* the 404 page carries no stage by design */
+        flag(eng, p, '3d-not-mounted', 'instances=' + r.instances);
       }
     }
 
@@ -136,9 +122,9 @@ function flag(engine, page, kind, detail) {
       return { visible, restored, pressed, total: document.querySelectorAll('[data-category]').length };
     });
     if (typeof filtered === 'object') {
-      if (filtered.visible !== 1) flag(eng.name, 'projects.html', 'filter', `AI filter showed ${filtered.visible} of ${filtered.total}`);
-      if (filtered.restored !== filtered.total) flag(eng.name, 'projects.html', 'filter', `"all" restored ${filtered.restored} of ${filtered.total}`);
-      if (filtered.pressed !== 'true') flag(eng.name, 'projects.html', 'filter', 'aria-pressed was not set on the active filter');
+      if (filtered.visible !== 1) flag(eng, 'projects.html', 'filter', `AI filter showed ${filtered.visible} of ${filtered.total}`);
+      if (filtered.restored !== filtered.total) flag(eng, 'projects.html', 'filter', `"all" restored ${filtered.restored} of ${filtered.total}`);
+      if (filtered.pressed !== 'true') flag(eng, 'projects.html', 'filter', 'aria-pressed was not set on the active filter');
     }
 
     await page.goto(`${BASE}/index.html?cb=${Date.now()}`, { waitUntil: 'load', timeout: 45000 });
@@ -151,8 +137,8 @@ function flag(engine, page, kind, detail) {
       const h = item.querySelector('.faq-answer').getBoundingClientRect().height;
       return { opened: h > 10, active: item.classList.contains('active'), expanded: q.getAttribute('aria-expanded') };
     });
-    if (!faq.opened) flag(eng.name, 'index.html', 'faq', 'the accordion did not open');
-    if (faq.expanded !== 'true') flag(eng.name, 'index.html', 'faq', 'aria-expanded was not set');
+    if (!faq.opened) flag(eng, 'index.html', 'faq', 'the accordion did not open');
+    if (faq.expanded !== 'true') flag(eng, 'index.html', 'faq', 'aria-expanded was not set');
 
     /* the mobile drawer */
     const mctx = await browser.newContext({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true });
@@ -173,9 +159,9 @@ function flag(engine, page, kind, detail) {
         expanded: btn.getAttribute('aria-expanded')
       };
     });
-    if (!drawer.open || !drawer.visible) flag(eng.name, 'index.html', 'drawer', 'the drawer did not open');
-    if (!drawer.btnOnScreen) flag(eng.name, 'index.html', 'drawer', 'the menu button is off-screen');
-    if (drawer.expanded !== 'true') flag(eng.name, 'index.html', 'drawer', 'aria-expanded was not set');
+    if (!drawer.open || !drawer.visible) flag(eng, 'index.html', 'drawer', 'the drawer did not open');
+    if (!drawer.btnOnScreen) flag(eng, 'index.html', 'drawer', 'the menu button is off-screen');
+    if (drawer.expanded !== 'true') flag(eng, 'index.html', 'drawer', 'aria-expanded was not set');
     await mctx.close();
 
     /* the contact form */
@@ -184,23 +170,12 @@ function flag(engine, page, kind, detail) {
     await page.click('#contactFormElement button[type=submit]');
     await page.waitForTimeout(700);
     const invalid = await page.evaluate(() => document.querySelectorAll('.field.invalid').length);
-    if (invalid < 4) flag(eng.name, 'contact.html', 'form', `only ${invalid} fields flagged invalid`);
+    if (invalid < 4) flag(eng, 'contact.html', 'form', `only ${invalid} fields flagged invalid`);
 
-    if (consoleErrors.length) flag(eng.name, '(all)', 'console-errors', consoleErrors.slice(0, 2).join(' | '));
+    if (consoleErrors.length) flag(eng, '(all)', 'console-errors', consoleErrors.slice(0, 2).join(' | '));
 
     await browser.close();
   }
 
-  console.log('\n================ SUMMARY ================');
-  if (!findings.length) console.log('0 failures across chromium, firefox and webkit.');
-  else {
-    const byEngine = {};
-    for (const f of findings) (byEngine[f.engine] = byEngine[f.engine] || []).push(f);
-    for (const e of Object.keys(byEngine)) {
-      console.log(`\n-- ${e} (${byEngine[e].length})`);
-      byEngine[e].forEach((f) => console.log(`   ${f.page}: ${f.kind} :: ${f.detail}`));
-    }
-  }
-  fs.writeFileSync(path.join(__dirname, 'crossbrowser-report.json'), JSON.stringify(findings, null, 2));
-  process.exitCode = findings.length ? 1 : 0;
+  reporter.summary(path.join(__dirname, 'crossbrowser-report.json'));
 })();

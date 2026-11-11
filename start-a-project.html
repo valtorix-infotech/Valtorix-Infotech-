@@ -30,7 +30,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Oxanium:wght@600;700&family=Sora:wght@400;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
-<link rel="stylesheet" href="styles.css?v=21">
+<link rel="stylesheet" href="styles.css?v=29">
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Is submitting the request free?","acceptedAnswer":{"@type":"Answer","text":"Yes. The project request is for discussion only and creates no purchase commitment."}},{"@type":"Question","name":"Can I change my requirements later?","acceptedAnswer":{"@type":"Answer","text":"Yes. Requirements are refined with our team before the final proposal and scope are agreed."}},{"@type":"Question","name":"How quickly will I hear back?","acceptedAnswer":{"@type":"Answer","text":"Usually within 24 hours on business days."}}]}</script>
 </head>
 <body>
@@ -80,10 +80,10 @@
       <div class="container form-layout">
 
         <aside>
-          <div class="card reveal" style="background:var(--paper-2)">
+          <div class="card reveal surface-2">
             <div class="section-tag">Why Valtorix</div>
-            <h2 style="font-size:22px;margin-bottom:10px">Straightforward, from the first message</h2>
-            <p style="font-size:15px;color:var(--fg-muted)">You will get a scoped answer, not a sales follow-up.</p>
+            <h2 class="h-card-sm">Straightforward, from the first message</h2>
+            <p class="note-sm">You will get a scoped answer, not a sales follow-up.</p>
             <ul class="list-check">
               <li><i class="fa-solid fa-check"></i>Expert guidance before you spend anything</li>
               <li><i class="fa-solid fa-check"></i>A solution designed around your process</li>
@@ -92,17 +92,17 @@
             </ul>
           </div>
 
-          <div class="card reveal" style="margin-top:20px">
+          <div class="card reveal mt-lg">
             <div class="stars" role="img" aria-label="Rated 5 out of 5"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i></div>
-            <p class="quote-text" style="margin-top:12px">&ldquo;VALTORIX understood our clothing store needs and delivered Vayomi within our timeline. Good support.&rdquo;</p>
+            <p class="quote-text mt-sm">&ldquo;VALTORIX understood our clothing store needs and delivered Vayomi within our timeline. Good support.&rdquo;</p>
             <div class="client"><div class="client-avatar">VC</div><div><strong>Vayomi Clothing</strong><span>Hyderabad</span></div></div>
           </div>
 
-          <div class="card reveal" style="margin-top:20px;background:var(--ink);border-color:var(--ink)">
-            <h2 style="font-size:20px;color:#fff;margin-bottom:10px">Need help with the form?</h2>
-            <p style="font-size:14.5px;color:#a8a8a2">Send a plain message instead and we will pick it up.</p>
-            <a href="contact.html" class="btn btn-outline btn-sm" style="margin-top:16px"><i class="fa-solid fa-envelope"></i> Use the contact form</a>
-            <a href="https://wa.me/917989369571" target="_blank" rel="noopener noreferrer" class="btn btn-outline btn-sm" style="margin-top:10px"><i class="fa-brands fa-whatsapp"></i> WhatsApp us</a>
+          <div class="card reveal mt-lg card--ink">
+            <h2 class="h-card-sm on-ink-title">Need help with the form?</h2>
+            <p class="note-sm">Send a plain message instead and we will pick it up.</p>
+            <a href="contact.html" class="btn btn-outline btn-sm mt-md"><i class="fa-solid fa-envelope"></i> Use the contact form</a>
+            <a href="https://wa.me/917989369571" target="_blank" rel="noopener noreferrer" class="btn btn-outline btn-sm mt-sm"><i class="fa-brands fa-whatsapp"></i> WhatsApp us</a>
           </div>
         </aside>
 
@@ -117,12 +117,12 @@
           <form id="projectForm" novalidate>
 
             <!-- STEP 1 -->
-            <div class="form-step" data-step="1" style="display:block">
+            <div class="form-step is-shown" data-step="1">
               <div class="step-kicker">Step 1 of 4</div>
-              <h2 style="font-size:24px">Project details</h2>
+              <h2 class="h-inline">Project details</h2>
               <p class="step-desc">The basics. If you are not sure about the type, pick the closest match &mdash; we will confirm it together.</p>
 
-              <div class="field full" style="margin-bottom:18px">
+              <div class="field full mb-md">
                 <label>What type of project do you need? <span class="required">*</span></label>
                 <div class="option-grid" id="projectType">
                   <div class="option" data-value="Website"><i class="fa-solid fa-globe"></i><div><strong>Website</strong><small>Corporate or landing</small></div></div>
@@ -161,7 +161,7 @@
                   <div class="counter"><span data-count="overview">0</span>/1000</div>
                 </div>
                 <div class="field full">
-                  <label for="goals">Main goals <span style="color:var(--fg-dim);font-weight:600">(optional)</span></label>
+                  <label for="goals">Main goals <span class="muted-strong">(optional)</span></label>
                   <textarea id="goals" maxlength="500" placeholder="e.g. Increase sales, automate operations, improve customer experience"></textarea>
                   <div class="counter"><span data-count="goals">0</span>/500</div>
                 </div>
@@ -169,9 +169,9 @@
             </div>
 
             <!-- STEP 2 -->
-            <div class="form-step" data-step="2" style="display:none">
+            <div class="form-step is-hidden" data-step="2">
               <div class="step-kicker">Step 2 of 4</div>
-              <h2 style="font-size:24px">Requirements</h2>
+              <h2 class="h-inline">Requirements</h2>
               <p class="step-desc">This is where we learn what the software actually has to do. Rough notes are fine.</p>
 
               <div class="form-grid">
@@ -198,9 +198,9 @@
             </div>
 
             <!-- STEP 3 -->
-            <div class="form-step" data-step="3" style="display:none">
+            <div class="form-step is-hidden" data-step="3">
               <div class="step-kicker">Step 3 of 4</div>
-              <h2 style="font-size:24px">Timeline &amp; budget</h2>
+              <h2 class="h-inline">Timeline &amp; budget</h2>
               <p class="step-desc">Rough ranges are fine. They help us propose a realistic plan rather than an optimistic one.</p>
 
               <div class="form-grid">
@@ -262,9 +262,9 @@
             </div>
 
             <!-- STEP 4 -->
-            <div class="form-step" data-step="4" style="display:none">
+            <div class="form-step is-hidden" data-step="4">
               <div class="step-kicker">Step 4 of 4</div>
-              <h2 style="font-size:24px">Review your information</h2>
+              <h2 class="h-inline">Review your information</h2>
               <p class="step-desc">Check it over. You can edit any section before submitting.</p>
 
               <div class="review-section">
@@ -310,14 +310,14 @@
               <div class="review-section">
                 <div class="review-head"><h3>Terms</h3></div>
                 <div class="review-body">
-                  <label style="display:flex;gap:11px;align-items:flex-start;font-size:13.5px;color:var(--fg-2);line-height:1.55;cursor:pointer">
-                    <input type="checkbox" id="terms" style="margin-top:3px;accent-color:var(--accent);width:17px;height:17px;flex:none">
-                    <span>I agree to the <a href="terms.html" style="color:var(--accent);font-weight:700">Terms of Service</a> and <a href="privacy-policy.html" style="color:var(--accent);font-weight:700">Privacy Policy</a>, and understand my information will be used only for this project discussion.</span>
+                  <label class="terms-check">
+                    <input type="checkbox" id="terms" class="checkbox">
+                    <span>I agree to the <a href="terms.html" class="link-strong">Terms of Service</a> and <a href="privacy-policy.html" class="link-strong">Privacy Policy</a>, and understand my information will be used only for this project discussion.</span>
                   </label>
                 </div>
               </div>
 
-              <div class="notice" style="margin-top:18px"><i class="fa-solid fa-lock"></i>&nbsp; Your information stays with us. We never share your details with third parties.</div>
+              <div class="notice mt-md"><i class="fa-solid fa-lock"></i>&nbsp; Your information stays with us. We never share your details with third parties.</div>
 
               <!-- Honeypot anti-spam field (hidden from humans, visible to bots) -->
               <div class="honeypot" aria-hidden="true">
@@ -329,7 +329,7 @@
           </form>
 
           <div class="form-actions">
-            <button class="btn btn-outline" id="backBtn" type="button" style="display:none"><i class="fa-solid fa-arrow-left"></i>&nbsp; Back</button>
+            <button class="btn btn-outline is-hidden" id="backBtn" type="button"><i class="fa-solid fa-arrow-left"></i>&nbsp; Back</button>
             <button class="btn btn-primary" id="nextBtn" type="button">Next Step &nbsp;&rarr;</button>
           </div>
         </div>
@@ -339,25 +339,25 @@
   </div>
 
   <!-- SUCCESS -->
-  <section id="successPage" style="display:none">
+  <section id="successPage" class="is-hidden">
     <div class="section">
-      <div class="container" style="text-align:center;max-width:760px">
+      <div class="container center-text narrow">
         <div class="success-check"><i class="fa-solid fa-check"></i></div>
-        <div class="section-tag" style="justify-content:center">Request received</div>
+        <div class="section-tag center">Request received</div>
         <h2 class="section-title">Your project request<br>has been submitted</h2>
-        <p class="section-desc" style="margin:16px auto 0">Thank you for choosing VALTORIX. A confirmation is on its way to your inbox, and someone from the team will read your requirements and come back to you.</p>
-        <div class="card" style="max-width:520px;margin:26px auto 0;text-align:left;display:flex;gap:16px;align-items:center">
-          <div class="card-icon" style="margin:0;flex:none"><i class="fa-solid fa-file-lines"></i></div>
+        <p class="section-desc mt-md-center">Thank you for choosing VALTORIX. A confirmation is on its way to your inbox, and someone from the team will read your requirements and come back to you.</p>
+        <div class="card ref-card">
+          <div class="card-icon flex-none"><i class="fa-solid fa-file-lines"></i></div>
           <div>
-            <span class="notice" style="display:block">Your project reference ID &mdash; please save it</span>
-            <strong id="referenceId" style="font-family:var(--font-display);font-size:21px">VTX-2026-0000</strong>
+            <span class="notice is-shown">Your project reference ID &mdash; please save it</span>
+            <strong id="referenceId" class="ref-id">VTX-2026-0000</strong>
           </div>
         </div>
-        <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:22px">
+        <div class="row-center">
           <a class="btn btn-primary" href="https://wa.me/917989369571?text=Hi%20VALTORIX%2C%20I%20just%20submitted%20a%20project%20request%20on%20your%20website." target="_blank" rel="noopener noreferrer"><i class="fa-brands fa-whatsapp"></i> Discuss on WhatsApp</a>
           <a class="btn btn-outline" href="index.html">Back to home</a>
         </div>
-        <p class="notice" style="margin:18px auto 0">We reply within 24 hours on business days &middot; Mon&ndash;Sat, 9 AM &ndash; 9 PM (Sun closed)</p>
+        <p class="notice mt-lg-center">We reply within 24 hours on business days &middot; Mon&ndash;Sat, 9 AM &ndash; 9 PM (Sun closed)</p>
       </div>
     </div>
 
@@ -408,7 +408,7 @@
       <div class="reveal-left">
         <div class="section-tag">Before you submit</div>
         <h2 class="section-title">Quick answers</h2>
-        <p class="section-desc" style="margin-top:16px">Still unsure? Send the request anyway and ask us in the notes.</p>
+        <p class="section-desc mt-md">Still unsure? Send the request anyway and ask us in the notes.</p>
       </div>
       <div>
         <div class="faq-item reveal">
@@ -491,8 +491,8 @@
 </footer>
 
 <script src="stage3d-geometry.js?v=2" defer></script>
-<script src="stage3d.js?v=8" defer></script>
+<script src="stage3d.js?v=11" defer></script>
 <script src="stage3d-init.js?v=2" defer></script>
-<script src="app.js?v=16" defer></script>
+<script src="app.js?v=18" defer></script>
 </body>
 </html>
