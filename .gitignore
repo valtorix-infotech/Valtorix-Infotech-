@@ -6,6 +6,7 @@ node_modules
 
 # QA artefacts (local only)
 scripts/shots/
+scripts/shots3d/
 scripts/qa-report.json
 scripts/_*.jpg
 scripts/_*.py
