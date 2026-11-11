@@ -287,6 +287,19 @@
   var CHAPTER_ORDER = ["hero", "capabilities", "work", "numbers", "process", "cta"];
 
   /* --------------------------------------------------------------- helpers */
+  /* requestAnimationFrame is suspended in a background tab, so the reveal
+     must never depend on it alone. */
+  function reveal(canvas, ms) {
+    function go() {
+      canvas.style.transition = "opacity " + ms + "ms ease";
+      canvas.style.opacity = "1";
+      if (canvas.parentElement) canvas.parentElement.classList.add("is-3d");
+    }
+    canvas.style.opacity = "0";
+    window.requestAnimationFrame(go);
+    window.setTimeout(go, 120);
+  }
+
   function compile(gl, type, src) {
     var sh = gl.createShader(type);
     gl.shaderSource(sh, src);
@@ -665,12 +678,7 @@
     readScroll();
 
     /* reveal the stage once the first frame is on screen */
-    canvas.style.opacity = "0";
-    requestAnimationFrame(function () {
-      canvas.style.transition = "opacity 800ms ease";
-      canvas.style.opacity = "1";
-      if (canvas.parentElement) canvas.parentElement.classList.add("is-3d");
-    });
+    reveal(canvas, 800);
 
     startLoop();
     if (H) H.instances++;
@@ -855,12 +863,7 @@
       if (document.hidden) stopLoop(); else startLoop();
     });
 
-    canvas.style.opacity = "0";
-    requestAnimationFrame(function () {
-      canvas.style.transition = "opacity 700ms ease";
-      canvas.style.opacity = "1";
-      if (canvas.parentElement) canvas.parentElement.classList.add("is-3d");
-    });
+    reveal(canvas, 700);
 
     startLoop();
     if (H) H.instances++;
