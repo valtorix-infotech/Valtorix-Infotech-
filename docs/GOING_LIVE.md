@@ -14,7 +14,8 @@ project and the real live site while preparing it.
 | The GitHub remote | `https://github.com/valtorix-infotech/Valtorix-Infotech-` |
 | CI on `main` | **Green** — the QA job (12 gates) and the Lighthouse gate both pass |
 | The Vercel project | `valtorixinfotech-1446`, live at `https://valtorixinfotech-1446.vercel.app` |
-| The Vercel project is connected to the GitHub repo | **No.** There are no GitHub deployments and no commit statuses for the repository, so the project was uploaded by hand rather than built from GitHub. It has to be connected once — then every push to `main` deploys it. |
+| The Vercel project is connected to the GitHub repo | **Yes** - it builds a preview deployment for every pull request, and the preview is the finished site. |
+| The project deploys `main` to production | **No.** Merging to `main` starts CI but not a Vercel build, so the *Production Branch* is set to something else, or automatic deployments are off for it. One setting, in the dashboard. |
 | `GMAIL_USER` and `GMAIL_APP_PASSWORD` on the Vercel project | **Already set** — the live endpoint answers `200 {ok:true}` rather than `500 mail-not-configured` |
 | The domain | No custom domain yet; the `*.vercel.app` address is the canonical one and all 37 references to it in the markup already point there |
 
@@ -22,31 +23,48 @@ project and the real live site while preparing it.
 
 ---
 
-## Step 1 — connect the repository to Vercel (one action, in the dashboard)
+## Step 1 — point the Vercel project at `main` (one action, in the dashboard)
 
-This is the part that makes every future push deploy by itself. No token, no CLI.
+This is the last thing standing between the finished site and the live one.
 
-1. Open the project: <https://vercel.com/valtorixinfotech-1446>
-2. **Settings** → **Git**
-3. **Connect a Git Repository** → **GitHub** → choose `valtorix-infotech` →
-   `Valtorix-Infotech-` → **Connect**
-4. **Production Branch** — set it to `main`
-5. **Save**
+The Vercel project **is** connected to this repository - it built a preview
+deployment for every pull request, and the preview is the finished site:
 
-Vercel builds the project on the next push to `main`. The build runs
-`npm ci --omit=dev`, serves the repository root as the static site, and turns
-`api/send.js` into the mail function — the same as what is running now.
+> https://valtorixinfotech-1446-git-feature-c214fb-valtorixinfotech-1446.vercel.app
 
-**Or, from the command line** (if you would rather not use the dashboard):
+That preview is not a mock-up. It is the real build, running on Vercel's
+infrastructure, and it has passed the whole suite against the live URL:
+every page returns 200, the fonts are served from the site, the mail
+endpoint answers, the old `/strat-project` path redirects, and Lighthouse
+scores **100 / 100 / 100 on all ten pages**.
 
-```bash
+**What has not happened is the production deployment.** Merging to `main`
+starts CI but not a Vercel build, which means the project's *Production
+Branch* is set to something other than `main` - or automatic deployments
+are off for it. The repository has only two branches (`main` and the
+feature branch), so the setting is the problem, not the code.
+
+To fix it:
+
+1. Open <https://vercel.com/valtorixinfotech-1446/settings/git>
+2. **Production Branch** - set it to `main`
+3. Check that **Automatic Deployments** is on for `main` (not "Disabled")
+4. **Save**
+
+That is it. The next push to `main` builds and deploys, and the site is
+live at <https://valtorixinfotech-1446.vercel.app>.
+
+**If you would rather not use the dashboard**, a token does the same thing
+from here:
+
+```powershell
 cd "C:\Users\boyap\Downloads\Valtorix Info Tech Website\repo"
-vercel login
-vercel link --project valtorixinfotech-1446 --yes
-vercel --prod --yes
+$env:VERCEL_TOKEN = "your-token"      # https://vercel.com/account/tokens
+node scripts/deploy.js
 ```
 
-`vercel link` writes a `.vercel` folder, which is already in `.gitignore`.
+The token is used for that one run and is never written to disk. Revoke
+it afterwards.
 
 ---
 
