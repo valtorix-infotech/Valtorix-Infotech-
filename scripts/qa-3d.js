@@ -23,6 +23,17 @@ function check(name, ok, detail) {
   await page.goto(`${BASE}/index.html?t=${Date.now()}`, { waitUntil: 'load', timeout: 30000 });
   await page.waitForTimeout(2500);
 
+  /* The canvas fades in over a CSS transition, so reading the opacity the
+     instant the page loads can catch it mid-fade. Wait for it to settle
+     before asking, so this check measures the design and not the clock. */
+  await page.waitForFunction(
+    () => {
+      const c = document.querySelector('.site-stage');
+      return c && getComputedStyle(c).opacity === '1';
+    },
+    { timeout: 5000 }
+  ).catch(() => { /* the check below reports it */ });
+
   const st = await page.evaluate(() => {
     const c = document.querySelector('.site-stage');
     const H = window.ValtorixStage;
