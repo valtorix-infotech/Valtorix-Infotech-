@@ -10,16 +10,21 @@
 const path = require('path');
 
 /* Mock nodemailer BEFORE the handler is loaded, so no test ever opens a
-   real SMTP connection. Every mail is captured for inspection. */
+   real SMTP connection. Only sendMail is replaced - the transport itself is
+   still built for real, so the well-known service lookup (the thing a
+   dependency bump can break) is genuinely exercised. Every mail is
+   captured for inspection. */
 const sent = [];
 const nodemailer = require('nodemailer');
-nodemailer.createTransport = () => ({
-  sendMail: async (options) => {
-    sent.push(options);
+const realCreateTransport = nodemailer.createTransport;
+nodemailer.createTransport = (options) => {
+  const transport = realCreateTransport(options);
+  transport.sendMail = async (mail) => {
+    sent.push(mail);
     return { messageId: 'test-' + sent.length };
-  },
-  close: () => {}
-});
+  };
+  return transport;
+};
 
 const handler = require(path.join(__dirname, '..', 'api', 'send.js'));
 const { esc, cleanFields, cleanSubject, cleanReplyTo, ownerHtml, replyHtml, pickName,
@@ -284,6 +289,24 @@ async function call(body, opts) {
     else process.env.GMAIL_USER = savedUser;
     if (savedPass === undefined) delete process.env.GMAIL_APP_PASSWORD;
     else process.env.GMAIL_APP_PASSWORD = savedPass;
+  }
+
+  /* --------------------------------------------------- the transport */
+  {
+    /* A dependency bump can silently break the transport: nodemailer 10
+       renamed the well-known service key to "Gmail", so this asserts that
+       the lowercase "gmail" we pass still resolves to the right host. The
+       live form depends on it. */
+    const transport = nodemailer.createTransport({
+      service: 'gmail',
+      auth: { user: 'studio@gmail.com', pass: 'x' }
+    });
+    const o = transport.transporter.options;
+    check('the gmail transport resolves to smtp.gmail.com',
+      o.host === 'smtp.gmail.com' && o.port === 465 && o.secure === true,
+      `host=${o.host} port=${o.port} secure=${o.secure}`);
+    check('the transport is the SMTP one', transport.transporter.name === 'SMTP',
+      transport.transporter.name);
   }
 
   /* ------------------------------------------------------- summary */
