@@ -10,7 +10,7 @@ project and the real live site while preparing it.
 
 | | Status |
 |---|---|
-| The code | Finished and committed — 21 commits on `feature/concept-b-redesign` |
+| The code | Finished and committed — 21 commits on `feature/concept-b-redesign`, pull request #1 |
 | The GitHub remote | `https://github.com/valtorix-infotech/Valtorix-Infotech-` |
 | The Vercel project | `valtorixinfotech-1446`, live at `https://valtorixinfotech-1446.vercel.app` |
 | The Vercel project is connected to the GitHub repo | **Yes** — the live site currently serves exactly what `origin/main` contains (the old `webgl-bg.js`, the old title). Pushing to `main` deploys it. |
@@ -54,25 +54,70 @@ Either works. Option B is better if more people will push to it.
 
 ---
 
-## Step 2 — push
+## Step 2 — push and open a pull request
 
-Once the invitation is accepted, one command publishes the site:
+The push goes through a pull request rather than straight to `main`, so nothing deploys until
+CI is green.
 
 ```bash
 cd "C:\Users\boyap\Downloads\Valtorix Info Tech Website\repo"
-git push origin feature/concept-b-redesign:main
+git push -u origin feature/concept-b-redesign
 ```
 
-This is a **fast-forward** — `main` is an ancestor of the work, so nothing is overwritten
-and no `--force` is needed:
+Then open the pull request:
+
+```bash
+gh pr create --base main --head feature/concept-b-redesign \
+  --title "Rebuild the site around the new VALTORIX identity, with a persistent 3D stage" \
+  --body-file docs/PR_BODY.md
+```
+
+`main` is an ancestor of the work, so the merge is a **fast-forward** — nothing is
+overwritten and no `--force` is needed:
 
 ```
 main                          302a247  (the old site)
-feature/concept-b-redesign    2652bc3  (+21 commits, the new site)
+feature/concept-b-redesign    ee04b98  (+21 commits, the new site)
 ```
 
-Vercel sees the push to `main` and starts the deployment. GitHub Actions starts at the
-same time.
+Watch the gates:
+
+```bash
+gh pr checks 1 --watch
+```
+
+Then merge:
+
+```bash
+gh pr merge 1 --squash --delete-branch
+```
+
+Vercel sees the merge to `main` and starts the deployment. GitHub Actions runs once more on
+the merge commit.
+
+> **If the push is refused with `GH007: Your push would publish a private email address`**,
+> the commits carry an email that is private on your GitHub account. GitHub blocks that on
+> public repositories. The fix is to author the commits with the account's noreply address:
+>
+> ```bash
+> git config user.email "281008307+Rakesh-7989@users.noreply.github.com"
+> git config user.name "Rakesh-7989"
+>
+> FILTER_BRANCH_SQUELCH_WARNING=1 git filter-branch -f --env-filter \
+>   'export GIT_AUTHOR_EMAIL="281008307+Rakesh-7989@users.noreply.github.com";
+>    export GIT_COMMITTER_EMAIL="281008307+Rakesh-7989@users.noreply.github.com";' \
+>   -- "origin/main..feature/concept-b-redesign"
+> ```
+>
+> That rewrites only the new commits — `origin/main` is untouched, so the merge stays a
+> fast-forward. Check that nothing but the author metadata changed:
+>
+> ```bash
+> git diff --stat backup/before-rewrite feature/concept-b-redesign   # must be empty
+> ```
+>
+> Alternatively, make the address public at <https://github.com/settings/emails> — but the
+> noreply address publishes nothing at all and is the better default for a public repository.
 
 ---
 

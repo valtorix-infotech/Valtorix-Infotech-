@@ -423,7 +423,7 @@ const notes = [];
       const ttfb = Date.now() - t0;
 
       const vitals = await page.evaluate(() => new Promise((resolve) => {
-        const out = { lcp: 0, cls: 0 };
+        const out = { lcp: 0, cls: 0, sources: [] };
         try {
           new PerformanceObserver((l) => {
             for (const e of l.getEntries()) out.lcp = Math.max(out.lcp, e.startTime);
@@ -431,7 +431,22 @@ const notes = [];
         } catch (e) {}
         try {
           new PerformanceObserver((l) => {
-            for (const e of l.getEntries()) if (!e.hadRecentInput) out.cls += e.value;
+            for (const e of l.getEntries()) {
+              if (e.hadRecentInput) continue;
+              out.cls += e.value;
+              /* name what moved, so a failure says which element caused it
+                 rather than only how much the page moved */
+              for (const s of e.sources || []) {
+                const n = s.node;
+                if (!n) continue;
+                out.sources.push({
+                  tag: n.tagName || '?',
+                  cls: String(n.className || '').slice(0, 40),
+                  src: n.tagName === 'IMG' ? String(n.getAttribute('src') || '').split('/').pop() : '',
+                  value: e.value
+                });
+              }
+            }
           }).observe({ type: 'layout-shift', buffered: true });
         } catch (e) {}
         setTimeout(() => resolve(out), 800);
@@ -442,7 +457,12 @@ const notes = [];
       if (bytes.total > 3 * 1024 * 1024) fail('performance', `${p} is over the 3MB budget`, line);
       if (bytes.js > 500 * 1024) fail('performance', `${p} JavaScript is over the 500KB budget`, line);
       if (vitals.lcp > 2500) fail('performance', `${p} LCP is over 2.5s`, line);
-      if (vitals.cls > 0.1) fail('performance', `${p} CLS is over 0.1`, line);
+      if (vitals.cls > 0.1) {
+        /* name the elements that moved, so the cause is obvious */
+        const moved = [...new Set(vitals.sources.map((s) =>
+          s.src ? `IMG ${s.src}` : `${s.tag}.${s.cls}`))].slice(0, 6);
+        fail('performance', `${p} CLS is over 0.1`, `${line} :: moved by ${moved.join(', ')}`);
+      }
       if (bytes.total <= 3 * 1024 * 1024 && bytes.js <= 500 * 1024 && vitals.lcp <= 2500 && vitals.cls <= 0.1) {
         pass('performance', line);
       }

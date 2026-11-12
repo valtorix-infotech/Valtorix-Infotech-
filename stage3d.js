@@ -331,6 +331,21 @@
   function isTouch() {
     return window.matchMedia && window.matchMedia("(pointer: coarse)").matches;
   }
+  /**
+   * Is this a software renderer? SwiftShader and llvmpipe draw every pixel
+   * on the CPU, so a full-screen canvas at 2x is thousands of times more
+   * expensive than on a GPU - and it starves the main thread, which the
+   * visitor notices as lag.
+   */
+  function isSoftwareRenderer(gl) {
+    try {
+      const ext = gl.getExtension("WEBGL_debug_renderer_info");
+      const name = ext ? String(gl.getParameter(ext.UNMASKED_RENDERER_WEBGL)) : "";
+      return /swiftshader|llvmpipe|software|basic render|microsoft basic/i.test(name);
+    } catch (e) {
+      return false;
+    }
+  }
 
   /* =========================================================== the stage */
   function mountStage(canvas, options) {
@@ -403,7 +418,15 @@
     gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
 
     /* ------------------------------------------------------------ sizing */
-    const maxDpr = options.maxDpr || (isTouch() ? 1.5 : 2);
+    /* A software renderer draws every pixel on the CPU, so it gets a
+       smaller canvas and fewer frames. Everything else keeps the retina
+       canvas it can afford. */
+    const software = isSoftwareRenderer(gl);
+    const maxDpr = options.maxDpr || (software ? 1 : isTouch() ? 1.5 : 2);
+    /* The scene moves slowly - the mark rocks at half a radian a second and
+       the slabs at six hundredths - so 30 frames a second is
+       indistinguishable from 60 and costs half as much. */
+    const minFrameMs = 1000 / (options.fps || (software ? 24 : 30));
     let dpr = maxDpr;
     let cssW = 1, cssH = 1;
 
@@ -495,6 +518,7 @@
     const pointer = { x: 0, y: 0, tx: 0, ty: 0 };
     let start = 0;
     let running = false;
+    let lastDraw = 0;
     const visible = true;
     let frameAcc = 0, frameCount = 0;
 
@@ -529,6 +553,14 @@
 
     function frame(now) {
       if (!running) return;
+      /* Hold the frame rate down. The scene is slow enough that the extra
+         frames are invisible, and they cost the main thread time that the
+         visitor's own interactions need. */
+      if (now - lastDraw < minFrameMs) {
+        requestAnimationFrame(frame);
+        return;
+      }
+      lastDraw = now;
       if (!start) start = now;
       const time = (now - start) / 1000;
 
@@ -643,13 +675,16 @@
         chapter: sections.length ? sections[0].key : "hero"
       };
 
-      /* ---- adaptive quality: step down only ---- */
+      /* ---- adaptive quality: step down only ----
+         Checked every 30 frames rather than 60, so a slow renderer is
+         caught within half a second instead of a whole one. */
       frameAcc += now - (frame.last || now);
       frame.last = now;
       frameCount++;
-      if (frameCount >= 60) {
-        if (frameAcc / frameCount > 24 && dpr > 0.75) {
-          dpr = Math.max(0.75, dpr - 0.5);
+      if (frameCount >= 30) {
+        const avg = frameAcc / frameCount;
+        if (avg > 26 && dpr > 0.5) {
+          dpr = Math.max(software ? 0.5 : 0.75, dpr - 0.5);
           resize();
         }
         frameAcc = 0; frameCount = 0;

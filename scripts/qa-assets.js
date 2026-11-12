@@ -44,6 +44,47 @@ function walk(dir, out = []) {
   return out;
 }
 
+/**
+ * The pixel dimensions of an image, read from its header. PNG and JPEG are
+ * both parsed here so the check needs no dependency.
+ */
+function imageSize(file) {
+  const buf = fs.readFileSync(file);
+  if (buf.slice(1, 4).toString() === 'PNG') {
+    return { width: buf.readUInt32BE(16), height: buf.readUInt32BE(20) };
+  }
+  if (buf[0] === 0xff && buf[1] === 0xd8) {
+    let i = 2;
+    while (i < buf.length - 9) {
+      if (buf[i] !== 0xff) { i++; continue; }
+      const marker = buf[i + 1];
+      const length = buf.readUInt16BE(i + 2);
+      /* SOF0-SOF15, except the DHT/JPG/DAC markers */
+      if (marker >= 0xc0 && marker <= 0xcf &&
+          marker !== 0xc4 && marker !== 0xc8 && marker !== 0xcc) {
+        return { height: buf.readUInt16BE(i + 5), width: buf.readUInt16BE(i + 7) };
+      }
+      i += 2 + length;
+    }
+  }
+  if (buf.slice(8, 12).toString() === 'WEBP') {
+    const format = buf.slice(12, 16).toString();
+    if (format === 'VP8 ') {
+      return { width: buf.readUInt16LE(26) & 0x3fff, height: buf.readUInt16LE(28) & 0x3fff };
+    }
+    if (format === 'VP8L') {
+      const bits = buf.readUInt32LE(21);
+      return { width: (bits & 0x3fff) + 1, height: ((bits >> 14) & 0x3fff) + 1 };
+    }
+    if (format === 'VP8X') {
+      const w = buf[24] | (buf[25] << 8) | (buf[26] << 16);
+      const h = buf[27] | (buf[28] << 8) | (buf[29] << 16);
+      return { width: w + 1, height: h + 1 };
+    }
+  }
+  return null;
+}
+
 const htmlFiles = fs.readdirSync(ROOT).filter((f) => f.endsWith('.html')).sort();
 const html = htmlFiles.map(read).join('\n');
 const css = read('styles.css');
@@ -106,6 +147,31 @@ const manifest = fs.existsSync(path.join(ROOT, 'site.webmanifest'))
   const noSize = imgs.filter((t) => !/\bwidth=/.test(t) || !/\bheight=/.test(t));
   check('every <img> declares its intrinsic size', noSize.length === 0,
     noSize.slice(0, 3).map((t) => t.slice(0, 80)).join(' | '));
+
+  /* The declared size has to match the file. The browser reserves the box
+     from the width/height attributes, so a wrong ratio means the box is the
+     wrong shape until the image arrives - and then everything below it
+     jumps. That is a real layout shift, not a theoretical one. */
+  const wrongSize = [];
+  for (const f of htmlFiles) {
+    const src = fs.readFileSync(path.join(ROOT, f), 'utf8');
+    for (const m of src.matchAll(/<img\b[^>]*>/g)) {
+      const tag = m[0];
+      const s = tag.match(/src="([^"]+)"/);
+      const w = tag.match(/width="(\d+)"/);
+      const h = tag.match(/height="(\d+)"/);
+      if (!s || !w || !h) continue;
+      const file = path.join(ROOT, s[1]);
+      if (!fs.existsSync(file)) continue;
+      const size = imageSize(file);
+      if (!size) continue;
+      if (size.width !== +w[1] || size.height !== +h[1]) {
+        wrongSize.push(`${f}: ${s[1]} says ${w[1]}x${h[1]}, the file is ${size.width}x${size.height}`);
+      }
+    }
+  }
+  check('every declared image size matches the file', wrongSize.length === 0,
+    wrongSize.slice(0, 4).join(' | '));
 
   const noAlt = imgs.filter((t) => !/\salt="/.test(t));
   check('every <img> has an alt attribute', noAlt.length === 0,
