@@ -99,6 +99,7 @@ const AUDIT = () => {
       cls: (el.className && el.className.baseVal !== undefined ? el.className.baseVal : el.className || '').toString().slice(0, 48),
       left: Math.round(r.left),
       right: Math.round(r.right),
+      w: Math.round(r.width),
       clipped: !!clipper,
       clipperSpans: spans,
       intentionalScroller: !!intentionalScroller,
@@ -226,6 +227,7 @@ const AUDIT = () => {
 
   return {
     docW, docH, canScrollX,
+    innerWidth: window.innerWidth,
     escaping: escaping.slice(0, 14),
     smallTargets: smallTargets.slice(0, 14),
     smallText: smallText.slice(0, 10),
@@ -320,7 +322,8 @@ const AUDIT = () => {
     if (a.canScrollX > 0) flag(p, '400% zoom', 'horizontal-scroll', `${a.canScrollX}px`);
     for (const e of a.escaping) {
       if (!e.intentionalScroller && e.clipperSpans) {
-        flag(p, '400% zoom', 'escaping-box', `<${e.tag} class="${e.cls}"> right=${e.right}`);
+        flag(p, '400% zoom', 'escaping-box',
+          `<${e.tag} class="${e.cls}"> left=${e.left} right=${e.right} w=${e.w} (docW=${a.docW} innerWidth=${a.innerWidth})`);
       }
     }
     for (const t of a.smallTargets) {
@@ -388,4 +391,6 @@ const AUDIT = () => {
   }
   console.log(`\nTOTAL: ${total} findings across ${findings.length} checks`);
   fs.writeFileSync(path.join(__dirname, 'responsive-report.json'), JSON.stringify(findings, null, 2));
+  /* A gate that cannot fail is not a gate. */
+  process.exitCode = findings.length ? 1 : 0;
 })();

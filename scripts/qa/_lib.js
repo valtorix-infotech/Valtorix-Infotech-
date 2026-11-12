@@ -25,6 +25,7 @@ const PAGES = (process.env.PAGES ||
 function findBrowser() {
   const cache = path.join(process.env.USERPROFILE || '', 'AppData', 'Local', 'ms-playwright');
   const candidates = [
+    'chromium-1254/chrome-win64/chrome.exe',
     'chromium-1248/chrome-win64/chrome.exe',
     'chromium-1228/chrome-win64/chrome.exe',
   ];
