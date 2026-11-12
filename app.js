@@ -105,13 +105,27 @@
     { passive: true }
   );
 
-  /* Mark the current page in the nav (unless the markup already did it) */
-  const here = (location.pathname.split("/").pop() || "index.html").toLowerCase();
+  /* Mark the current page in the nav (unless the markup already did it).
+
+     The site is served with clean URLs, so the address bar says "/services"
+     while the links in the markup say "services.html". Comparing them
+     literally would mean the current page is never marked, so both sides
+     are reduced to the same key first. */
+  const pageKey = function (href) {
+    const name = String(href || "")
+      .split("#")[0]
+      .split("?")[0]
+      .split("/")
+      .pop()
+      .toLowerCase();
+    return name.replace(/\.html$/, "");
+  };
+  const here = pageKey(location.pathname) || "index";
   if (navLinks) {
     navLinks.querySelectorAll("a[href]").forEach(function (a) {
-      const target = a.getAttribute("href").split("#")[0].toLowerCase();
-      if (!target || target === "#") return;
-      if (target === here || (here === "" && target === "index.html")) {
+      const target = pageKey(a.getAttribute("href"));
+      if (!target) return;
+      if (target === here) {
         a.classList.add("active");
         a.setAttribute("aria-current", "page");
       }

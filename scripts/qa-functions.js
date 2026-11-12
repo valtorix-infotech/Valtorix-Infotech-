@@ -192,9 +192,27 @@ function check(name, ok, detail) {
   check('work: "all" restores every card', allVisible === total, `${allVisible}/${total}`);
 
   /* ---------- 7. Nav active state + mobile menu ---------- */
-  await page.goto(`${BASE}/services.html?t=${Date.now()}`, { waitUntil: 'load', timeout: 30000 });
-  const activeHref = await page.locator('#navbar .nav-links a.active').getAttribute('href');
-  check('nav: current page is marked active', activeHref === 'services.html', activeHref);
+  /* The live site is served with clean URLs, so the address bar says
+     "/services" while the links in the markup say "services.html". Both
+     forms have to mark the current page. */
+  for (const path of ['services.html', 'services']) {
+    const res = await page.goto(`${BASE}/${path}?t=${Date.now()}`, { waitUntil: 'load', timeout: 30000 })
+      .catch(() => null);
+    if (!res) continue;
+    const active = await page.locator('#navbar .nav-links a.active').count();
+    const current = await page.locator('#navbar .nav-links a[aria-current="page"]').count();
+    if (active === 0 && current === 0) {
+      /* the clean URL may not exist on a local server - only complain if
+         the page actually loaded */
+      const title = await page.title();
+      if (title && !/not found/i.test(title)) {
+        check(`nav: the current page is marked at /${path}`, false, 'no active link');
+      }
+      continue;
+    }
+    check(`nav: the current page is marked at /${path}`, active === 1 && current === 1,
+      `active=${active} aria-current=${current}`);
+  }
 
   const m = await ctx.newPage();
   await m.setViewportSize({ width: 390, height: 844 });

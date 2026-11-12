@@ -119,10 +119,13 @@ const manifest = fs.existsSync(path.join(ROOT, 'site.webmanifest'))
   const shipped = walk('images').filter((p) => !p.startsWith('images/brand/'));
   const orphans = shipped.filter((p) => {
     const base = path.basename(p);
+    /* a width variant is shipped because its original is */
+    const original = base.replace(/-\d+\.(webp|jpg|png)$/, '.$1');
     return !html.includes(p) && !html.includes(base) &&
-           !css.includes(p) && !css.includes(base) &&
-           !js.includes(p) && !js.includes(base) &&
-           !manifest.includes(base);
+           !html.includes(original) &&
+           !css.includes(p) && !css.includes(base) && !css.includes(original) &&
+           !js.includes(p) && !js.includes(base) && !js.includes(original) &&
+           !manifest.includes(base) && !manifest.includes(original);
   });
   check('no image ships without a reference', orphans.length === 0,
     orphans.slice(0, 6).join(' | '));
@@ -276,6 +279,42 @@ const manifest = fs.existsSync(path.join(ROOT, 'site.webmanifest'))
   check('no unversioned file is cached immutably', immutable.length === 0,
     immutable.map((h) => h.source).join(', '));
 }
+
+  /* every content photograph must offer the browser a choice of sizes, or a
+     phone downloads a desktop-sized file it cannot use */
+  const noSrcset = [];
+  const missingVariants = [];
+  for (const f of htmlFiles) {
+    const src = fs.readFileSync(path.join(ROOT, f), 'utf8');
+    for (const m of src.matchAll(/<source srcset="([^"]+)" sizes="([^"]*)" type="image\/webp">/g)) {
+      const candidates = m[1].split(',').map((c) => c.trim().split(' ')[0]);
+      if (candidates.length < 2) {
+        noSrcset.push(`${f}: ${m[1].split(' ')[0]} has only one candidate`);
+      }
+      if (!m[2].trim()) noSrcset.push(`${f}: ${m[1].split(' ')[0]} has no sizes`);
+      for (const c of candidates) {
+        if (!fs.existsSync(path.join(ROOT, c))) missingVariants.push(c);
+      }
+    }
+  }
+  check('every photograph offers more than one size', noSrcset.length === 0,
+    noSrcset.slice(0, 4).join(' | '));
+  check('every image variant exists', missingVariants.length === 0,
+    [...new Set(missingVariants)].slice(0, 4).join(' | '));
+
+  /* every content photograph is lazy loaded */
+  const eager = [];
+  for (const f of htmlFiles) {
+    const src = fs.readFileSync(path.join(ROOT, f), 'utf8');
+    for (const m of src.matchAll(/<img\b[^>]*>/g)) {
+      const tag = m[0];
+      if (/brand\//.test(tag)) continue;          // a logo mark is above the fold
+      if (/loading="lazy"/.test(tag)) continue;
+      eager.push(`${f}: ${(tag.match(/src="([^"]+)"/) || [])[1]}`);
+    }
+  }
+  check('every content photograph is lazy loaded', eager.length === 0,
+    eager.slice(0, 4).join(' | '));
 
 /* ---------------------------------------- 6b. the text fonts are self-hosted */
 {

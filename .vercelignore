@@ -8,6 +8,9 @@
 # the QA suites, the generators and brand-data.json
 scripts
 
+# the internal guides - they are for the repository, not for a visitor
+docs
+
 # the CI workflow
 .github
 

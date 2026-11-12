@@ -387,16 +387,36 @@ const AUDIT = () => {
     const page = await ctx.newPage();
     for (const p of PAGES) {
       await page.goto(`${BASE}/${p}?rs=${Date.now()}`, { waitUntil: 'domcontentloaded', timeout: 30000 });
-      const info = await page.evaluate(() => ({
-        h1: (document.querySelector('h1') || {}).textContent || '',
-        words: (document.body.innerText || '').split(/\s+/).filter(Boolean).length,
-        links: document.querySelectorAll('a[href]').length,
-        nav: !!document.querySelector('#navbar')
-      })).catch(() => null);
+      const info = await page.evaluate(() => {
+        /* An element that is transparent or moved out of place is content a
+           reader cannot read. The reveal animation must never hide it. */
+        const reveals = [...document.querySelectorAll('.reveal, .reveal-left, .reveal-right')];
+        const unreadable = reveals.filter((el) => {
+          const cs = getComputedStyle(el);
+          if (parseFloat(cs.opacity) < 0.95) return true;
+          const t = cs.transform;
+          return t && t !== 'none' && t !== 'matrix(1, 0, 0, 1, 0, 0)';
+        });
+        return {
+          h1: (document.querySelector('h1') || {}).textContent || '',
+          words: (document.body.innerText || '').split(/\s+/).filter(Boolean).length,
+          links: document.querySelectorAll('a[href]').length,
+          nav: !!document.querySelector('#navbar'),
+          reveals: reveals.length,
+          unreadable: unreadable.length,
+          firstUnreadable: unreadable.length
+            ? unreadable[0].className + ' ' + getComputedStyle(unreadable[0]).transform
+            : ''
+        };
+      }).catch(() => null);
       if (!info) { flag(p, 'no-js', 'crash', 'the page did not render'); continue; }
       if (info.words < 40) flag(p, 'no-js', 'thin-content', `${info.words} words visible`);
       if (!info.h1.trim()) flag(p, 'no-js', 'no-h1', 'no heading rendered');
       if (!info.nav) flag(p, 'no-js', 'no-nav', 'navigation missing');
+      if (info.unreadable) {
+        flag(p, 'no-js', 'hidden-content',
+          `${info.unreadable} of ${info.reveals} revealed element(s) are invisible or moved :: ${info.firstUnreadable}`);
+      }
     }
     await ctx.close();
   }
