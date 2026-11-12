@@ -1,0 +1,20 @@
+# What Vercel publishes.
+#
+# The repo root is the static site, so everything in it becomes a public
+# URL unless it is listed here. The test suites, the generator scripts and
+# the traced logo source data are development tools - they have no business
+# being served to a visitor.
+
+# the QA suites, the generators and brand-data.json
+scripts
+
+# the CI workflow
+.github
+
+# editor and tooling config
+.editorconfig
+.htmlvalidate.json
+
+# the manifest is built by the brand generator, not edited by hand
+*.log
+*.tmp
