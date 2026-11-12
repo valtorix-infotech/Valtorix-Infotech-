@@ -197,10 +197,14 @@ The repo deploys to Vercel as a static site plus one function.
 
 - `vercel.json` sets `cleanUrls`, the cache and security headers, and a permanent redirect from
   the old `/strat-project` path.
+- `.vercelignore` keeps the QA suites and the generator scripts out of what Vercel publishes.
 - Set `GMAIL_USER` and `GMAIL_APP_PASSWORD` in the project settings before going live, then send
   a live test message from both forms to confirm the owner mail and the auto-reply arrive.
 - If the site moves to a custom domain, update the canonical URLs, the sitemap, the Open Graph
   tags and the `SITE_URL` variable.
+
+**The full step-by-step — the invite, the push, the verification and the custom-domain
+migration — is in [`docs/GOING_LIVE.md`](docs/GOING_LIVE.md).**
 
 ---
 
