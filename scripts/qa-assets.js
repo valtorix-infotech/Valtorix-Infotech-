@@ -277,7 +277,77 @@ const manifest = fs.existsSync(path.join(ROOT, 'site.webmanifest'))
     immutable.map((h) => h.source).join(', '));
 }
 
-/* ---------------------------------------- 7. the generated files are current */
+/* ---------------------------------------- 6b. the text fonts are self-hosted */
+{
+  /* A third-party text-font stylesheet is a render-blocking request to
+     somebody else's server, and the swap it causes is the largest layout
+     shift the site can have - how much it moves depends on what fallback
+     the visitor's device happens to have. The text fonts are served from
+     here with font-display: optional, so there is no swap at all.
+
+     (The icon font is a different case: its glyphs sit in boxes the
+     stylesheet already sizes, so a late arrival does not move the page.) */
+  const thirdParty = [];
+  for (const f of htmlFiles) {
+    const src = read(f);
+    if (/fonts\.googleapis\.com|fonts\.gstatic\.com|typekit\.net|use\.typekit/.test(src)) {
+      thirdParty.push(`${f}: still loads a text font from a third party`);
+    }
+  }
+  check('the text fonts are served from this site', thirdParty.length === 0,
+    thirdParty.slice(0, 4).join(' | '));
+
+  /* every face the stylesheet declares must exist */
+  const fontCss = path.join(ROOT, 'fonts', 'fonts.css');
+  if (!fs.existsSync(fontCss)) {
+    check('the font stylesheet exists', false, 'fonts/fonts.css is missing');
+  } else {
+    const css = fs.readFileSync(fontCss, 'utf8');
+    const faces = [...css.matchAll(/@font-face\s*\{([^}]*)\}/g)].map((m) => m[1]);
+    check('the font stylesheet declares every face', faces.length > 0,
+      `${faces.length} face(s)`);
+
+    const missing = [];
+    for (const face of faces) {
+      const src = (face.match(/url\("([^"]+)"\)/) || [])[1];
+      if (!src) continue;
+      if (!fs.existsSync(path.join(ROOT, 'fonts', src))) missing.push(src);
+    }
+    check('every font file exists', missing.length === 0, missing.slice(0, 4).join(' | '));
+
+    /* `optional` is what makes the fonts safe to host: the browser uses
+       the real face if it arrives in time and the fallback if it does not,
+       and never swaps one for the other after the first paint. */
+    const swapping = faces.filter((f) => !/font-display:\s*optional/.test(f));
+    check('no font face swaps in after the first paint', swapping.length === 0,
+      `${swapping.length} face(s) without font-display: optional`);
+
+    /* a file in fonts/ that no face declares is a file nobody downloads */
+    const declared = new Set();
+    for (const face of faces) {
+      const src = (face.match(/url\("([^"]+)"\)/) || [])[1];
+      if (src) declared.add(src);
+    }
+    const shipped = fs.readdirSync(path.join(ROOT, 'fonts'))
+      .filter((f) => f.endsWith('.woff2'));
+    const orphans = shipped.filter((f) => !declared.has(f));
+    check('every font file is declared in the stylesheet', orphans.length === 0,
+      orphans.join(' | '));
+
+    /* the preloaded files have to be real files */
+    const preloadBad = [];
+    for (const f of htmlFiles) {
+      const src = read(f);
+      for (const m of src.matchAll(/<link[^>]*rel="preload"[^>]*href="(fonts\/[^"]+\.woff2)"/g)) {
+        if (!fs.existsSync(path.join(ROOT, m[1]))) preloadBad.push(`${f}: ${m[1]}`);
+      }
+    }
+    check('every preloaded font file exists', preloadBad.length === 0,
+      preloadBad.slice(0, 4).join(' | '));
+  }
+}
+
+/* ------------------------------------------- 7. the generated files are current */
 {
   const brandData = 'scripts/brand-data.json';
   const geometry = 'stage3d-geometry.js';
