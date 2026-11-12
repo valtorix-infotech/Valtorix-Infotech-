@@ -1,7 +1,7 @@
 {
   "cleanUrls": true,
   "trailingSlash": false,
-  "installCommand": "npm install --omit=dev",
+  "installCommand": "npm ci --omit=dev",
   "functions": {
     "api/send.js": {
       "maxDuration": 30
