@@ -23,21 +23,24 @@
 <meta name="theme-color" content="#ffffff">
 <link rel="icon" href="images/brand/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="images/brand/favicon-white.svg" type="image/svg+xml" media="(prefers-color-scheme: dark)">
-<link rel="alternate icon" href="images/brand/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="icon" href="images/brand/favicon-16.png" sizes="16x16" type="image/png">
+<link rel="icon" href="images/brand/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="icon" href="images/brand/favicon-64.png" sizes="64x64" type="image/png">
 <link rel="apple-touch-icon" href="images/brand/apple-touch-icon.png">
 <link rel="manifest" href="site.webmanifest">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Oxanium:wght@600;700&family=Sora:wght@400;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
-<link rel="stylesheet" href="styles.css?v=29">
+<link rel="stylesheet" href="styles.css?v=30">
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"ContactPage","name":"Contact VALTORIX INFOTECH","url":"https://valtorixinfotech-1446.vercel.app/contact","mainEntity":{"@type":"ProfessionalService","name":"VALTORIX INFOTECH","telephone":"+91-7989369571","email":"valtorix.infotech@gmail.com","address":{"@type":"PostalAddress","addressLocality":"Hyderabad","addressRegion":"Telangana","addressCountry":"IN"},"openingHoursSpecification":[{"@type":"OpeningHoursSpecification","dayOfWeek":["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"],"opens":"09:00","closes":"21:00"}]}}</script>
 </head>
 <body>
 <a href="#main-content" class="skip-link">Skip to main content</a>
 <canvas class="site-stage" data-stage-root aria-hidden="true"></canvas>
 
-<nav id="navbar">
+<header id="site-header">
+<nav id="navbar" aria-label="Primary">
   <div class="nav-wrap">
     <a href="index.html" class="logo">
       <img class="logo-mark" src="images/brand/valtorix-mark.svg" alt="" width="30" height="25">
@@ -56,6 +59,7 @@
     <button class="menu-btn" type="button" aria-label="Open menu"><i class="fa-solid fa-bars"></i></button>
   </div>
 </nav>
+</header>
 
 <main id="main-content">
 
@@ -89,7 +93,7 @@
           <div class="section-tag">Reach us</div>
           <div class="contact-item on-light"><i class="fa-solid fa-location-dot muted-icon"></i><span>Hyderabad, Telangana, India</span></div>
           <div class="contact-item on-light"><i class="fa-solid fa-envelope muted-icon"></i><a href="mailto:valtorix.infotech@gmail.com">valtorix.infotech@gmail.com</a></div>
-          <div class="contact-item on-light"><i class="fa-solid fa-phone muted-icon"></i><span class="phone-pair"><a href="tel:+917989369571">+91 79893 69571</a><a href="tel:+916303773891">+91 63037 73891</a></span></div>
+          <div class="contact-item on-light"><i class="fa-solid fa-phone muted-icon"></i><span class="phone-pair"><a href="tel:+917989369571">+91&nbsp;79893&nbsp;69571</a><a href="tel:+916303773891">+91&nbsp;63037&nbsp;73891</a></span></div>
           <div class="contact-item on-light"><i class="fa-brands fa-whatsapp muted-icon"></i><a href="https://wa.me/917989369571" target="_blank" rel="noopener noreferrer">Chat on WhatsApp</a></div>
           <div class="contact-item on-light"><i class="fa-solid fa-clock muted-icon"></i><span>Mon&ndash;Sat, 9 AM &ndash; 9 PM (Sun closed)</span></div>
           <div class="socials mt-md">
@@ -121,16 +125,16 @@
         <h2 class="h-card-sm">What can we help you with?</h2>
         <p class="step-desc mb-lg">The more detail you give, the more useful our first reply will be.</p>
 
-        <form id="contactFormElement" novalidate>
+        <form id="contactFormElement" method="post" action="/api/send" novalidate>
           <div class="field full mb-md">
             <label>I am interested in <span class="required">*</span></label>
             <div class="option-grid subject-grid">
-              <span class="subject" data-subject="Web Development" role="button" tabindex="0"><i class="fa-solid fa-globe"></i> Web development</span>
-              <span class="subject" data-subject="Software / Web Application" role="button" tabindex="0"><i class="fa-solid fa-window-maximize"></i> Software / web app</span>
-              <span class="subject" data-subject="AI & Automation" role="button" tabindex="0"><i class="fa-solid fa-robot"></i> AI &amp; automation</span>
-              <span class="subject" data-subject="UI/UX Design" role="button" tabindex="0"><i class="fa-solid fa-pen-ruler"></i> UI/UX design</span>
-              <span class="subject" data-subject="Existing project / support" role="button" tabindex="0"><i class="fa-solid fa-screwdriver-wrench"></i> Existing project</span>
-              <span class="subject" data-subject="Something else" role="button" tabindex="0"><i class="fa-solid fa-ellipsis"></i> Something else</span>
+              <button type="button" class="subject" data-subject="Web Development"><i class="fa-solid fa-globe"></i> Web development</button>
+              <button type="button" class="subject" data-subject="Software / Web Application"><i class="fa-solid fa-window-maximize"></i> Software / web app</button>
+              <button type="button" class="subject" data-subject="AI & Automation"><i class="fa-solid fa-robot"></i> AI &amp; automation</button>
+              <button type="button" class="subject" data-subject="UI/UX Design"><i class="fa-solid fa-pen-ruler"></i> UI/UX design</button>
+              <button type="button" class="subject" data-subject="Existing project / support"><i class="fa-solid fa-screwdriver-wrench"></i> Existing project</button>
+              <button type="button" class="subject" data-subject="Something else"><i class="fa-solid fa-ellipsis"></i> Something else</button>
             </div>
           </div>
 
@@ -179,7 +183,7 @@
           <!-- Honeypot anti-spam field (hidden from humans, visible to bots) -->
           <div class="honeypot" aria-hidden="true">
             <label for="website">Please leave this field empty</label>
-            <input id="website" name="website" tabindex="-1" autocomplete="off">
+            <input type="text" id="website" name="website" tabindex="-1" autocomplete="off">
           </div>
 
           <div class="form-actions">
@@ -313,7 +317,7 @@
         <h3>Contact</h3>
         <div class="contact-item"><i class="fa-solid fa-location-dot"></i><span>Hyderabad, Telangana, India</span></div>
         <div class="contact-item"><i class="fa-solid fa-envelope"></i><a href="mailto:valtorix.infotech@gmail.com">valtorix.infotech@gmail.com</a></div>
-        <div class="contact-item"><i class="fa-solid fa-phone"></i><span class="phone-pair"><a href="tel:+917989369571">+91 79893 69571</a><a href="tel:+916303773891">+91 63037 73891</a></span></div>
+        <div class="contact-item"><i class="fa-solid fa-phone"></i><span class="phone-pair"><a href="tel:+917989369571">+91&nbsp;79893&nbsp;69571</a><a href="tel:+916303773891">+91&nbsp;63037&nbsp;73891</a></span></div>
         <div class="contact-item"><i class="fa-solid fa-clock"></i><span>Mon&ndash;Sat, 9 AM &ndash; 9 PM (Sun closed)</span></div>
         <div class="contact-item"><i class="fa-brands fa-whatsapp"></i><a href="https://wa.me/917989369571" target="_blank" rel="noopener noreferrer">Chat on WhatsApp</a></div>
       </div>
@@ -331,6 +335,6 @@
 <script src="stage3d-geometry.js?v=2" defer></script>
 <script src="stage3d.js?v=11" defer></script>
 <script src="stage3d-init.js?v=2" defer></script>
-<script src="app.js?v=18" defer></script>
+<script src="app.js?v=20" defer></script>
 </body>
 </html>

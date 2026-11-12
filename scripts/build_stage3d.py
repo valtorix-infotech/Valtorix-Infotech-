@@ -89,10 +89,15 @@ def triangulate(poly):
             break
     if len(idx) == 3:
         tris.append((idx[0], idx[1], idx[2]))
-    got = sum((pts[a][0] * pts[b][1] - pts[b][0] * pts[a][1]) / 2.0 for a, b, c in tris)
+    got = sum(
+        (pts[a][0] * pts[b][1] - pts[b][0] * pts[a][1]
+         + pts[b][0] * pts[c][1] - pts[c][0] * pts[b][1]
+         + pts[c][0] * pts[a][1] - pts[a][0] * pts[c][1]) / 2.0
+        for a, b, c in tris
+    )
     want = abs(signed_area(poly))
-    if abs(got - want) > max(1.0, want * 0.01):
-        raise SystemExit("triangulation mismatch: got %.1f want %.1f" % (got, want))
+    if abs(got - want) > max(1e-6, want * 0.001):
+        raise SystemExit("triangulation mismatch: got %.4f want %.4f" % (got, want))
     return pts, tris
 
 

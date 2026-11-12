@@ -12,20 +12,27 @@
     "use:webp": "python scripts/use_webp.py",
     "build:images": "python scripts/optimize-images.py",
     "check:links": "python scripts/check-links.py",
-    "qa": "npm run lint && npm run qa:site && npm run qa:responsive && npm run qa:3d && npm run qa:functions && npm run qa:screenshots && npm run qa:crossbrowser",
+    "qa": "npm run lint && npm run qa:html && npm run qa:unit && npm run qa:api && npm run qa:security && npm run qa:assets && npm run qa:site && npm run qa:responsive && npm run qa:3d && npm run qa:functions && npm run qa:screenshots && npm run qa:crossbrowser",
+    "qa:html": "node scripts/qa-html.js",
+    "qa:unit": "python scripts/qa-unit.py",
+    "qa:api": "node scripts/qa-api.js",
+    "qa:security": "node scripts/qa-security.js",
+    "qa:assets": "node scripts/qa-assets.js",
     "qa:site": "node scripts/qa-site.js",
     "qa:responsive": "node scripts/qa-responsive.js",
     "qa:3d": "node scripts/qa-3d.js",
     "qa:functions": "node scripts/qa-functions.js",
     "qa:screenshots": "node scripts/qa-screenshots.js",
     "qa:crossbrowser": "node scripts/qa-crossbrowser.js",
-    "qa:lighthouse": "node scripts/qa-lighthouse.js"
+    "qa:lighthouse": "node scripts/qa-lighthouse.js",
+    "qa:audit": "npm audit --audit-level=high"
   },
   "dependencies": {
     "@vercel/functions": "^1.0.0",
-    "nodemailer": "^6.9.14"
+    "nodemailer": "^10.5.0"
   },
   "devDependencies": {
+    "html-validate": "^11.21.0",
     "lighthouse": "^13.6.0",
     "playwright": "^1.49.0"
   },

@@ -85,6 +85,54 @@ function pickName(fields) {
   return String(v).trim() && String(v).trim() !== '—' ? String(v).trim().split(' ')[0] : 'there';
 }
 
+function cleanSubject(value) {
+  return String(value || 'Website enquiry — VALTORIX').slice(0, 120);
+}
+
+function cleanReplyTo(value) {
+  return String(value || '').trim().slice(0, 200);
+}
+
+/**
+ * The submitted fields, whichever way they arrived.
+ *
+ * The normal path is JSON: { subject, replyTo, fields: { ... } }. The
+ * no-JavaScript fallback is a plain form post, where every value is a
+ * string and lives at the top level.
+ */
+function pickFields(body) {
+  if (!body || typeof body !== 'object' || Array.isArray(body)) return null;
+
+  /* If the JSON contract was used at all, it has to be used correctly. */
+  if ('fields' in body) {
+    const nested = body.fields;
+    if (nested && typeof nested === 'object' && !Array.isArray(nested)) return nested;
+    return null;
+  }
+
+  /* Otherwise it is a plain form post: every value is a string at the top
+     level. */
+  const entries = Object.entries(body);
+  if (entries.length && entries.every(([, v]) => typeof v === 'string')) return body;
+
+  return null;
+}
+
+/**
+ * Where the reply should go. The JSON contract says so explicitly; a plain
+ * form post has to be read out of the submitted fields.
+ */
+function pickReplyTo(body, fields) {
+  const explicit = cleanReplyTo(body && body.replyTo);
+  if (explicit) return explicit;
+  const candidates = [fields.Email, fields.email, fields['Your Email'], fields['E-mail']];
+  for (const c of candidates) {
+    const value = cleanReplyTo(c);
+    if (value) return value;
+  }
+  return '';
+}
+
 function brandHeader(label) {
   return (
     '<div style="padding:22px 22px 18px;background:' + INK + ';">' +
@@ -231,8 +279,8 @@ module.exports = async (req, res) => {
   }
 
   const body = req.body || {};
-  const raw = body.fields;
-  if (!raw || typeof raw !== 'object' || Array.isArray(raw) || !Object.keys(raw).length) {
+  const raw = pickFields(body);
+  if (!raw || !Object.keys(raw).length) {
     return res.status(400).json({ ok: false });
   }
 
@@ -250,8 +298,8 @@ module.exports = async (req, res) => {
   const pass = process.env.GMAIL_APP_PASSWORD;
   if (!user || !pass) return res.status(500).json({ ok: false, error: 'mail-not-configured' });
 
-  const subject = String(body.subject || 'Website enquiry — VALTORIX').slice(0, 120);
-  const replyTo = String(body.replyTo || '').trim().slice(0, 200);
+  const subject = cleanSubject(body.subject);
+  const replyTo = pickReplyTo(body, fields);
 
   /* Fast path: queue mail in the background, reply to the visitor at once. */
   const job = deliver(user, pass, subject, replyTo, fields).catch((e) => {
@@ -260,4 +308,24 @@ module.exports = async (req, res) => {
   if (waitUntil) waitUntil(job);
   else await job;
   return res.status(200).json({ ok: true });
+};
+
+/* The internals are exported so they can be unit tested directly. */
+module.exports._internals = {
+  esc,
+  cleanFields,
+  cleanSubject,
+  cleanReplyTo,
+  pickFields,
+  pickReplyTo,
+  ownerHtml,
+  replyHtml,
+  replyText,
+  pickName,
+  rateLimited,
+  MAX_FIELDS,
+  MAX_KEY_LEN,
+  MAX_VALUE_LEN,
+  RATE_MAX,
+  RATE_WINDOW_MS
 };

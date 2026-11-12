@@ -581,10 +581,10 @@
       }
 
       const btn = contactForm.querySelector('[type="submit"]');
-      const orig = btn ? btn.innerHTML : "";
+      const orig = btn ? btn.textContent : "";
       if (btn) {
         btn.disabled = true;
-        btn.innerHTML = "Sending…";
+        btn.textContent = "Sending…";
       }
       const gv = function (id) {
         const el = document.getElementById(id);
@@ -618,15 +618,19 @@
             if (!isSent(res)) sendFailed();
             const card = document.getElementById("contactForm");
             const success = document.getElementById("successMessage");
-            if (card) card.style.display = "none";
+            if (card) card.classList.add("is-hidden");
             if (success) {
-              success.style.display = "block";
+              success.classList.remove("is-hidden");
+              success.classList.add("is-shown");
               success.scrollIntoView({ behavior: "smooth", block: "center" });
             }
             window.setTimeout(function () {
-              if (success) success.style.display = "none";
+              if (success) {
+                success.classList.remove("is-shown");
+                success.classList.add("is-hidden");
+              }
               if (card) {
-                card.style.display = "";
+                card.classList.remove("is-hidden");
                 card.scrollIntoView({ behavior: "smooth", block: "center" });
               }
               contactForm.reset();
@@ -645,21 +649,21 @@
               });
               if (btn) {
                 btn.disabled = false;
-                btn.innerHTML = orig;
+                btn.textContent = orig;
               }
             }, 4000);
           })
           .catch(function () {
             if (btn) {
               btn.disabled = false;
-              btn.innerHTML = orig;
+              btn.textContent = orig;
             }
             formError("#contactForm", sendFailMessage(), waLink(waTextC));
           });
       } catch (err) {
         if (btn) {
           btn.disabled = false;
-          btn.innerHTML = orig;
+          btn.textContent = orig;
         }
         formError("#contactForm", sendFailMessage(), waLink(waTextC));
       }
@@ -680,16 +684,21 @@
         el.classList.toggle("active", n === state.step);
         el.classList.toggle("done", n < state.step);
       });
-      if (backBtn) backBtn.style.display = state.step > 1 ? "inline-flex" : "none";
+      if (backBtn) {
+        backBtn.classList.toggle("is-shown", state.step > 1);
+        backBtn.classList.toggle("is-hidden", state.step <= 1);
+      }
       if (nextBtn) {
-        nextBtn.innerHTML = state.step === 4 ? "Submit Project Request &nbsp;→" : "Next Step &nbsp;→";
+        nextBtn.textContent = state.step === 4 ? "Submit Project Request →" : "Next Step →";
       }
     }
 
     function show(n) {
       state.step = n;
       steps.forEach(function (el) {
-        el.style.display = +el.getAttribute("data-step") === n ? "block" : "none";
+        const current = +el.getAttribute("data-step") === n;
+        el.classList.toggle("is-shown", current);
+        el.classList.toggle("is-hidden", !current);
       });
       paint();
       const area = document.getElementById("formArea");
@@ -838,7 +847,11 @@
     choiceGroup("goalChoices", "goals", true);
 
     if (nextBtn) {
-      nextBtn.addEventListener("click", function () {
+      /* The button is a real submit button, so the form is handled on submit
+         rather than on click. That way pressing Enter in a text field moves
+         the wizard on, exactly as clicking the button does. */
+      projectForm.addEventListener("submit", function (e) {
+        e.preventDefault();
         if (!validStep()) return;
         if (state.step < 4) {
           show(state.step + 1);
@@ -860,9 +873,9 @@
           Math.floor(1000 + Math.random() * 9000);
         const ref = document.getElementById("referenceId");
         if (ref) ref.textContent = id;
-        const origNext = nextBtn.innerHTML;
+        const origNext = nextBtn.textContent;
         nextBtn.disabled = true;
-        nextBtn.innerHTML = "Sending…";
+        nextBtn.textContent = "Sending…";
         const payload = {
           "Reference ID": id,
           "Project Type": state.type || "—",
@@ -905,18 +918,21 @@
               if (!isSent(res)) sendFailed();
               const flow = document.getElementById("formFlow");
               const done = document.getElementById("successPage");
-              if (flow) flow.style.display = "none";
-              if (done) done.style.display = "block";
+              if (flow) flow.classList.add("is-hidden");
+              if (done) {
+                done.classList.remove("is-hidden");
+                done.classList.add("is-shown");
+              }
               window.scrollTo({ top: 0, behavior: "smooth" });
             })
             .catch(function () {
               nextBtn.disabled = false;
-              nextBtn.innerHTML = origNext;
+              nextBtn.textContent = origNext;
               formError("#stepPanel", sendFailMessage(), waLink(waTextP));
             });
         } catch (err) {
           nextBtn.disabled = false;
-          nextBtn.innerHTML = origNext;
+          nextBtn.textContent = origNext;
           formError("#stepPanel", sendFailMessage(), waLink(waTextP));
         }
       });

@@ -47,6 +47,11 @@ images/brand/         The traced logo asset set
 scripts/
 ├── lint.js           The project lint gate
 ├── qa/_lib.js        Shared browser launch + reporting
+├── qa-html.js        HTML validation (html-validate) + the document rules
+├── qa-unit.py        Unit tests for the brand and 3D generators
+├── qa-api.js         The mail endpoint: contract, limits, abuse, delivery
+├── qa-security.js    Secrets, headers, injection, dependencies
+├── qa-assets.js      Weight, WebP coverage, orphans, cache policy
 ├── build_brand.py    Traced logo -> the asset set
 ├── build_stage3d.py  Traced logo -> the 3D buffers
 └── ...               the generators and the test suites
@@ -95,6 +100,9 @@ and get `200 { "ok": true }` immediately; the mail is sent in the background. Th
 notification and the visitor gets an auto-reply. If the request cannot be sent the browser shows a
 pre-filled WhatsApp fallback.
 
+Both forms also work **without JavaScript**: they carry `method="post" action="/api/send"`, and the
+endpoint accepts a plain urlencoded body as well as the JSON above.
+
 **Required environment variables** (set them in the Vercel project):
 
 | Variable | Purpose |
@@ -127,19 +135,31 @@ Re-run `extract_brand.py` only if the master artwork changes (it needs the sourc
 ```bash
 npm run qa                 # lint + every suite below
 npm run lint               # the project lint gate
-npm run qa:site            # links, 404, content, forms, keyboard, Core Web Vitals, SEO data
-npm run qa:responsive       # 25 viewports, reflow, 400% zoom, JavaScript disabled, tap targets
+npm run qa:html             # HTML validation and the document rules
+npm run qa:unit             # unit tests for the brand and 3D generators
+npm run qa:api              # the mail endpoint: contract, limits, abuse, delivery
+npm run qa:security         # secrets, headers, injection, dependencies
+npm run qa:assets           # weight, WebP coverage, orphans, cache policy
+npm run qa:site             # links, 404, content, forms, keyboard, Core Web Vitals, SEO data
+npm run qa:responsive        # 25 viewports, reflow, 400% zoom, JavaScript disabled, tap targets
 npm run qa:3d              # the 3D stage: chapters, camera, fallbacks, layout
-npm run qa:functions       # 31 behavioural assertions
+npm run qa:functions       # 36 behavioural assertions
 npm run qa:screenshots     # visual + asset audit, 10 pages x 2 viewports
 npm run qa:crossbrowser    # Chromium, Firefox and WebKit
 npm run qa:lighthouse      # accessibility / best practices / SEO gate
+npm run qa:audit          # npm audit at the high threshold
 ```
 
 The suites need the browsers once:
 
 ```bash
 npx playwright install --with-deps chromium firefox webkit
+```
+
+`qa:unit` needs Python with Pillow and NumPy (the generators use them):
+
+```bash
+pip install pillow numpy
 ```
 
 All of this also runs in CI on every push and pull request — see
@@ -149,10 +169,17 @@ All of this also runs in CI on every push and pull request — see
 
 | Suite | What it proves |
 |-------|----------------|
+| `lint` | ES6 everywhere, no `var`, no duplicate ids, one `h1` per page, title / description / canonical present, every `<img>` has alt and dimensions, every control has a label, no dead CSS, no trailing comma in a selector list, no loose equality, no inline styles |
+| `qa-html` | The pages pass html-validate: valid nesting, one of each landmark and each named, the heading ladder has no skipped level, every `aria-labelledby` / `for` / `#anchor` resolves, the structured data parses, the forms declare their method and action |
+| `qa-unit` | The geometry maths: the signed area, ear clipping, the inset, the edge normals, the mesh bookkeeping, the box faces, and the generated buffers — plus the brand: the SVG path, the rasteriser, the even-odd knockout, and the icon sizes |
+| `qa-api` | The endpoint contract: the method, the payload shapes, the field and value caps, the honeypot, the rate limit, the escaping, and that the owner notification and the visitor auto-reply are actually built — with nodemailer mocked, so no test ever opens a socket |
+| `qa-security` | No credentials committed, the security headers are set, no unescaped markup in the client, every `target="_blank"` has `rel="noopener"`, no plain-http resource, no unknown third party, the endpoint escapes and never trusts the visitor, the mail library is on a supported major, every dependency is pinned |
+| `qa-assets` | Every referenced file exists, nothing ships unreferenced, every photograph has a WebP with a raster fallback, every content image is lazy, the render-blocking path is small, the cache policy is right and nothing unversioned is frozen |
 | `qa-site` | Every link resolves, a junk URL shows the branded 404, no duplicate ids, forms validate and recover, Enter semantics, no double submit, the button locks in flight, data survives a validation error, the keyboard can complete every flow, Core Web Vitals are inside budget, the sitemap and structured data are valid |
 | `qa-responsive` | 25 viewports including just-below / at / just-above every breakpoint, landscape, 400% browser zoom, 320px reflow, JavaScript disabled, 24×24 tap targets, a 12px type floor, 16px inputs so iOS does not zoom |
 | `qa-3d` | One canvas per page, the six chapters wired, the camera travelling forward, cards staying solid over the scene, and all four fallbacks |
 | `qa-crossbrowser` | The same behaviour in Chromium, Firefox and WebKit (Safari's engine) |
+| `qa-lighthouse` | Accessibility, best practices and SEO at 100 on all ten pages |
 
 ### Two traps the harnesses deliberately avoid
 

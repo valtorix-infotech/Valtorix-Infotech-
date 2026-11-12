@@ -171,14 +171,19 @@ def main():
     save(render(mark["polys"], 192, 192, mb, INK), "icon-192.png")
     save(render(mark["polys"], 512, 512, mb, INK), "icon-512.png")
 
-    # legacy names kept so any old markup keeps working
+    # the horizontal lockup as a raster, kept in the brand kit for anyone who
+    # needs a bitmap (email signatures, slide decks, print)
     save(render(horiz["polys"], 676, 177, hb, INK), "logo.png")
     save(render(horiz["polys"], 676, 177, hb, WHITE), "logo-white.png")
-    # ...and the same lockup at the legacy path outside images/brand/
-    render(horiz["polys"], 676, 177, hb, INK).save(
-        os.path.join(ROOT, "images", "logo.png"), optimize=True)
-    render(horiz["polys"], 676, 177, hb, WHITE).save(
-        os.path.join(ROOT, "images", "logo-white.png"), optimize=True)
+
+    # --- favicon.ico -------------------------------------------------------
+    # A browser asks for /favicon.ico whether or not the page links one, so
+    # the root has to carry the current mark - not an old one.
+    ico = render(mark["polys"], 64, 64, mb, INK)
+    ico.save(os.path.join(ROOT, "favicon.ico"),
+             format="ICO", sizes=[(16, 16), (32, 32), (48, 48), (64, 64)])
+    print("  %-26s %s" % ("favicon.ico (root)",
+                          os.path.getsize(os.path.join(ROOT, "favicon.ico"))))
 
     # --- social card -------------------------------------------------------
     card = Image.new("RGB", (1200, 630), (255, 255, 255))

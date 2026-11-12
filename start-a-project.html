@@ -23,21 +23,24 @@
 <meta name="theme-color" content="#ffffff">
 <link rel="icon" href="images/brand/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="images/brand/favicon-white.svg" type="image/svg+xml" media="(prefers-color-scheme: dark)">
-<link rel="alternate icon" href="images/brand/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="icon" href="images/brand/favicon-16.png" sizes="16x16" type="image/png">
+<link rel="icon" href="images/brand/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="icon" href="images/brand/favicon-64.png" sizes="64x64" type="image/png">
 <link rel="apple-touch-icon" href="images/brand/apple-touch-icon.png">
 <link rel="manifest" href="site.webmanifest">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Oxanium:wght@600;700&family=Sora:wght@400;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
-<link rel="stylesheet" href="styles.css?v=29">
+<link rel="stylesheet" href="styles.css?v=30">
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Is submitting the request free?","acceptedAnswer":{"@type":"Answer","text":"Yes. The project request is for discussion only and creates no purchase commitment."}},{"@type":"Question","name":"Can I change my requirements later?","acceptedAnswer":{"@type":"Answer","text":"Yes. Requirements are refined with our team before the final proposal and scope are agreed."}},{"@type":"Question","name":"How quickly will I hear back?","acceptedAnswer":{"@type":"Answer","text":"Usually within 24 hours on business days."}}]}</script>
 </head>
 <body>
 <a href="#main-content" class="skip-link">Skip to main content</a>
 <canvas class="site-stage" data-stage-root aria-hidden="true"></canvas>
 
-<nav id="navbar">
+<header id="site-header">
+<nav id="navbar" aria-label="Primary">
   <div class="nav-wrap">
     <a href="index.html" class="logo">
       <img class="logo-mark" src="images/brand/valtorix-mark.svg" alt="" width="30" height="25">
@@ -56,6 +59,7 @@
     <button class="menu-btn" type="button" aria-label="Open menu"><i class="fa-solid fa-bars"></i></button>
   </div>
 </nav>
+</header>
 
 <main id="main-content">
 
@@ -114,7 +118,7 @@
             <div class="progress-step"><div class="progress-circle"></div><span>Review</span></div>
           </div>
 
-          <form id="projectForm" novalidate>
+          <form id="projectForm" method="post" action="/api/send" novalidate>
 
             <!-- STEP 1 -->
             <div class="form-step is-shown" data-step="1">
@@ -322,16 +326,16 @@
               <!-- Honeypot anti-spam field (hidden from humans, visible to bots) -->
               <div class="honeypot" aria-hidden="true">
                 <label for="website">Please leave this field empty</label>
-                <input id="website" tabindex="-1" autocomplete="off">
+                <input id="website" type="text" tabindex="-1" autocomplete="off">
               </div>
             </div>
 
-          </form>
+            <div class="form-actions">
+              <button class="btn btn-outline is-hidden" id="backBtn" type="button"><i class="fa-solid fa-arrow-left"></i>&nbsp; Back</button>
+              <button class="btn btn-primary" id="nextBtn" type="submit">Next Step &nbsp;&rarr;</button>
+            </div>
 
-          <div class="form-actions">
-            <button class="btn btn-outline is-hidden" id="backBtn" type="button"><i class="fa-solid fa-arrow-left"></i>&nbsp; Back</button>
-            <button class="btn btn-primary" id="nextBtn" type="button">Next Step &nbsp;&rarr;</button>
-          </div>
+          </form>
         </div>
 
       </div>
@@ -475,7 +479,7 @@
         <h3>Contact</h3>
         <div class="contact-item"><i class="fa-solid fa-location-dot"></i><span>Hyderabad, Telangana, India</span></div>
         <div class="contact-item"><i class="fa-solid fa-envelope"></i><a href="mailto:valtorix.infotech@gmail.com">valtorix.infotech@gmail.com</a></div>
-        <div class="contact-item"><i class="fa-solid fa-phone"></i><span class="phone-pair"><a href="tel:+917989369571">+91 79893 69571</a><a href="tel:+916303773891">+91 63037 73891</a></span></div>
+        <div class="contact-item"><i class="fa-solid fa-phone"></i><span class="phone-pair"><a href="tel:+917989369571">+91&nbsp;79893&nbsp;69571</a><a href="tel:+916303773891">+91&nbsp;63037&nbsp;73891</a></span></div>
         <div class="contact-item"><i class="fa-solid fa-clock"></i><span>Mon&ndash;Sat, 9 AM &ndash; 9 PM (Sun closed)</span></div>
         <div class="contact-item"><i class="fa-brands fa-whatsapp"></i><a href="https://wa.me/917989369571" target="_blank" rel="noopener noreferrer">Chat on WhatsApp</a></div>
       </div>
@@ -493,6 +497,6 @@
 <script src="stage3d-geometry.js?v=2" defer></script>
 <script src="stage3d.js?v=11" defer></script>
 <script src="stage3d-init.js?v=2" defer></script>
-<script src="app.js?v=18" defer></script>
+<script src="app.js?v=20" defer></script>
 </body>
 </html>

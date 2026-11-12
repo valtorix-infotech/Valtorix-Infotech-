@@ -583,6 +583,13 @@ hr {
 }
 
 /* ---------- 7. Header ---------- */
+/* The banner landmark wraps the fixed navigation. The nav is out of flow,
+   so the banner holds nothing and must not add space of its own. */
+#site-header {
+  margin: 0;
+  padding: 0;
+}
+
 #navbar {
   position: fixed;
   inset: 0 0 auto 0;
@@ -1941,6 +1948,7 @@ main,
   border-radius: var(--r-pill);
   background: var(--paper);
   padding: 9px 16px;
+  font-family: inherit;
   font-size: 13.5px;
   font-weight: 600;
   color: var(--fg-2);
@@ -2435,6 +2443,11 @@ main,
 }
 
 /* ---------- 27. Scroll progress ---------- */
+
+/* a button that appears and disappears keeps its own layout */
+.btn.is-shown {
+  display: inline-flex;
+}
 
 /* ---------- 29. Utilities -----------------------------------------------
    These replace the inline styles the markup used to carry. Everything

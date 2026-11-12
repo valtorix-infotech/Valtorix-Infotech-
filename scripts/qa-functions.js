@@ -128,6 +128,41 @@ function check(name, ok, detail) {
   const backOk = await page.locator('.form-step[data-step="1"]').isVisible();
   check('project: back button returns to step 1', backOk, '');
 
+  /* ---------- 4b. The wizard is a real form ---------- */
+  const nextType = await page.locator('#nextBtn').getAttribute('type');
+  check('project: the next button is a submit button', nextType === 'submit', nextType);
+
+  const insideForm = await page.evaluate(() => {
+    const b = document.getElementById('nextBtn');
+    const f = document.getElementById('projectForm');
+    return !!(b && f && f.contains(b));
+  });
+  check('project: the submit button is inside its own form', insideForm, '');
+
+  const formAttrs = await page.evaluate(() => {
+    const f = document.getElementById('projectForm');
+    return { method: f.getAttribute('method'), action: f.getAttribute('action') };
+  });
+  check('project: the form can post without JavaScript',
+    formAttrs.method === 'post' && !!formAttrs.action,
+    `${formAttrs.method} ${formAttrs.action}`);
+
+  /* Pressing Enter in a single-line field should move the wizard on, exactly
+     as clicking the button does. (Enter inside a textarea is a newline, so
+     that is deliberately not the field used here.) */
+  await page.fill('#name', 'Sam');
+  await page.fill('#email', 'sam@example.com');
+  await page.fill('#phone', '9000000002');
+  await page.fill('#overview', 'A new marketing website for our new brand.');
+  await page.locator('#name').press('Enter');
+  await page.waitForTimeout(600);
+  const advanced = await page.locator('.form-step[data-step="2"]').isVisible();
+  check('project: Enter in a field advances the wizard', advanced, '');
+
+  /* The wizard must never navigate the page away. */
+  const stillHere = page.url().includes('start-a-project');
+  check('project: the wizard never navigates away', stillHere, page.url());
+
   /* ---------- 5. FAQ accordion ---------- */
   await page.goto(`${BASE}/index.html?t=${Date.now()}`, { waitUntil: 'load', timeout: 30000 });
   const firstFaq = page.locator('.faq-item').first();
