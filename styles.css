@@ -1453,6 +1453,13 @@ main,
   border-top: 1px solid var(--line);
 }
 
+/* The question is a heading so that the document outline carries it, and the
+   button inside it is what the visitor clicks. */
+.faq-q {
+  margin: 0;
+  font: inherit;
+}
+
 .faq-question {
   width: 100%;
   display: flex;
@@ -2511,6 +2518,20 @@ main,
 .muted-icon { color: var(--fg-dim); }
 .muted-strong { color: var(--fg-dim); font-weight: 600; }
 .link-strong { color: var(--accent); font-weight: 700; }
+
+/* A link inside a paragraph - it has to read as part of the sentence without
+   losing the underline that says "this is a link". */
+.inline-link {
+  color: var(--accent);
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-thickness: 1px;
+}
+
+.inline-link:hover {
+  color: var(--accent-2);
+}
 
 /* headings used inside cards */
 .h-inline { font-size: 24px; }
