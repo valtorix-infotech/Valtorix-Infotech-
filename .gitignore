@@ -16,3 +16,5 @@ scripts/_sheet*.py
 scripts/_sheet*.jpg
 scripts/.lighthouse/
 scripts/crossbrowser-report.json
+__pycache__/
+*.pyc
