@@ -308,6 +308,40 @@ const AUDIT = () => {
     await ctx.close();
   }
 
+  /* ---------- the layout must not depend on the font ---------- */
+  /* A visitor whose device has no matching font gets the fallback, and the
+     fallback is wider than the webfont. A layout that only fits with the
+     webfont is a layout that breaks for them - and it is invisible here,
+     where the webfont always loads. Forcing a wide font finds it. */
+  console.log('== the fallback font (a wider face than the webfont) ==');
+  for (const p of PAGES) {
+    const ctx = await browser.newContext({ viewport: { width: 320, height: 256 }, isMobile: true, hasTouch: true });
+    const page = await ctx.newPage();
+    await page.goto(`${BASE}/${p}?rs=${Date.now()}`, { waitUntil: 'load', timeout: 30000 });
+    await page.waitForTimeout(250);
+    const r = await page.evaluate(() => {
+      const de = document.documentElement;
+      const style = document.createElement('style');
+      style.textContent = 'body, body * { font-family: monospace !important; }';
+      document.head.appendChild(style);
+      void de.offsetWidth;
+      const wide = [];
+      document.querySelectorAll('body *').forEach((el) => {
+        const b = el.getBoundingClientRect();
+        if (b.width > 0 && b.right > de.clientWidth + 1 && !el.closest('.marquee')) {
+          wide.push(`<${el.tagName.toLowerCase()} class="${String(el.className || '').slice(0, 30)}"> ` +
+            `${(el.textContent || '').trim().slice(0, 34)}`);
+        }
+      });
+      return { docW: de.clientWidth, scrollW: de.scrollWidth, wide: wide.slice(-4) };
+    });
+    if (r.scrollW > r.docW) {
+      flag(p, 'fallback font', 'horizontal-scroll',
+        `the page is ${r.scrollW}px wide in a ${r.docW}px viewport :: ${r.wide.join(' | ')}`);
+    }
+    await ctx.close();
+  }
+
   /* ---------- 400% zoom / 320 reflow ---------- */
   /* Chrome's browser zoom shrinks the LAYOUT viewport, so 1280x1024 at 400%
      zoom is exactly a 320x256 CSS px layout rendered into 1280 device pixels.

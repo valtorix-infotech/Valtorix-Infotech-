@@ -421,7 +421,11 @@ hr {
   font-weight: 700;
   line-height: 1;
   cursor: pointer;
-  white-space: nowrap;
+  /* A long label must wrap rather than push the page sideways. With
+     `nowrap` a button like "Talk to us about a similar build" was 336px
+     wide on a 320px screen whenever the fallback font was wider than the
+     webfont - which is every visitor whose device has no matching font. */
+  white-space: normal;
   transition: background var(--t-fast), color var(--t-fast), border-color var(--t-fast),
     transform var(--t-fast), box-shadow var(--t-fast);
 }
