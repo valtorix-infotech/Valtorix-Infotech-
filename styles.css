@@ -407,6 +407,21 @@ hr {
   color: var(--fg-on-dark-3);
 }
 
+/* A link inside a paragraph needs the light accent on a dark surface:
+   #1a5fd0 is only 2.7:1 against #222222. Scoping the rule to the
+   container, rather than to the link, is what makes it win. */
+.section--ink .inline-link,
+.dark-band .inline-link,
+.cta-band .inline-link {
+  color: var(--accent-light);
+}
+
+.section--ink .inline-link:hover,
+.dark-band .inline-link:hover,
+.cta-band .inline-link:hover {
+  color: #8fc0ff;
+}
+
 /* ---------- 5. Buttons ---------- */
 .btn {
   display: inline-flex;
@@ -2368,11 +2383,15 @@ main,
 }
 
 /* ---------- 24. Reveal animation ---------- */
+/* The entrance moves the element into place. It does not fade it: an element
+   that is faded out is invisible text - to a reader whose script has not
+   run, to a link-preview bot, and to a contrast audit that captures the
+   page before the element has been scrolled to. The rise reads the same
+   and the content is always legible. */
 .reveal,
 .reveal-left,
 .reveal-right {
-  opacity: 0;
-  transition: opacity 0.7s var(--ease), transform 0.7s var(--ease);
+  transition: transform 0.7s var(--ease);
 }
 
 .reveal {
