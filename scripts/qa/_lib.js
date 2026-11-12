@@ -43,7 +43,23 @@ async function launch(name = 'chromium') {
   const type = ENGINES[name];
   if (!type) throw new Error('unknown browser engine: ' + name);
   const executablePath = name === 'chromium' ? findBrowser() : null;
-  return type.launch(executablePath ? { executablePath } : {});
+  const opts = {};
+
+  if (name === 'firefox') {
+    /* Headless Firefox on a machine with no GPU will refuse WebGL outright,
+       which means the 3D path never gets tested. These prefs ask for the
+       software renderer instead. */
+    opts.firefoxUserPrefs = {
+      'webgl.force-enabled': true,
+      'webgl.disabled': false,
+      'webgl.out-of-process': false,
+      'gfx.webrender.all': true,
+      'gfx.webrender.software': true,
+      'layers.acceleration.force-enabled': true
+    };
+  }
+
+  return type.launch(executablePath ? { executablePath, ...opts } : opts);
 }
 
 /** A new page on a fresh context, so each page is measured with a cold cache. */

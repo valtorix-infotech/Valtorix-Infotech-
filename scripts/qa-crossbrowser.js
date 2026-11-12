@@ -22,6 +22,7 @@ const path = require('path');
 
 const reporter = new Reporter('cross-browser');
 const flag = (engine, page, kind, detail) => reporter.fail(kind, `${engine} / ${page}`, detail);
+const note = (message) => reporter.note(message);
 
 (async () => {
   const engines = ['chromium', 'firefox', 'webkit'];
@@ -93,12 +94,19 @@ const flag = (engine, page, kind, detail) => reporter.fail(kind, `${engine} / ${
       if (!r.supports.overflowClip) flag(eng, p, 'css-gap', 'overflow-x: clip is not supported');
       if (!r.supports.displayContents) flag(eng, p, 'css-gap', 'display: contents is not supported');
       if (!r.supports.webp) flag(eng, p, 'no-webp', 'WebP decoding failed');
-      if (r.refusal && r.refusal !== 'reduced-motion') {
-        flag(eng, p, '3d-refused', r.refusal);
-      }
       if (r.refusal === 'reduced-motion') {
         /* the reduced-motion path must still be a complete page */
         if (Number(r.canvasOpacity) > 0.01) flag(eng, p, '3d-shown', 'the scene rendered under reduced motion');
+      } else if (r.refusal === 'no-webgl') {
+        /* A browser without WebGL is a legitimate visitor, not a failure -
+           the site is built to fall back to the static poster with no layout
+           shift. What matters is that the fallback is complete. */
+        if (Number(r.canvasOpacity) > 0.01) {
+          flag(eng, p, '3d-shown', 'the canvas is visible with no WebGL');
+        }
+        note(`${eng} has no WebGL on this machine, so the 3D path was not exercised there`);
+      } else if (r.refusal) {
+        flag(eng, p, '3d-refused', r.refusal);
       } else if (r.instances !== 1 && !/404/.test(p)) {
         /* the 404 page carries no stage by design */
         flag(eng, p, '3d-not-mounted', 'instances=' + r.instances);

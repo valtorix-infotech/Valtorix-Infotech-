@@ -40,6 +40,13 @@ jobs:
       - name: Install browsers
         run: npx playwright install --with-deps chromium firefox webkit
 
+      - name: Install the software renderer
+        # The runner has no GPU. Without Mesa's software renderer, headless
+        # Firefox refuses WebGL outright and the 3D path never gets tested.
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libgl1-mesa-dri libegl1-mesa libglx-mesa0
+
       - name: Lint
         run: npm run lint
 
