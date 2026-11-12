@@ -183,6 +183,65 @@ const allJs = siteJs.map(read).join('\n');
   check('the lockfile is committed', fs.existsSync(path.join(ROOT, 'package-lock.json')), '');
 }
 
+/* ------------------------ 9c. the site makes no claims it cannot keep */
+{
+  /* A social icon that points at the platform's home page is a lie: the
+     visitor clicks "LinkedIn" and lands on LinkedIn. Every link has to go
+     somewhere specific. */
+  const bareLinks = [];
+  for (const f of htmlFiles) {
+    const src = read(f);
+    for (const m of src.matchAll(/href="(https?:\/\/[^/"]+)\/"/g)) {
+      const url = m[1];
+      /* the preconnect hints and the canonical origin are not links */
+      if (url.includes('fonts.googleapis.com') || url.includes('fonts.gstatic.com')) continue;
+      if (url.includes('vercel.app')) continue;
+      bareLinks.push(`${f}: ${url}`);
+    }
+  }
+  check('no link points at a bare domain root', bareLinks.length === 0,
+    [...new Set(bareLinks)].slice(0, 5).join(' | '));
+
+  /* The pages that show concept-product imagery have to say so. */
+  const CONCEPT = /concept product/i;
+  const noDisclosure = [];
+  for (const f of htmlFiles) {
+    const src = read(f);
+    const showsMockups = /Concept mockup/.test(src);
+    if (showsMockups && !CONCEPT.test(src)) {
+      noDisclosure.push(f);
+    }
+  }
+  check('the pages that show concept mockups disclose it', noDisclosure.length === 0,
+    noDisclosure.join(', '));
+
+  /* An image must not be passed off as something it is not.
+
+       - The project images are concept mockups, so the alt text has to say
+         so. When a real screenshot replaces one, that line goes away.
+       - The service and industry images are generic photographs, so they
+         cannot be captioned with the studio's own product names. */
+  const PRODUCT_NAMES = /\b(HRMS Pro|EduLearn|FinTrack|HealthPlus|BrandCraft|ShopKart|TravelGo|SiteTrack|Vayomi)\b/i;
+  const problems = [];
+  for (const f of htmlFiles) {
+    const src = read(f);
+    for (const m of src.matchAll(/<img[^>]*src="(images\/[^"]+)"[^>]*alt="([^"]*)"/g)) {
+      const file = m[1].split('/').pop();
+      const alt = m[2];
+      if (!alt) continue;
+
+      if (/^project-/.test(file) && !/concept mockup/i.test(alt)) {
+        problems.push(`${f}: ${file} is a concept mockup but its alt text does not say so`);
+      }
+      if (!/^project-/.test(file) && PRODUCT_NAMES.test(alt)) {
+        problems.push(`${f}: ${file} is a stock photograph but is captioned as a product`);
+      }
+    }
+  }
+  check('no image is captioned as something it is not', problems.length === 0,
+    problems.slice(0, 5).join(' | '));
+}
+
 /* ---------------------------- 10. the site does not leak the stack */{
   const cfg = JSON.parse(read('vercel.json'));
   check('no framework is advertised in the headers',

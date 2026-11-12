@@ -1771,12 +1771,12 @@ main,
   padding-block: 4px;
 }
 
-.socials {
+.quick-links {
   display: flex;
   gap: 9px;
 }
 
-.socials a {
+.quick-links a {
   width: 44px;
   height: 44px;
   border: 1px solid var(--line-dark-2);
@@ -1788,7 +1788,7 @@ main,
   transition: background var(--t-fast), border-color var(--t-fast), color var(--t-fast);
 }
 
-.socials a:hover {
+.quick-links a:hover {
   background: var(--accent);
   border-color: var(--accent);
   color: #fff;
